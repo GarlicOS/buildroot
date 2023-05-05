@@ -1,0 +1,24 @@
+From fa2bef3c5b1d8dfdb2079029562b5b582291023c Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Thu, 4 May 2023 10:39:41 +0200
+Subject: [PATCH 2/2] Disable encoder_id check
+
+---
+ src/video/kmsdrm/SDL_kmsdrmvideo.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/src/video/kmsdrm/SDL_kmsdrmvideo.c b/src/video/kmsdrm/SDL_kmsdrmvideo.c
+index dd9f67a9..843ceaef 100644
+--- a/src/video/kmsdrm/SDL_kmsdrmvideo.c
++++ b/src/video/kmsdrm/SDL_kmsdrmvideo.c
+@@ -172,7 +172,6 @@ int KMSDRM_VideoInit(_THIS, SDL_PixelFormat *vformat)
+ 			if ( crtc && enc && conn &&
+ 			     (plane->possible_crtcs & (1 << crtc_idx)) &&
+ 			     (enc->possible_crtcs & (1 << crtc_idx)) &&
+-			     conn->encoder_id == enc->encoder_id &&
+ 			     conn->connection == DRM_MODE_CONNECTED &&
+ 			     conn->count_modes > 0 ) {
+ 				// This is a complete, suitable pathway. save it.
+-- 
+2.25.1
+

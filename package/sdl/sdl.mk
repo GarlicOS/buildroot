@@ -4,17 +4,14 @@
 #
 ################################################################################
 
-SDL_VERSION = 1.2.15
-SDL_SOURCE = SDL-$(SDL_VERSION).tar.gz
-SDL_SITE = http://www.libsdl.org/release
+SDL_VERSION = dd7260f1d7f79a58aba95a03fd6532729181eadb
+SDL_SITE = https://github.com/OpenDingux/SDL.git
+SDL_SITE_METHOD = git
 SDL_LICENSE = LGPL-2.1+
 SDL_LICENSE_FILES = COPYING
 SDL_CPE_ID_VENDOR = libsdl
 SDL_CPE_ID_PRODUCT = simple_directmedia_layer
 SDL_INSTALL_STAGING = YES
-
-# 0003-SDL_x11yuv.c-fix-possible-use-after-free.patch
-SDL_IGNORE_CVES += CVE-2022-34568
 
 # we're patching configure.in, but package cannot autoreconf with our version of
 # autotools, so we have to do it manually instead of setting SDL_AUTORECONF = YES
@@ -42,6 +39,13 @@ SDL_CONF_OPTS += --enable-video-directfb=yes
 SDL_CONF_ENV = ac_cv_path_DIRECTFBCONFIG=$(STAGING_DIR)/usr/bin/directfb-config
 else
 SDL_CONF_OPTS += --enable-video-directfb=no
+endif
+
+ifeq ($(BR2_PACKAGE_SDL_KMSDRM),y)
+SDL_DEPENDENCIES += libdrm
+SDL_CONF_OPTS += --enable-video-kmsdrm=yes
+else
+SDL_CONF_OPTS += --disable-video-kmsdrm=no
 endif
 
 ifeq ($(BR2_PACKAGE_SDL_X11),y)
