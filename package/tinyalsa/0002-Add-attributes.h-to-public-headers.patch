@@ -1,0 +1,23 @@
+From b0653e6eafe5d0db1f2875da8945fa941fba5ff6 Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Sat, 6 May 2023 01:42:39 +0200
+Subject: [PATCH] Add attributes.h to public headers
+
+---
+ include/tinyalsa/meson.build | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/tinyalsa/meson.build b/include/tinyalsa/meson.build
+index d14b35b..d0df1c6 100644
+--- a/include/tinyalsa/meson.build
++++ b/include/tinyalsa/meson.build
+@@ -1,5 +1,6 @@
+ tinyalsa_headers = [
+   'asoundlib.h',
++  'attributes.h',
+   'interval.h',
+   'limits.h',
+   'mixer.h',
+-- 
+2.25.1
+
