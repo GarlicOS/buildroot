@@ -1,0 +1,5 @@
+menuconfig BR2_PACKAGE_GAMBATTE
+	bool "gambatte"
+	depends on BR2_PACKAGE_RETROARCH
+	help
+	  libretro implementation of gambatte

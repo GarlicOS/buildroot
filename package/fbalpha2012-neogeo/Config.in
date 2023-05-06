@@ -1,0 +1,5 @@
+menuconfig BR2_PACKAGE_FBALPHA2012_NEOGEO
+	bool "fbalpha2012-neogeo"
+	depends on BR2_PACKAGE_RETROARCH
+	help
+	  libretro implementation of fbalpha2012-neogeo

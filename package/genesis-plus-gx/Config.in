@@ -1,0 +1,5 @@
+menuconfig BR2_PACKAGE_GENESIS_PLUS_GX
+	bool "genesis-plus-gx"
+	depends on BR2_PACKAGE_RETROARCH
+	help
+	  libretro implementation of genesis-plus-gx

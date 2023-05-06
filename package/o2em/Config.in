@@ -1,0 +1,5 @@
+menuconfig BR2_PACKAGE_O2EM
+	bool "o2em"
+	depends on BR2_PACKAGE_RETROARCH
+	help
+	  libretro implementation of o2em

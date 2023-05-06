@@ -1,0 +1,5 @@
+menuconfig BR2_PACKAGE_PICODRIVE
+	bool "picodrive"
+	depends on BR2_PACKAGE_RETROARCH
+	help
+	  libretro implementation of picodrive

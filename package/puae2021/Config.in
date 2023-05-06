@@ -1,0 +1,5 @@
+menuconfig BR2_PACKAGE_PUAE2021
+	bool "puae2021"
+	depends on BR2_PACKAGE_RETROARCH
+	help
+	  libretro implementation of puae2021

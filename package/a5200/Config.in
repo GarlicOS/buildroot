@@ -1,0 +1,5 @@
+menuconfig BR2_PACKAGE_A5200
+	bool "a5200"
+	depends on BR2_PACKAGE_RETROARCH
+	help
+	  libretro implementation of a5200

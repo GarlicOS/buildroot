@@ -1,0 +1,5 @@
+menuconfig BR2_PACKAGE_FAKE08
+	bool "fake08"
+	depends on BR2_PACKAGE_RETROARCH
+	help
+	  libretro implementation of fake08

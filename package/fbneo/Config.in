@@ -1,0 +1,5 @@
+menuconfig BR2_PACKAGE_FBNEO
+	bool "fbneo"
+	depends on BR2_PACKAGE_RETROARCH
+	help
+	  libretro implementation of fbneo

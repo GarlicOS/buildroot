@@ -1,0 +1,5 @@
+menuconfig BR2_PACKAGE_FREEINTV
+	bool "freeintv"
+	depends on BR2_PACKAGE_RETROARCH
+	help
+	  libretro implementation of freeintv

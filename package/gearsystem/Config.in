@@ -1,0 +1,5 @@
+menuconfig BR2_PACKAGE_GEARSYSTEM
+	bool "gearsystem"
+	depends on BR2_PACKAGE_RETROARCH
+	help
+	  libretro implementation of gearsystem

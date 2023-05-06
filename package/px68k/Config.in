@@ -1,0 +1,5 @@
+menuconfig BR2_PACKAGE_PX68K
+	bool "px68k"
+	depends on BR2_PACKAGE_RETROARCH
+	help
+	  libretro implementation of px68k

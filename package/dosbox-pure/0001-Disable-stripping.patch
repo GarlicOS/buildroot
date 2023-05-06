@@ -1,0 +1,26 @@
+From a496f33f2c7e2083145f9051292ae15f0fb3b0df Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Thu, 4 May 2023 16:29:09 +0200
+Subject: [PATCH] Disable stripping
+
+---
+ Makefile | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index f0acd51..be0a83c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -245,9 +245,6 @@ ifeq ($(STATIC_LINKING), 1)
+ else
+ 	$(info Linking $@ ...)
+ 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+-ifneq ($(BUILD),DEBUG)
+-	$(STRIPCMD) $@
+-endif
+ endif
+ 
+ define COMPILE
+-- 
+2.25.1
+

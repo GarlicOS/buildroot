@@ -1,0 +1,25 @@
+From 89514542156452d1db4c02aba7be9895a558e925 Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Fri, 5 May 2023 10:24:31 +0200
+Subject: [PATCH] Fix compiler errors
+
+---
+ src/snddrv/quasi88/2608fmgen.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/snddrv/quasi88/2608fmgen.cpp b/src/snddrv/quasi88/2608fmgen.cpp
+index 3c98005..ca63462 100644
+--- a/src/snddrv/quasi88/2608fmgen.cpp
++++ b/src/snddrv/quasi88/2608fmgen.cpp
+@@ -92,7 +92,7 @@ static void *fmgen2608_start(int sndindex, int clock, const void *config)
+ 
+ 	if (info->opna->Init(clock,
+ 						 Machine->sample_rate ? Machine->sample_rate :44100,
+-						 NULL)) {
++						 false)) {
+ 		if (sound2_adpcm) {
+ 			uint8* adpcmbuf = info->opna->GetADPCMBuffer();
+ 			if (adpcmbuf) {
+-- 
+2.25.1
+

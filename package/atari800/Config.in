@@ -1,0 +1,5 @@
+menuconfig BR2_PACKAGE_ATARI800
+	bool "atari800"
+	depends on BR2_PACKAGE_RETROARCH
+	help
+	  libretro implementation of atari800
