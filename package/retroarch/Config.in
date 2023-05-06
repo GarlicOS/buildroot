@@ -1,0 +1,153 @@
+menuconfig BR2_PACKAGE_RETROARCH
+	bool "retroarch"
+	help
+	  RetroArch is the reference frontend for the libretro API.
+	  Popular examples of implementations for this API includes
+	  video game system emulators and game engines as well as
+	  more generalized 3D programs. These programs are
+	  instantiated as dynamic libraries.
+	  We refer to these as "libretro cores".
+
+	  https://github.com/libretro/RetroArch
+
+if BR2_PACKAGE_RETROARCH
+comment "features"
+
+config BR2_PACKAGE_RETROARCH_FFMPEG
+	bool "FFMPEG support"
+	depends on BR2_PACKAGE_FFMPEG_ARCH_SUPPORTS
+	select BR2_PACKAGE_FFMPEG
+	select BR2_PACKAGE_FFMPEG_GPL
+	select BR2_PACKAGE_FFMPEG_SWSCALE
+	help
+	  Video/music player implemented in libretro.
+
+config BR2_PACKAGE_RETROARCH_EGL
+	bool "EGL support"
+	depends on BR2_TOOLCHAIN_HAS_THREADS # libdrm
+	depends on BR2_PACKAGE_MESA3D_OPENGL_EGL
+	depends on BR2_PACKAGE_XORG7
+	select BR2_PACKAGE_XLIB_LIBXXF86VM
+	help
+	  KMS (Kernel Mode Setting) mode is a feature where RetroArch
+	  can use the OpenGL driver outside Xorg, running straight in
+	  the virtual terminal. It is a fairly obscure feature, but
+	  very powerful in a console scenario.
+
+comment "EGL support needs an OpenGL EGL backend provided by mesa3d"
+	depends on BR2_PACKAGE_XORG7
+	depends on !BR2_PACKAGE_MESA3D_OPENGL_EGL
+
+config BR2_PACKAGE_RETROARCH_GLES
+	bool "GLES support"
+	depends on BR2_TOOLCHAIN_HAS_THREADS # libdrm
+	depends on BR2_PACKAGE_MESA3D_OPENGL_ES
+	depends on BR2_PACKAGE_XORG7
+	select BR2_PACKAGE_XLIB_LIBXXF86VM
+	help
+	  KMS (Kernel Mode Setting) mode is a feature where RetroArch
+	  can use the OpenGL driver outside Xorg, running straight in
+	  the virtual terminal. It is a fairly obscure feature, but
+	  very powerful in a console scenario.
+
+comment "GLES support needs an OpenGLES backend provided by mesa3d"
+	depends on BR2_PACKAGE_XORG7
+	depends on !BR2_PACKAGE_MESA3D_OPENGL_ES
+
+config BR2_PACKAGE_RETROARCH_KMS
+	bool "KMS support"
+	depends on BR2_TOOLCHAIN_HAS_THREADS # libdrm
+	select BR2_PACKAGE_LIBDRM
+	help
+	  KMS (Kernel Mode Setting) mode is a feature where RetroArch
+	  can use the OpenGL driver outside Xorg, running straight in
+	  the virtual terminal. It is a fairly obscure feature, but
+	  very powerful in a console scenario.
+
+comment "KMS support needs an OpenGL EGL backend provided by mesa3d"
+	depends on !BR2_PACKAGE_MESA3D_OPENGL_EGL
+
+config BR2_PACKAGE_RETROARCH_QT5
+	bool "Qt5 support"
+	depends on BR2_PACKAGE_QT5
+	select BR2_PACKAGE_QT5BASE
+	select BR2_PACKAGE_QT5BASE_GUI
+	select BR2_PACKAGE_QT5BASE_WIDGETS
+	select BR2_PACKAGE_QT5BASE_CONCURRENT
+	select BR2_PACKAGE_OPENSSL # Uses QSslError
+
+config BR2_PACKAGE_RETROARCH_SDL
+	bool "SDL support"
+	select BR2_PACKAGE_SDL
+	help
+	  SDL input/audio/video drivers
+
+config BR2_PACKAGE_RETROARCH_SDL2
+	bool "SDL2 support"
+	depends on BR2_PACKAGE_XORG7
+	depends on !BR2_PACKAGE_RETROARCH_SDL
+	depends on !BR2_STATIC_LIBS
+	select BR2_PACKAGE_SDL2
+	select BR2_PACKAGE_SDL2_X11
+	help
+	  SDL2 input/audio/video drivers
+
+comment "sdl2 support needs a toolchain w/ dynamic library"
+	depends on BR2_STATIC_LIBS
+
+config BR2_PACKAGE_RETROARCH_V4L2
+	bool "V4L2 support"
+	depends on BR2_TOOLCHAIN_HAS_THREADS
+	depends on BR2_INSTALL_LIBSTDCPP
+	depends on BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_0 # media headers
+	select BR2_PACKAGE_LIBV4L
+	help
+	  Libretro core for V4L2 capture devices
+	  The basic idea is this: Plug your legacy console into a
+	  capture device and use RetroArch to upscale it and apply
+	  shaders to taste.
+
+comment "V4l2 support needs a toolchain w/ threads, C++ and headers >= 3.0"
+	depends on !BR2_TOOLCHAIN_HAS_THREADS \
+		|| !BR2_INSTALL_LIBSTDCPP || !BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_0
+
+config BR2_PACKAGE_RETROARCH_WAYLAND
+	bool "Wayland support"
+	depends on BR2_PACKAGE_HAS_LIBEGL_WAYLAND
+	depends on BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_17
+	select BR2_PACKAGE_WAYLAND
+	select BR2_PACKAGE_WAYLAND_PROTOCOLS
+	select BR2_PACKAGE_LIBXKBCOMMON
+	help
+	  Wayland video driver
+
+comment "Wayland support needs an OpenGL EGL backend provided by mesa3d w/ headers >= 3.17"
+	depends on !BR2_PACKAGE_MESA3D_OPENGL_EGL || \
+		!BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_17
+
+config BR2_PACKAGE_RETROARCH_XVIDEO
+	bool "Xvideo support"
+	depends on BR2_PACKAGE_XORG7
+	select BR2_PACKAGE_XLIB_LIBXV
+	help
+	  Xvideo support
+
+comment "Menus"
+
+config BR2_PACKAGE_RETROARCH_RGUI_MENU
+	bool "RGUI"
+
+config BR2_PACKAGE_RETROARCH_MATERIAUI_MENU
+	bool "MateriaUI"
+
+config BR2_PACKAGE_RETROARCH_XMB_MENU
+	bool "XMB"
+
+config BR2_PACKAGE_RETROARCH_OZONE_MENU
+	bool "Ozone"
+
+endif
+
+comment "retroarch needs a toolchain w/ dynamic library, threads, wchar"
+	depends on BR2_USE_MMU
+	depends on BR2_STATIC_LIBS || !BR2_TOOLCHAIN_HAS_THREADS || !BR2_USE_WCHAR

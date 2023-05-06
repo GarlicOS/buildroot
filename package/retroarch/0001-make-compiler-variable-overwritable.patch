@@ -1,0 +1,53 @@
+From cbbd5cb51e2e460710fba0c7f71b70570790507c Mon Sep 17 00:00:00 2001
+From: Adam Duskett <Aduskett@gmail.com>
+Date: Sat, 4 Apr 2020 23:18:36 -0700
+Subject: [PATCH] make-compiler-variable-overwritable
+
+Allow cross compilers such as buildroot or Yocto for specify a compiler.
+
+Signed-off-by: Adam Duskett <Aduskett@gmail.com>
+---
+ gfx/video_filters/Makefile                 | 8 ++++----
+ libretro-common/audio/dsp_filters/Makefile | 6 +++---
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/gfx/video_filters/Makefile b/gfx/video_filters/Makefile
+index 2ba8930..eb5f24c 100644
+--- a/gfx/video_filters/Makefile
++++ b/gfx/video_filters/Makefile
+@@ -1,10 +1,10 @@
+-compiler    := gcc
+-extra_flags :=
+-use_neon    := 0
++compiler    ?= gcc
++extra_flags ?=
++use_neon    ?= 0
+ release	    := release
+ DYLIB	    := so
+ PREFIX      := /usr
+-INSTALLDIR  := $(PREFIX)/lib/retroarch/filters/video
++INSTALLDIR  ?= $(PREFIX)/lib/retroarch/filters/video
+ 
+ ifeq ($(platform),)
+    platform = unix
+diff --git a/libretro-common/audio/dsp_filters/Makefile b/libretro-common/audio/dsp_filters/Makefile
+index 02e049d..08bf6ed 100644
+--- a/libretro-common/audio/dsp_filters/Makefile
++++ b/libretro-common/audio/dsp_filters/Makefile
+@@ -1,10 +1,10 @@
+-compiler    := gcc
++compiler    ?= gcc
+ extra_flags :=
+ use_neon    := 0
+ build       = release
+ DYLIB	      := so
+-PREFIX      := /usr
+-INSTALLDIR  := $(PREFIX)/lib/retroarch/filters/audio
++PREFIX      ?= /usr
++INSTALLDIR ?= $(PREFIX)/lib/retroarch/filters/audio
+ 
+ ifeq ($(platform),)
+    platform = unix
+-- 
+2.25.1
+

@@ -1,0 +1,231 @@
+From 5a09a96ef593893a958cdde18901a7297102e2ed Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Wed, 3 May 2023 16:54:27 +0200
+Subject: [PATCH] Configure for sprdphonesc2730
+
+---
+ audio/drivers/tinyalsa.c | 136 ++++++---------------------------------
+ 1 file changed, 20 insertions(+), 116 deletions(-)
+
+diff --git a/audio/drivers/tinyalsa.c b/audio/drivers/tinyalsa.c
+index 67738f4265..d79b023dcf 100644
+--- a/audio/drivers/tinyalsa.c
++++ b/audio/drivers/tinyalsa.c
+@@ -1,31 +1,3 @@
+-/* pcm.c
+-**
+-** Copyright 2011, The Android Open Source Project
+-**
+-** Redistribution and use in source and binary forms, with or without
+-** modification, are permitted provided that the following conditions are met:
+-**     * Redistributions of source code must retain the above copyright
+-**       notice, this list of conditions and the following disclaimer.
+-**     * Redistributions in binary form must reproduce the above copyright
+-**       notice, this list of conditions and the following disclaimer in the
+-**       documentation and/or other materials provided with the distribution.
+-**     * Neither the name of The Android Open Source Project nor the names of
+-**       its contributors may be used to endorse or promote products derived
+-**       from this software without specific prior written permission.
+-**
+-** THIS SOFTWARE IS PROVIDED BY The Android Open Source Project ``AS IS'' AND
+-** ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+-** IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+-** ARE DISCLAIMED. IN NO EVENT SHALL The Android Open Source Project BE LIABLE
+-** FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-** DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+-** SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+-** CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+-** LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+-** OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+-** DAMAGE.
+-*/
+-
+ /*  RetroArch - A frontend for libretro.
+  *  Copyright (C) 2010-2014 - Hans-Kristian Arntzen
+  *  Copyright (C) 2011-2017 - Daniel De Matteis
+@@ -70,60 +42,9 @@
+ #include "../audio_driver.h"
+ #include "../../verbosity.h"
+ 
+-#define PCM_ERROR_MAX 128
+-
+-/** A PCM handle.
+- * @ingroup libtinyalsa-pcm
+- */
+-struct pcm {
+-	/** The PCM's file descriptor */
+-	int fd;
+-	/** Flags that were passed to @ref pcm_open */
+-	unsigned int flags;
+-	/** The number of (under/over)runs that have occured */
+-	int xruns;
+-	/** Size of the buffer */
+-	unsigned int buffer_size;
+-	/** The boundary for ring buffer pointers */
+-	unsigned int boundary;
+-	/** Description of the last error that occured */
+-	char error[PCM_ERROR_MAX];
+-	/** Configuration that was passed to @ref pcm_open */
+-	struct pcm_config config;
+-	struct snd_pcm_mmap_status *mmap_status;
+-	struct snd_pcm_mmap_control *mmap_control;
+-	struct snd_pcm_sync_ptr *sync_ptr;
+-	void *mmap_buffer;
+-	unsigned int noirq_frames_per_msec;
+-	/** The delay of the PCM, in terms of frames */
+-	long pcm_delay;
+-	/** The subdevice corresponding to the PCM */
+-	unsigned int subdevice;
+-	/** Pointer to the pcm ops, either hw or plugin */
+-	const struct pcm_ops *ops;
+-	/** Private data for pcm_hw or pcm_plugin */
+-	void *data;
+-	/** Pointer to the pcm node from snd card definition */
+-	struct snd_node *snd_node;
+-};
+-
+-static int pcm_params_can_pause(const struct pcm_params *pcm_params)
+-{
+-	const struct snd_pcm_hw_params *params = (const struct snd_pcm_hw_params *)pcm_params;
+-
+-	if (!params)
+-		return 0;
+-
+-	return (params->info & SNDRV_PCM_INFO_PAUSE) ? 1 : 0;
+-}
+-
+-static int pcm_pause(struct pcm *pcm, int enable)
+-{
+-	if (ioctl(pcm->fd, SNDRV_PCM_IOCTL_PAUSE, enable) < 0)
+-		return -1;
+-
+-	return 0;
+-}
++#define SPREADTRUM_PERIOD_SIZE 960
++#define SPREADTRUM_PERIOD_COUNT 4
++#define SPREADTRUM_CHANNEL_COUNT 2
+ 
+ typedef struct tinyalsa
+ {
+@@ -131,8 +52,6 @@ typedef struct tinyalsa
+ 	struct pcm_params *params;
+ 	size_t buffer_size;
+ 	bool nonblock;
+-	bool has_float;
+-	bool can_pause;
+ 	bool is_paused;
+ } tinyalsa_t;
+ 
+@@ -164,9 +83,6 @@ static void * tinyalsa_init(const char *devicestr, unsigned rate, unsigned laten
+ 		goto error;
+ 	}
+ 
+-	if (pcm_params_can_pause(tinyalsa->params))
+-		tinyalsa->can_pause = true;
+-
+ 	min_rate = pcm_params_get_min(tinyalsa->params, PCM_PARAM_RATE);
+ 	max_rate = pcm_params_get_max(tinyalsa->params, PCM_PARAM_RATE);
+ 
+@@ -186,14 +102,15 @@ static void * tinyalsa_init(const char *devicestr, unsigned rate, unsigned laten
+ 
+ 	config.rate = rate;
+ 	config.format = is_little_endian() ? PCM_FORMAT_S16_LE : PCM_FORMAT_S16_BE;
+-	config.channels = 2;
+-	config.period_size = 1024;
+-	config.period_count = 4;
++	config.channels = SPREADTRUM_CHANNEL_COUNT;
++	config.period_size = SPREADTRUM_PERIOD_SIZE;
++	config.period_count = SPREADTRUM_PERIOD_COUNT;
+ 	config.start_threshold = config.period_size;
+-	config.stop_threshold = 0;
+-	config.silence_threshold = 0;
++	config.stop_threshold = config.period_size * config.period_count;
++	config.silence_threshold = config.period_size * config.period_count;
++	config.silence_size = 0;
+ 
+-	tinyalsa->pcm = pcm_open(card, device, PCM_OUT | PCM_NONBLOCK, &config);
++	tinyalsa->pcm = pcm_open(card, device, PCM_OUT | PCM_MMAP | PCM_NONBLOCK, &config);
+ 
+ 	if (!tinyalsa->pcm)
+ 	{
+@@ -221,9 +138,6 @@ static void * tinyalsa_init(const char *devicestr, unsigned rate, unsigned laten
+ 	latency -= (unsigned int)initial_latency;
+ 	buffer_size += latency * frames_per_ms;
+ 
+-	tinyalsa->has_float = false;
+-
+-	RARCH_LOG("[TINYALSA]: Can pause: %s.\n", tinyalsa->can_pause ? "yes" : "no");
+ 	RARCH_LOG("[TINYALSA]: Audio rate: %uHz.\n", config.rate);
+ 	RARCH_LOG("[TINYALSA]: Buffer size: %u frames.\n", buffer_size);
+ 	RARCH_LOG("[TINYALSA]: Buffer size: %u bytes.\n", (unsigned int)tinyalsa->buffer_size);
+@@ -251,8 +165,8 @@ static ssize_t tinyalsa_write(void *data, const void *buf_, size_t size_)
+ 	tinyalsa_t *tinyalsa = (tinyalsa_t*)data;
+ 	const uint8_t *buf = (const uint8_t*)buf_;
+ 	snd_pcm_sframes_t written = 0;
+-	snd_pcm_sframes_t size = pcm_bytes_to_frames(tinyalsa->pcm, size);
+-	size_t frames_size = tinyalsa->has_float ? sizeof(float) : sizeof(int16_t);
++	snd_pcm_sframes_t size = pcm_bytes_to_frames(tinyalsa->pcm, size_);
++	size_t frames_size = sizeof(int16_t);
+ 
+ 	if (tinyalsa->nonblock)
+ 	{
+@@ -273,7 +187,7 @@ static ssize_t tinyalsa_write(void *data, const void *buf_, size_t size_)
+ 		while (size)
+ 		{
+ 			snd_pcm_sframes_t frames;
+-			pcm_wait(tinyalsa->pcm, -1);
++			pcm_wait(tinyalsa->pcm, 10);
+ 
+ 			frames   = pcm_writei(tinyalsa->pcm, buf, size);
+ 
+@@ -291,13 +205,13 @@ static ssize_t tinyalsa_write(void *data, const void *buf_, size_t size_)
+ 
+ static bool tinyalsa_stop(void *data)
+ {
++	static int16_t empty_period[SPREADTRUM_PERIOD_SIZE * SPREADTRUM_PERIOD_COUNT * SPREADTRUM_CHANNEL_COUNT];
++
+ 	tinyalsa_t *tinyalsa = (tinyalsa_t*)data;
+ 
+-	if (tinyalsa->can_pause && !tinyalsa->is_paused)
+-   {
+-		int ret = pcm_pause(tinyalsa->pcm, 1);
+-		if (ret < 0)
+-			return false;
++	if (!tinyalsa->is_paused)
++	{
++		tinyalsa_write(tinyalsa, (const void *)empty_period, sizeof(empty_period));
+ 
+ 		tinyalsa->is_paused = true;
+ 	}
+@@ -319,16 +233,8 @@ static bool tinyalsa_start(void *data, bool is_shutdown)
+ {
+ 	tinyalsa_t *tinyalsa = (tinyalsa_t*)data;
+ 
+-	if (tinyalsa->can_pause && tinyalsa->is_paused)
++	if (tinyalsa->is_paused)
+ 	{
+-		int ret = pcm_pause(tinyalsa->pcm, 0);
+-
+-		if (ret < 0)
+-		{
+-			RARCH_ERR("[TINYALSA]: Failed to unpause.\n");
+-			return false;
+-		}
+-
+ 		tinyalsa->is_paused = false;
+ 	}
+ 
+@@ -344,9 +250,7 @@ static void tinyalsa_set_nonblock_state(void *data, bool state)
+ 
+ static bool tinyalsa_use_float(void *data)
+ {
+-	tinyalsa_t *tinyalsa = (tinyalsa_t*)data;
+-
+-	return tinyalsa->has_float;
++	return false;
+ }
+ 
+ static void tinyalsa_free(void *data)
+-- 
+2.25.1
+
