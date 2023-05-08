@@ -1,0 +1,34 @@
+From de60f82802cd5a16929d5dc39717c7a3d5f96827 Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Thu, 4 May 2023 10:39:41 +0200
+Subject: [PATCH 1/2] Make encoder id check optional
+
+---
+ src/video/kmsdrm/SDL_kmsdrmvideo.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/video/kmsdrm/SDL_kmsdrmvideo.c b/src/video/kmsdrm/SDL_kmsdrmvideo.c
+index db6d624..31dcea6 100644
+--- a/src/video/kmsdrm/SDL_kmsdrmvideo.c
++++ b/src/video/kmsdrm/SDL_kmsdrmvideo.c
+@@ -109,6 +109,8 @@ static int KMSDRM_Available(void)
+ 
+ int KMSDRM_VideoInit(_THIS, SDL_PixelFormat *vformat)
+ {
++	char * skip_encoder_id_check = getenv("SDL_SKIP_ENCODER_ID_CHECK");
++
+ 	if ( (drm_fd = KMSDRM_OpenDevice()) < 0 ) {
+ 		SDL_SetError("Could not find any (capable) DRM device.\n");
+ 		goto vidinit_fail;
+@@ -170,7 +172,7 @@ int KMSDRM_VideoInit(_THIS, SDL_PixelFormat *vformat)
+ 			if ( crtc && enc && conn &&
+ 			     (plane->possible_crtcs & (1 << crtc_idx)) &&
+ 			     (enc->possible_crtcs & (1 << crtc_idx)) &&
+-			     conn->encoder_id == enc->encoder_id &&
++			     (conn->encoder_id == enc->encoder_id || skip_encoder_id_check) &&
+ 			     conn->connection == DRM_MODE_CONNECTED &&
+ 			     conn->count_modes > 0 ) {
+ 				// This is a complete, suitable pathway. save it.
+-- 
+2.25.1
+

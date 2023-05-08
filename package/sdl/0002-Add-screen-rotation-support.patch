@@ -1,35 +1,59 @@
-From 76e101440f703b7973021b8b348aaca73cea247d Mon Sep 17 00:00:00 2001
+From 93a18eeebe54d4a7089459b41d5849d9fa253054 Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Thu, 4 May 2023 10:39:17 +0200
-Subject: [PATCH 1/2] Rotate screen clockwise
+Subject: [PATCH 2/2] Add screen rotation support
 
 ---
- src/video/kmsdrm/SDL_kmsdrmmisc.c  |  5 +++
- src/video/kmsdrm/SDL_kmsdrmvideo.c | 53 +++++++++++++++++++++++++++---
- src/video/kmsdrm/SDL_kmsdrmvideo.h |  4 ++-
- 3 files changed, 57 insertions(+), 5 deletions(-)
+ src/video/kmsdrm/SDL_kmsdrmmisc.c  | 18 +++++++
+ src/video/kmsdrm/SDL_kmsdrmvideo.c | 83 ++++++++++++++++++++++++++++--
+ src/video/kmsdrm/SDL_kmsdrmvideo.h |  4 +-
+ 3 files changed, 100 insertions(+), 5 deletions(-)
 
 diff --git a/src/video/kmsdrm/SDL_kmsdrmmisc.c b/src/video/kmsdrm/SDL_kmsdrmmisc.c
-index 96ea0a2e..c1317a4e 100644
+index 96ea0a2..ddd4331 100644
 --- a/src/video/kmsdrm/SDL_kmsdrmmisc.c
 +++ b/src/video/kmsdrm/SDL_kmsdrmmisc.c
-@@ -69,6 +69,11 @@ int KMSDRM_LookupVidMode(_THIS, int width, int height)
+@@ -67,8 +67,26 @@ int KMSDRM_LookupVidMode(_THIS, int width, int height)
+ 	return -1;
+ }
  
++int KMSDRM_GetRotation(_THIS)
++{
++	char * rotation = getenv("SDL_SCREEN_ROTATION");
++
++	if (rotation == NULL) {
++		return 0;
++	}
++
++	return atoi(rotation) % 4;
++}
++
  void KMSDRM_RegisterVidMode(_THIS, int width, int height)
  {
-+	// Turn 480x640 into 640x480
-+	int tmp = width;
-+	width = height;
-+	height = tmp;
++	if (KMSDRM_GetRotation(this) % 2)
++	{
++		int tmp = width;
++		width = height;
++		height = tmp;
++	}
 +
  	if (KMSDRM_LookupVidMode(this, width, height) >= 0) {
  		return;
  	}
 diff --git a/src/video/kmsdrm/SDL_kmsdrmvideo.c b/src/video/kmsdrm/SDL_kmsdrmvideo.c
-index db6d6247..dd9f67a9 100644
+index 31dcea6..a003d35 100644
 --- a/src/video/kmsdrm/SDL_kmsdrmvideo.c
 +++ b/src/video/kmsdrm/SDL_kmsdrmvideo.c
-@@ -155,6 +155,8 @@ int KMSDRM_VideoInit(_THIS, SDL_PixelFormat *vformat)
+@@ -31,6 +31,8 @@
+ 
+ #define KMSDRM_DRIVER_NAME "kmsdrm"
+ 
++extern int KMSDRM_GetRotation(_THIS);
++
+ static int KMSDRM_TripleBufferingThread(void *d);
+ static void KMSDRM_TripleBufferInit(_THIS);
+ static void KMSDRM_TripleBufferStop(_THIS);
+@@ -157,6 +159,8 @@ int KMSDRM_VideoInit(_THIS, SDL_PixelFormat *vformat)
  	drm_vid_modes = SDL_realloc(drm_vid_modes, sizeof(*drm_vid_modes) * (drm_vid_mode_count+1));
  	drm_vid_modes[0] = NULL;
  
@@ -38,7 +62,7 @@ index db6d6247..dd9f67a9 100644
  	for (int plane_idx = 0; plane_idx < pres->count_planes; plane_idx++) {
  		drmModePlane *plane = drmModeGetPlane(drm_fd, pres->planes[plane_idx]);
  		if ( !plane ) {
-@@ -174,6 +176,12 @@ int KMSDRM_VideoInit(_THIS, SDL_PixelFormat *vformat)
+@@ -176,6 +180,12 @@ int KMSDRM_VideoInit(_THIS, SDL_PixelFormat *vformat)
  			     conn->connection == DRM_MODE_CONNECTED &&
  			     conn->count_modes > 0 ) {
  				// This is a complete, suitable pathway. save it.
@@ -51,7 +75,7 @@ index db6d6247..dd9f67a9 100644
  				save_drm_pipe(this, plane->plane_id, crtc->crtc_id,
  					      enc->encoder_id, conn);
  			}
-@@ -322,12 +330,17 @@ static void KMSDRM_ClearFramebuffers(_THIS)
+@@ -324,12 +334,17 @@ static void KMSDRM_ClearFramebuffers(_THIS)
  
  static void KMSDRM_ClearShadowbuffer(_THIS)
  {
@@ -70,47 +94,61 @@ index db6d6247..dd9f67a9 100644
  }
  
  static int KMSDRM_VideoModeOK(_THIS, int width, int height, int bpp, Uint32 flags)
-@@ -418,6 +431,11 @@ static SDL_Surface *KMSDRM_SetVideoMode2(_THIS, SDL_Surface *current,
+@@ -420,6 +435,12 @@ static SDL_Surface *KMSDRM_SetVideoMode2(_THIS, SDL_Surface *current,
  	SDL_Surface *new_surface;
  	drmModeModeInfo *closest_mode;
  
-+	// Turns 640x480 into 480x640
-+	int tmp = width;
-+	width = height;
-+	height = tmp;
++	if (KMSDRM_GetRotation(this) % 2) {
++		int tmp = width;
++		width = height;
++		height = tmp;
++	}
 +
  	// Lock the event thread, in multi-threading environments
  	SDL_Lock_EventThread();
  
-@@ -460,6 +478,8 @@ static SDL_Surface *KMSDRM_SetVideoMode2(_THIS, SDL_Surface *current,
+@@ -462,6 +483,12 @@ static SDL_Surface *KMSDRM_SetVideoMode2(_THIS, SDL_Surface *current,
  		drm_yuv_palette = calloc(1 << bpp, sizeof(*drm_yuv_palette));
  	}
  
-+	drm_rotate_buffer = calloc(width * height, bpp / 8);
++	if (KMSDRM_GetRotation(this) != 0) {
++		drm_rotate_buffer = calloc(width * height, bpp / 8);
++	} else {
++		drm_rotate_buffer = NULL;
++	}
 +
  	// Get rounded bpp number for drm_mode_create_dumb.
  	const drm_color_def *color_def = get_drm_color_def(bpp, flags);
  	if ( !color_def ) {
-@@ -582,9 +602,10 @@ static SDL_Surface *KMSDRM_SetVideoMode2(_THIS, SDL_Surface *current,
+@@ -584,9 +611,15 @@ static SDL_Surface *KMSDRM_SetVideoMode2(_THIS, SDL_Surface *current,
  		current->pixels = drm_shadow_buffer;
  	}
  
 -	current->w = width;
 -	current->h = height;
 -	current->pitch = drm_buffers[0].req_create.pitch;
-+	// Turn 480x640 into 640x480
-+	current->w = height;
-+	current->h = width;
-+	current->pitch = height * current->format->BytesPerPixel;
++	if (KMSDRM_GetRotation(this) % 2) {
++		current->w = height;
++		current->h = width;
++		current->pitch = height * current->format->BytesPerPixel;
++	} else {
++		current->w = width;
++		current->h = height;
++		current->pitch = drm_buffers[0].req_create.pitch;
++	}
  
  	this->hidden->has_damage_clips = find_property(this, drm_active_pipe->plane,
  						       "FB_DAMAGE_CLIPS");
-@@ -793,6 +814,27 @@ static void KMSDRM_BlitSWBuffer(_THIS, drm_buffer *buf)
+@@ -795,6 +828,45 @@ static void KMSDRM_BlitSWBuffer(_THIS, drm_buffer *buf)
  			  this->hidden->w * this->hidden->h);
  }
  
 +static void KMSDRM_RotateSurface(_THIS, SDL_Surface *surface)
 +{
++	int rotation = KMSDRM_GetRotation(this);
++	if (rotation == 0) {
++		return;
++	}
 +	if (SDL_MUSTLOCK(surface)) {
 +		SDL_LockSurface(surface);
 +	}
@@ -120,9 +158,23 @@ index db6d6247..dd9f67a9 100644
 +	uint32_t* pixels = (uint32_t*)surface->pixels;
 +	uint32_t* mirror = (uint32_t*)drm_rotate_buffer;
 +	memcpy(mirror, pixels, p * h);
-+	for (int i = 0; i < h; i++) {
-+		for (int j = 0; j < w; j++) {
-+			pixels[j * h + (h - i - 1)] = mirror[i * w + j];
++	if (rotation == 1) {
++		for (int i = 0; i < h; i++) {
++			for (int j = 0; j < w; j++) {
++				pixels[j * h + (h - i - 1)] = mirror[i * w + j];
++			}
++		}
++	} else if (rotation == 2) {
++		for (int i = 0; i < h; i++) {
++			for (int j = 0; j < w; j++) {
++				pixels[(w - j - 1) * h + (h - i - 1)] = mirror[i * w + j];
++			}
++		}
++	} else if (rotation == 3) {
++		for (int i = 0; i < h; i++) {
++			for (int j = 0; j < w; j++) {
++				pixels[(w - j - 1) * h + i] = mirror[i * w + j];
++			}
 +		}
 +	}
 +	if (SDL_MUSTLOCK(surface)) {
@@ -133,7 +185,7 @@ index db6d6247..dd9f67a9 100644
  static int KMSDRM_FlipHWSurface(_THIS, SDL_Surface *surface)
  {
  	if ( !drm_active_pipe )
-@@ -803,6 +845,9 @@ static int KMSDRM_FlipHWSurface(_THIS, SDL_Surface *surface)
+@@ -805,6 +877,9 @@ static int KMSDRM_FlipHWSurface(_THIS, SDL_Surface *surface)
  		KMSDRM_BlitSWBuffer(this, &drm_buffers[drm_back_buffer]);
  	}
  
@@ -144,7 +196,7 @@ index db6d6247..dd9f67a9 100644
  	if ( (surface->flags & SDL_TRIPLEBUF) == SDL_DOUBLEBUF ) {
  		drmModeAtomicReqPtr req = drmModeAtomicDuplicate(this->hidden->drm_req);
 diff --git a/src/video/kmsdrm/SDL_kmsdrmvideo.h b/src/video/kmsdrm/SDL_kmsdrmvideo.h
-index 3ab858ec..744040b9 100644
+index 3ab858e..744040b 100644
 --- a/src/video/kmsdrm/SDL_kmsdrmvideo.h
 +++ b/src/video/kmsdrm/SDL_kmsdrmvideo.h
 @@ -110,7 +110,8 @@ struct SDL_PrivateVideoData {
