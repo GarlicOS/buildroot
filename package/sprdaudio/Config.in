@@ -1,4 +1,0 @@
-menuconfig BR2_PACKAGE_SPRDAUDIO
-	bool "Spreadtrum Audio Firmware Loader"
-	help
-	  Initializes Spreadtrum Soundcards

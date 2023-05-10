@@ -542,7 +542,7 @@ BR2_PACKAGE_X1=y
 #
 # Audio and video applications
 #
-BR2_PACKAGE_SPRDAUDIO=y
+BR2_PACKAGE_AUDIO=y
 # BR2_PACKAGE_ALSA_UTILS is not set
 # BR2_PACKAGE_ATEST is not set
 # BR2_PACKAGE_AUMIX is not set

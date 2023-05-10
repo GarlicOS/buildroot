@@ -258,7 +258,6 @@ void merge_rg405m_inputs(int merged_gamepad)
 				}
 			}
 		}
-		
 	}
 	
 	// Close the retrogame_joypad input device

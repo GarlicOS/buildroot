@@ -3,52 +3,8 @@
 # Start the gamepad provider
 gamepad &
 
-# Initialize the audio co-processor
-sprdaudio
-
-# Configure the ALSA route
-tinymix set "agdsp_access_en" 1
-tinymix set "VBC_IIS_TX0_WD_SEL" WD_24BIT
-tinymix set "VBC_IIS_TX1_WD_SEL" WD_24BIT
-tinymix set "VBC_MUX_DAC0_IIS_PORT_SEL" VBC_IIS_PORT_IIS0
-tinymix set "VBC_MUX_DAC1_IIS_PORT_SEL" VBC_IIS_PORT_IIS0
-tinymix set "VBC_MUX_IIS0_PORT_DO_SEL" IIS_DO_VAL_DAC0
-tinymix set "VBC_MUX_IIS2_PORT_DO_SEL" IIS_DO_VAL_DAC2
-tinymix set "VBC_MUX_IIS3_PORT_DO_SEL" IIS_DO_VAL_DAC2
-tinymix set "ag_iis0_ext_sel" enable
-tinymix set "S_NORMAL_AP01_P_CODEC SWITCH" 1
-tinymix set "S_NORMAL_AP23_P_CODEC SWITCH" 1
-tinymix set "S_FAST_P_CODEC SWITCH" 1
-tinymix set "S_OFFLOAD_CODEC SWITCH" 1
-tinymix set "S_VOICE_P_CODEC SWITCH" 1
-tinymix set "S_VOIP_P_CODEC SWITCH" 1
-tinymix set "S_FM_CODEC SWITCH" 1
-tinymix set "S_LOOP_P_CODEC SWITCH" 1
-tinymix set "S_FM_DSP_CODEC SWITCH" 1
-tinymix set "S_VOICE_PCM_P SWITCH" 1
-tinymix set "HP mix mode" 0
-tinymix set "DAC LRCLK Select" invert
-tinymix set "HPL EAR Sel" HPL
-tinymix set "HPL Mixer DACLHPL Switch" 1
-tinymix set "HPR Mixer DACRHPR Switch" 1
-tinymix set "HPR Pin Switch" 1
-tinymix set "Speaker Function" 1
-tinymix set "Speaker1 Function" 1
-tinymix set "VBC DAC0 DSP MDG Set" 0 1
-tinymix set "VBC DAC1 DSP MDG Set" 0 4
-tinymix set "VBC DAC0 AUD MDG Set" 0 1024
-tinymix set "VBC DAC0 AUD MDG Set" 0 1
-tinymix set "VBC DAC0 DG Set" 30 30
-tinymix set "VBC FM_MUTE_SMOOTHDG STEP" 1
-tinymix set "Inter PA Config" 303
-tinymix set "HPL Gain HPL Playback Volume" 6
-tinymix set "HPR Gain HPR Playback Volume" 6
+# Start the audio provider
+audio &
 
 # Start RetroArch
 retroarch
-
-# Block (to prevent "reboot -p" call)
-#while true
-#do
-#	sleep 5
-#done

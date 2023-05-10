@@ -81,7 +81,7 @@ menu "Emulators"
 endmenu
 
 menu "Audio and video applications"
-	source "package/sprdaudio/Config.in"
+	source "package/audio/Config.in"
 	source "package/alsa-utils/Config.in"
 	source "package/atest/Config.in"
 	source "package/aumix/Config.in"
