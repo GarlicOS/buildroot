@@ -302,3 +302,35 @@ int set_value(struct mixer * mixer, const char * control, char * value)
 	values[0] = value;
 	return set_values(mixer, control, (char **)values, 1);
 }
+
+int get_int_value(struct mixer * mixer, const char * control, int * value, int * min, int * max)
+{
+	struct mixer_ctl * ctl;
+	enum mixer_ctl_type type;
+
+	if (isnumber(control))
+	{
+		ctl = mixer_get_ctl(mixer, atoi(control));
+	}
+	else
+	{
+		ctl = mixer_get_ctl_by_name(mixer, control);
+	}
+
+	if (ctl == NULL)
+	{
+		return 0;
+	}
+
+    type = mixer_ctl_get_type(ctl);
+
+	if (type == MIXER_CTL_TYPE_INT)
+	{
+		*value = mixer_ctl_get_value(ctl, 0);
+		*min = mixer_ctl_get_range_min(ctl);
+		*max = mixer_ctl_get_range_max(ctl);
+		return 1;
+	}
+
+	return 0;
+}
