@@ -213,7 +213,7 @@ define RETROARCH_INSTALL_TARGET_CMDS
 	$(TARGET_MAKE_ENV) $(MAKE) PREFIX=$(TARGET_DIR) -C $(@D)/libretro-common/audio/dsp_filters install
 	$(TARGET_MAKE_ENV) $(MAKE) PREFIX=$(TARGET_DIR) -C $(@D)/gfx/video_filters install
 	$(INSTALL) -m 0644 -D $(RETROARCH_PKGDIR)/retroarch.cfg $(TARGET_DIR)/root/.config/retroarch/retroarch.cfg
-	$(INSTALL) -m 0644 -D "$(RETROARCH_PKGDIR)/RG405M Gamepad.cfg" "$(TARGET_DIR)/root/.config/retroarch/autoconfig/RG405M Gamepad.cfg"
+	$(INSTALL) -m 0644 -D "$(RETROARCH_PKGDIR)/Internal Gamepad.cfg" "$(TARGET_DIR)/root/.config/retroarch/autoconfig/Internal Gamepad.cfg"
 endef
 
 $(eval $(generic-package))

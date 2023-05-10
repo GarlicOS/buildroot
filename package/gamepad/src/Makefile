@@ -1,10 +1,10 @@
-TARGET = rg405m-gamepad
+TARGET = gamepad
 
 .PHONY: clean
 .PHONY: $(TARGET)
 
 $(TARGET): $(wildcard *.c)
-	$(CC) -o '$@' '$<'
+	$(CC) -o '$@' $^
 
 clean:
 	-rm -rf $(TARGET) *.o

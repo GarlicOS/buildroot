@@ -448,7 +448,7 @@ BR2_PACKAGE_BOOTSCRIPT=y
 #
 # Gamepad providers
 #
-BR2_PACKAGE_RG405M_GAMEPAD=y
+BR2_PACKAGE_GAMEPAD=y
 
 #
 # Emulators

@@ -14,7 +14,7 @@ menu "Boot scripts"
 endmenu
 
 menu "Gamepad providers"
-	source "package/rg405m-gamepad/Config.in"
+	source "package/gamepad/Config.in"
 endmenu
 
 menu "Emulators"

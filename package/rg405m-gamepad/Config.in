@@ -1,4 +1,0 @@
-menuconfig BR2_PACKAGE_RG405M_GAMEPAD
-	bool "Anbernic RG405M Gamepad Provider"
-	help
-	  Merges RG405M input devices into a single gamepad

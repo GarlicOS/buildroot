@@ -1,0 +1,4 @@
+menuconfig BR2_PACKAGE_GAMEPAD
+	bool "Universal Gamepad Provider"
+	help
+	  Maps multiple input devices into a single internal gamepad
