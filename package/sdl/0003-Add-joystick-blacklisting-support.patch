@@ -1,0 +1,67 @@
+From 58da7a7ec17e646a66023f02a7ad8ac926c4bd87 Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Thu, 11 May 2023 14:11:23 +0200
+Subject: [PATCH] Add joystick blacklisting support
+
+---
+ src/joystick/linux/SDL_sysjoystick.c | 31 +++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
+
+diff --git a/src/joystick/linux/SDL_sysjoystick.c b/src/joystick/linux/SDL_sysjoystick.c
+index a450e90..70e7378 100644
+--- a/src/joystick/linux/SDL_sysjoystick.c
++++ b/src/joystick/linux/SDL_sysjoystick.c
+@@ -377,13 +377,41 @@ static void LogicalSuffix(int logicalno, char* namebuf, int len)
+ 	(((1UL << ((nr) % (sizeof(long) * 8))) & ((addr)[(nr) / (sizeof(long) * 8)])) != 0)
+ #define NBITS(x) ((((x)-1)/(sizeof(long) * 8))+1)
+ 
++static int EV_IsJoystickBlacklisted(const char * name)
++{
++	int blacklisted = 0;
++
++	/* Allow the user to blacklist joysticks */
++	if ( SDL_getenv("SDL_JOYSTICK_DEVICE_BLACKLIST") != NULL ) {
++		char *envcopy, *envname, *delim;
++		envcopy = SDL_strdup(SDL_getenv("SDL_JOYSTICK_DEVICE_BLACKLIST"));
++		envname = envcopy;
++		while ( envname != NULL ) {
++			delim = SDL_strchr(envname, ':');
++			if ( delim != NULL ) {
++				*delim++ = '\0';
++			}
++			if (strcmp(name, envname) == 0) {
++				blacklisted = 1;
++				break;
++			}
++			envname = delim;
++		}
++		SDL_free(envcopy);
++	}
++
++	return blacklisted;
++}
++
+ static int EV_IsJoystick(int fd)
+ {
++	char name[256];
+ 	unsigned long evbit[NBITS(EV_MAX)] = { 0 };
+ 	unsigned long keybit[NBITS(KEY_MAX)] = { 0 };
+ 	unsigned long absbit[NBITS(ABS_MAX)] = { 0 };
+ 
+-	if ( (ioctl(fd, EVIOCGBIT(0, sizeof(evbit)), evbit) < 0) ||
++	if ( (ioctl(fd, EVIOCGNAME(sizeof(name)), name) < 1) ||
++	     (ioctl(fd, EVIOCGBIT(0, sizeof(evbit)), evbit) < 0) ||
+ 	     (ioctl(fd, EVIOCGBIT(EV_KEY, sizeof(keybit)), keybit) < 0) ||
+ 	     (ioctl(fd, EVIOCGBIT(EV_ABS, sizeof(absbit)), absbit) < 0) ) {
+ 		return(0);
+@@ -392,6 +420,7 @@ static int EV_IsJoystick(int fd)
+ 	     (test_bit(ABS_X, absbit) && test_bit(ABS_Y, absbit) ||
+ 		  test_bit(ABS_HAT0X, absbit) && test_bit(ABS_HAT0Y, absbit)) &&
+ 	     (test_bit(BTN_TRIGGER, keybit) || test_bit(BTN_A, keybit) || test_bit(BTN_1, keybit)))) return 0;
++	if (EV_IsJoystickBlacklisted((const char *)name)) return 0;
+ 	return(1);
+ }
+ 
+-- 
+2.25.1
+
