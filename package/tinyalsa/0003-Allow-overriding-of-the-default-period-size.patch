@@ -1,0 +1,76 @@
+From 974deda7b06d29445376e36acb03e3e945b6fba3 Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Thu, 11 May 2023 15:42:02 +0200
+Subject: [PATCH] Allow overriding of the default period size
+
+---
+ src/pcm.c        | 8 +++++++-
+ utils/tinycap.c  | 5 +++++
+ utils/tinyplay.c | 8 +++++++-
+ 3 files changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/src/pcm.c b/src/pcm.c
+index 10e477b..f990aa7 100644
+--- a/src/pcm.c
++++ b/src/pcm.c
+@@ -429,10 +429,16 @@ int pcm_set_config(struct pcm *pcm, const struct pcm_config *config)
+     if (pcm == NULL)
+         return -EFAULT;
+     else if (config == NULL) {
++        unsigned int period_size = 1024;
++        char * period_size_override = getenv("ALSA_DEFAULT_PERIOD_SIZE");
++        if (period_size_override != NULL)
++        {
++            period_size = (unsigned int)atoi(period_size_override);
++        }
+         config = &pcm->config;
+         pcm->config.channels = 2;
+         pcm->config.rate = 48000;
+-        pcm->config.period_size = 1024;
++        pcm->config.period_size = period_size;
+         pcm->config.period_count = 4;
+         pcm->config.format = PCM_FORMAT_S16_LE;
+         pcm->config.start_threshold = config->period_count * config->period_size;
+diff --git a/utils/tinycap.c b/utils/tinycap.c
+index 7d4b8a4..20d18b3 100644
+--- a/utils/tinycap.c
++++ b/utils/tinycap.c
+@@ -86,6 +86,11 @@ int main(int argc, char **argv)
+     unsigned int bits = 16;
+     unsigned int frames;
+     unsigned int period_size = 1024;
++    char * period_size_override = getenv("ALSA_DEFAULT_PERIOD_SIZE");
++    if (period_size_override != NULL)
++    {
++        period_size = (unsigned int)atoi(period_size_override);
++    }
+     unsigned int period_count = 4;
+     unsigned int capture_time = UINT_MAX;
+     enum pcm_format format;
+diff --git a/utils/tinyplay.c b/utils/tinyplay.c
+index 4c7ccf6..ba69144 100644
+--- a/utils/tinyplay.c
++++ b/utils/tinyplay.c
+@@ -48,12 +48,18 @@ struct cmd {
+ 
+ void cmd_init(struct cmd *cmd)
+ {
++    unsigned int period_size = 1024;
++    char * period_size_override = getenv("ALSA_DEFAULT_PERIOD_SIZE");
++    if (period_size_override != NULL)
++    {
++        period_size = (unsigned int)atoi(period_size_override);
++    }
+     cmd->filename = NULL;
+     cmd->filetype = NULL;
+     cmd->card = 0;
+     cmd->device = 0;
+     cmd->flags = PCM_OUT;
+-    cmd->config.period_size = 1024;
++    cmd->config.period_size = period_size;
+     cmd->config.period_count = 2;
+     cmd->config.channels = 2;
+     cmd->config.rate = 48000;
+-- 
+2.25.1
+
