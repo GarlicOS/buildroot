@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "rg405m.h"
+#include "pocket2plus.h"
 
 int main(int argc, char * argv[])
 {
@@ -20,6 +21,13 @@ int main(int argc, char * argv[])
 	{
 		// Initialize the soundcard and handle routing
 		rg405m_main(argc, argv);
+	}
+
+	// We're handling the Retroid Pocket 2+
+	if (strcmp(code_name, "pocket2plus") == 0)
+	{
+		// Initialize the soundcard and handle routing
+		pocket2plus_main(argc, argv);
 	}
 	
 	// Exit
