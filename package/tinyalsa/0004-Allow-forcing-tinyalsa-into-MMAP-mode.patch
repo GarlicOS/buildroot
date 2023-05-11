@@ -1,0 +1,63 @@
+From edb9e4c078c67cca176065b765f1be31520fcc5d Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Thu, 11 May 2023 16:44:23 +0200
+Subject: [PATCH] Allow forcing tinyalsa into MMAP mode
+
+---
+ src/pcm.c        | 5 +++++
+ utils/tinycap.c  | 7 ++++++-
+ utils/tinyplay.c | 4 ++++
+ 3 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/src/pcm.c b/src/pcm.c
+index f990aa7..d5faa10 100644
+--- a/src/pcm.c
++++ b/src/pcm.c
+@@ -1049,6 +1049,11 @@ struct pcm *pcm_open(unsigned int card, unsigned int device,
+     struct snd_pcm_info info;
+     int rc;
+ 
++    if (getenv("ALSA_FORCE_MMAP") != NULL)
++    {
++        flags |= PCM_MMAP;
++    }
++
+     pcm = calloc(1, sizeof(struct pcm));
+     if (!pcm) {
+         oops(&bad_pcm, ENOMEM, "can't allocate PCM object");
+diff --git a/utils/tinycap.c b/utils/tinycap.c
+index 20d18b3..5c4e157 100644
+--- a/utils/tinycap.c
++++ b/utils/tinycap.c
+@@ -230,7 +230,12 @@ unsigned int capture_sample(FILE *file, unsigned int card, unsigned int device,
+     config.stop_threshold = 0;
+     config.silence_threshold = 0;
+ 
+-    pcm = pcm_open(card, device, PCM_IN, &config);
++    int flags = PCM_IN;
++    if (getenv("ALSA_FORCE_MMAP") != NULL)
++    {
++        flags |= PCM_MMAP;
++    }
++    pcm = pcm_open(card, device, flags, &config);
+     if (!pcm || !pcm_is_ready(pcm)) {
+         fprintf(stderr, "Unable to open PCM device (%s)\n",
+                 pcm_get_error(pcm));
+diff --git a/utils/tinyplay.c b/utils/tinyplay.c
+index ba69144..1a33c7d 100644
+--- a/utils/tinyplay.c
++++ b/utils/tinyplay.c
+@@ -69,6 +69,10 @@ void cmd_init(struct cmd *cmd)
+     cmd->config.stop_threshold = cmd->config.period_size * cmd->config.period_count;
+     cmd->config.start_threshold = cmd->config.period_size;
+     cmd->bits = 16;
++    if (getenv("ALSA_FORCE_MMAP") != NULL)
++    {
++        cmd->flags |= PCM_MMAP;
++    }
+ }
+ 
+ #define ID_RIFF 0x46464952
+-- 
+2.25.1
+
