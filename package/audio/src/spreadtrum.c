@@ -8,6 +8,8 @@
 #include "tinymix.h"
 #include "spreadtrum.h"
 
+#define HEADSET_STATE_PATH "/sys/kernel/headset/state"
+
 #define AGDSP_CTL_PIPE "/dev/audio_pipe_voice"
 
 #define AGDSP_VOICE_CHANNEL 2
@@ -242,6 +244,20 @@ static void input_event(struct input_event * ev, uint16_t jack_event_type, uint1
 	}
 }
 
+static int is_headset_connected()
+{
+	int state = 0;
+
+	FILE * fd = fopen(HEADSET_STATE_PATH, "r");
+
+	if (fd != NULL)
+	{
+		state = fgetc(fd) - '0';
+	}
+
+	return state;
+}
+
 void spreadtrum_update(const char * headphone_jack_device_name, uint16_t jack_event_type, uint16_t jack_event_code, const char * volume_control_device_name, uint16_t volume_event_type, uint16_t volume_down_event_code, uint16_t volume_up_event_code)
 {
 	// Determine the headphone jack input device path
@@ -256,6 +272,13 @@ void spreadtrum_update(const char * headphone_jack_device_name, uint16_t jack_ev
 
 	// Open the headphone jack input device
 	int headphone_jack = open(input_device_path, O_RDONLY | O_NONBLOCK);
+
+	// We couldn't open the jack input device
+	if (headphone_jack < 0)
+	{
+		// Exit
+		return;
+	}
 
 	// Determine the volume control input device path
 	input_device_path = get_input_device_path(volume_control_device_name);
@@ -272,6 +295,19 @@ void spreadtrum_update(const char * headphone_jack_device_name, uint16_t jack_ev
 
 	// Open the volume control input device
 	int volume_control = open(input_device_path, O_RDONLY | O_NONBLOCK);
+
+	// We couldn't open the volume control input device
+	if (volume_control < 0)
+	{
+		// Close the headphone jack input device
+		close(headphone_jack);
+
+		// Exit
+		return;
+	}
+
+	// Ensure we pick the right route on boot
+	switch_audio_route(is_headset_connected());
 
 	// Determine the highest file descriptor (needed for select)
 	int maxfd = headphone_jack > volume_control ? headphone_jack : volume_control;
