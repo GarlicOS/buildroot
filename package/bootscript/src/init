@@ -6,5 +6,5 @@ gamepad &
 # Start the audio provider
 audio &
 
-# Start RetroArch
-retroarch
+# Start GarlicUI
+garlicui

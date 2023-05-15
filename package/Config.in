@@ -13,6 +13,10 @@ menu "Boot scripts"
 	source "package/bootscript/Config.in"
 endmenu
 
+menu "User interfaces"
+	source "package/garlicui/Config.in"
+endmenu
+
 menu "Gamepad providers"
 	source "package/gamepad/Config.in"
 endmenu

@@ -1,4 +1,5 @@
 menuconfig BR2_PACKAGE_BOOTSCRIPT
 	bool "GarlicOS boot script"
+	select BR2_PACKAGE_GARLICUI
 	help
 	  The GarlicOS boot script
