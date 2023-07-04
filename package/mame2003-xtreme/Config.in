@@ -1,4 +1,4 @@
-menuconfig BR2_PACKAGE_MAME2003XTREME
+menuconfig BR2_PACKAGE_MAME2003_XTREME
 	bool "mame2003-xtreme"
 	depends on BR2_PACKAGE_RETROARCH
 	help
