@@ -1,0 +1,92 @@
+From a87dbde59fe0fbcac4429960aa678872caf8b231 Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Mon, 3 Jul 2023 18:50:42 +0200
+Subject: [PATCH 1/1] Add garlicui_run hooks
+
+---
+ retroarch.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 46 insertions(+), 2 deletions(-)
+
+diff --git a/retroarch.c b/retroarch.c
+index 44ec096..09f4d6d 100644
+--- a/retroarch.c
++++ b/retroarch.c
+@@ -2085,6 +2085,49 @@ bool is_accessibility_enabled(bool accessibility_enable, bool accessibility_enab
+ }
+ #endif
+ 
++/**
++ * @brief Swaps over to GarlicUI and executes the given action.
++ */
++int garlicui_run(const char * action, ...)
++{
++   // The exit code of the child process
++   int exit_code = -1;
++
++   // The argument list
++   const char *args[256] = { "garlicui", NULL };
++
++   // Set the first argument
++   args[1] = action;
++
++   // Initialize variadic arguments
++   va_list arg_list;
++   va_start(arg_list, action);
++
++   // Populate the argument list
++   int i = 2;
++   const char *arg = va_arg(arg_list, const char *);
++   while (arg != NULL && i < 255)
++   {
++      args[i++] = arg;
++      arg = va_arg(arg_list, const char *);
++   }
++
++   // Clean up variadic arguments
++   va_end(arg_list);
++
++   // Wait for pending save state tasks to finish
++   content_wait_for_save_state_task();
++
++   // Shut down the audio driver before swapping the process image (required for Spreadtrum devices)
++   audio_driver_deinit();
++
++   // Replace the current process with the new process
++   execvp(args[0], (char * const*)args);
++
++   // Return the exit code of the child process
++   return exit_code;
++}
++
+ /**
+  * command_event:
+  * @cmd                  : Event command index.
+@@ -2766,6 +2809,7 @@ bool command_event(enum event_command cmd, void *data)
+       case CMD_EVENT_QUIT:
+          if (!retroarch_main_quit())
+             return false;
++         garlicui_run((const char *)data);
+          break;
+       case CMD_EVENT_CHEEVOS_HARDCORE_MODE_TOGGLE:
+ #ifdef HAVE_CHEEVOS
+@@ -3279,7 +3323,7 @@ bool command_event(enum event_command cmd, void *data)
+ #ifdef HAVE_LAKKA
+          system("(sleep 1 && shutdown -P now) & disown");
+ #else
+-         command_event(CMD_EVENT_QUIT, NULL);
++         command_event(CMD_EVENT_QUIT, "shutdown");
+          system("shutdown -P now");
+ #endif /* HAVE_LAKKA */
+ #endif
+@@ -3294,7 +3338,7 @@ bool command_event(enum event_command cmd, void *data)
+ #ifdef HAVE_LAKKA
+          system("(sleep 1 && shutdown -r now) & disown");
+ #else
+-         command_event(CMD_EVENT_QUIT, NULL);
++         command_event(CMD_EVENT_QUIT, "reboot");
+          system("shutdown -r now");
+ #endif /* HAVE_LAKKA */
+ #endif
+-- 
+2.25.1
+
