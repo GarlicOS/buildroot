@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/noto-sans/NotoSansThai-Regular.ttf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "เลือก"
+
+msgid "Back"
+msgstr "กลับ"
+
+msgid "Menu"
+msgstr "เมนู"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "ห้องสมุด"
+
+msgid "Favorites"
+msgstr "รายการโปรด"
+
+msgid "Resume"
+msgstr "ดำเนินการต่อ"
+
+msgid "Restart"
+msgstr "เริ่มต้นใหม่"
+
+msgid "Favorite"
+msgstr "รายการโปรด"
+
+msgid "Unfavorite"
+msgstr "ยกเลิกรายการโปรด"
+
+msgid "Change Date & Time"
+msgstr "เปลี่ยนวันที่และเวลา"
+
+msgid "Year"
+msgstr "ปี"
+
+msgid "Month"
+msgstr "เดือน"
+
+msgid "Day"
+msgstr "วัน"
+
+msgid "Hour"
+msgstr "ชั่วโมง"
+
+msgid "24H"
+msgstr "24H"
+
+msgid "Minute"
+msgstr "นาที"
+
+msgid "Change Language"
+msgstr "เปลี่ยนภาษา"
+
+msgid "No games found!"
+msgstr "ไม่พบเกม!"

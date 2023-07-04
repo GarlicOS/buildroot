@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/oswald/Oswald-Regular.ttf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "Chagua"
+
+msgid "Back"
+msgstr "Rudi"
+
+msgid "Menu"
+msgstr "Menyu"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "Maktaba"
+
+msgid "Favorites"
+msgstr "Mapendeleo"
+
+msgid "Resume"
+msgstr "Endelea"
+
+msgid "Restart"
+msgstr "Anza tena"
+
+msgid "Favorite"
+msgstr "Mapendeleo"
+
+msgid "Unfavorite"
+msgstr "Ondoa kutoka mapendeleo"
+
+msgid "Change Date & Time"
+msgstr "Badilisha Tarehe na Wakati"
+
+msgid "Year"
+msgstr "Mwaka"
+
+msgid "Month"
+msgstr "Mwezi"
+
+msgid "Day"
+msgstr "Siku"
+
+msgid "Hour"
+msgstr "Saa"
+
+msgid "24H"
+msgstr "24H"
+
+msgid "Minute"
+msgstr "Dakika"
+
+msgid "Change Language"
+msgstr "Badilisha Lugha"
+
+msgid "No games found!"
+msgstr "Hakuna michezo iliyopatikana!"

@@ -1,0 +1,6 @@
+config BR2_PACKAGE_OSWALD
+	bool "oswald"
+	help
+	  Oswald is a natural-width font family by Vernon Adams, Kalapi Gajjar & Cyreal.
+
+	  https://fonts.google.com/specimen/Oswald

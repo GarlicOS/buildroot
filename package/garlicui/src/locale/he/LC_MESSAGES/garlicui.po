@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/noto-sans/NotoSansHebrew-Regular.ttf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "בחר"
+
+msgid "Back"
+msgstr "חזור"
+
+msgid "Menu"
+msgstr "תפריט"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "ספרייה"
+
+msgid "Favorites"
+msgstr "מועדפים"
+
+msgid "Resume"
+msgstr "המשך"
+
+msgid "Restart"
+msgstr "אתחל"
+
+msgid "Favorite"
+msgstr "מועדף"
+
+msgid "Unfavorite"
+msgstr "הסר מהמועדפים"
+
+msgid "Change Date & Time"
+msgstr "שנה תאריך ושעה"
+
+msgid "Year"
+msgstr "שנה"
+
+msgid "Month"
+msgstr "חודש"
+
+msgid "Day"
+msgstr "יום"
+
+msgid "Hour"
+msgstr "שעה"
+
+msgid "24H"
+msgstr "24 שעות"
+
+msgid "Minute"
+msgstr "דקה"
+
+msgid "Change Language"
+msgstr "שינוי שפה"
+
+msgid "No games found!"
+msgstr "לא נמצאו משחקים!"

@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/noto-sans/NotoSansKR-Regular.otf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "선택"
+
+msgid "Back"
+msgstr "뒤로"
+
+msgid "Menu"
+msgstr "메뉴"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "라이브러리"
+
+msgid "Favorites"
+msgstr "즐겨찾기"
+
+msgid "Resume"
+msgstr "계속"
+
+msgid "Restart"
+msgstr "재시작"
+
+msgid "Favorite"
+msgstr "즐겨찾기"
+
+msgid "Unfavorite"
+msgstr "즐겨찾기 해제"
+
+msgid "Change Date & Time"
+msgstr "날짜 및 시간 변경"
+
+msgid "Year"
+msgstr "년"
+
+msgid "Month"
+msgstr "월"
+
+msgid "Day"
+msgstr "일"
+
+msgid "Hour"
+msgstr "시간"
+
+msgid "24H"
+msgstr "24시"
+
+msgid "Minute"
+msgstr "분"
+
+msgid "Change Language"
+msgstr "언어 변경"
+
+msgid "No games found!"
+msgstr "게임을 찾을 수 없습니다!"

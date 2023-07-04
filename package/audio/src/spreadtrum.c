@@ -8,6 +8,10 @@
 #include "tinymix.h"
 #include "spreadtrum.h"
 
+#define DEFAULT_BRIGHTNESS 72
+#define BRIGHTNESS_PATH "/sys/devices/platform/sprd_backlight/backlight/sprd_backlight/brightness"
+#define PERSISTENT_BRIGHTNESS_PATH "/root/.config/brightness"
+
 #define HEADSET_STATE_PATH "/sys/kernel/headset/state"
 
 #define AGDSP_CTL_PIPE "/dev/audio_pipe_voice"
@@ -162,6 +166,8 @@ static void switch_audio_route(int32_t headphones_plugged_in)
 
 static void adjust_volume(int delta)
 {
+	// TODO: Move this to the gamepad provider package and communicate with the audio provider via sockets
+
 	// Open the mixer
 	struct mixer * mixer = mixer_open(0);
 
@@ -220,8 +226,98 @@ static void adjust_volume(int delta)
 	mixer_close(mixer);
 }
 
-static void input_event(struct input_event * ev, uint16_t jack_event_type, uint16_t jack_event_code, uint16_t volume_event_type, uint16_t volume_down_event_code, uint16_t volume_up_event_code)
+static void adjust_brightness(int delta, int absolute)
 {
+	// TODO: Move this to the gamepad provider package and communicate with the audio provider via sockets
+	// TODO: Maybe we should turn all of this into a brightness path / min & max value quirk to make porting easier
+
+	// Get the brightness path
+	const char * brightness_path = BRIGHTNESS_PATH;
+
+	// Read the current brightness value
+	unsigned int current_brightness = DEFAULT_BRIGHTNESS;
+	FILE * file = fopen(brightness_path, "r");
+	if (file != NULL)
+	{
+		fscanf(file, "%u", &current_brightness);
+		fclose(file);
+	}
+
+	// Adjust the brightness value
+	current_brightness += delta;
+
+	// Keep the brightness within the valid range
+	if (current_brightness <= 0)
+		current_brightness = 1;
+	if (current_brightness >= 255)
+		current_brightness = 255;
+
+	// Write the updated brightness value back to the file
+	file = fopen(brightness_path, "w");
+	if (file != NULL)
+	{
+		fprintf(file, "%u", current_brightness);
+		fclose(file);
+	}
+
+	// Write a copy to the user's .config directory so it can be restored on reboot
+	file = fopen(PERSISTENT_BRIGHTNESS_PATH, "w");
+	if (file != NULL)
+	{
+		fprintf(file, "%u", current_brightness);
+		fclose(file);
+	}
+}
+
+void restore_brightness()
+{
+	// TODO: Move this to the gamepad provider package and communicate with the audio provider via sockets
+	// TODO: Maybe we should turn all of this into a brightness path / min & max value quirk to make porting easier
+
+	// Get the brightness path
+	const char * brightness_path = BRIGHTNESS_PATH;
+
+	// The brightness value
+	unsigned int brightness = DEFAULT_BRIGHTNESS;
+
+	// Read the brightness value
+	FILE * file = fopen(PERSISTENT_BRIGHTNESS_PATH, "r");
+	if (file != NULL)
+	{
+		fscanf(file, "%u", &brightness);
+		fclose(file);
+	}
+
+	// Keep the brightness within the valid range
+	if (brightness <= 0)
+		brightness = 1;
+	if (brightness >= 255)
+		brightness = 255;
+
+	// Write the updated brightness to the file
+	file = fopen(brightness_path, "w");
+	if (file != NULL)
+	{
+		fprintf(file, "%u", brightness);
+		fclose(file);
+	}
+}
+
+static void input_event(struct input_event * ev, uint16_t jack_event_type, uint16_t jack_event_code, uint16_t volume_event_type, uint16_t volume_down_event_code, uint16_t volume_up_event_code, uint16_t modifier_event_type, uint16_t modifier_event_code)
+{
+	// The modifier key state
+	static int is_modifier_held = 0;
+
+	// The volume direction
+	int volume_direction = 0;
+
+	// We're handling a modifier event
+	if (ev->type == modifier_event_type && ev->code == modifier_event_code)
+	{
+		// Set the modifier key state
+		is_modifier_held = ev->value != 0;
+	}
+
 	// We're handling a headphone jack event
 	if (ev->type == jack_event_type && ev->code == jack_event_code)
 	{
@@ -229,94 +325,114 @@ static void input_event(struct input_event * ev, uint16_t jack_event_type, uint1
 		switch_audio_route(ev->value);
 	}
 
-	// We're handling a volume down event
+	// We're handling a volume / brightness down event
 	else if (ev->type == volume_event_type && ev->code == volume_down_event_code && ev->value != 0)
 	{
-		// Reduce the volume
-		adjust_volume(-1);
+		// Set the volume direction
+		volume_direction = -1;
 	}
 
-	// We're handling a volume up event
+	// We're handling a volume / brightness up event
 	else if (ev->type == volume_event_type && ev->code == volume_up_event_code && ev->value != 0)
 	{
-		// Increase the volume
-		adjust_volume(1);
+		// Set the volume direction
+		volume_direction = 1;
+	}
+
+	// The modifier key is held
+	if (is_modifier_held)
+	{
+		// Adjust the brightness
+		adjust_brightness(volume_direction, 0);
+	}
+
+	// The modifier key isn't held
+	else
+	{
+		// Adjust the volume
+		adjust_volume(volume_direction);
 	}
 }
 
 static int is_headset_connected()
 {
+	// The current headset state
 	int state = 0;
 
+	// Open the headset state device
 	FILE * fd = fopen(HEADSET_STATE_PATH, "r");
 
+	// We managed to open the headset state device
 	if (fd != NULL)
 	{
+		// Fetch the state
 		state = fgetc(fd) - '0';
 	}
 
+	// Return the state
 	return state;
 }
 
-void spreadtrum_update(const char * headphone_jack_device_name, uint16_t jack_event_type, uint16_t jack_event_code, const char * volume_control_device_name, uint16_t volume_event_type, uint16_t volume_down_event_code, uint16_t volume_up_event_code)
+void spreadtrum_update(const char * headphone_jack_device_name, uint16_t jack_event_type, uint16_t jack_event_code, const char * volume_control_device_name, uint16_t volume_event_type, uint16_t volume_down_event_code, uint16_t volume_up_event_code, const char * gamepad_device_name, uint16_t modifier_event_type, uint16_t modifier_event_code)
 {
+	// The headphone jack device descriptor
+	int headphone_jack = -1;
+
+	// The volume control device descriptor
+	int volume_control = -1;
+
+	// The gamepad device descriptor
+	int gamepad = -1;
+
 	// Determine the headphone jack input device path
 	const char * input_device_path = get_input_device_path(headphone_jack_device_name);
 
-	// We couldn't determine the jack input device path
-	if (input_device_path == NULL)
+	// We determined the headphone jack input device path
+	if (input_device_path != NULL)
 	{
-		// Exit
-		return;
-	}
-
-	// Open the headphone jack input device
-	int headphone_jack = open(input_device_path, O_RDONLY | O_NONBLOCK);
-
-	// We couldn't open the jack input device
-	if (headphone_jack < 0)
-	{
-		// Exit
-		return;
+		// Open the headphone jack input device
+		headphone_jack = open(input_device_path, O_RDONLY | O_NONBLOCK);
 	}
 
 	// Determine the volume control input device path
 	input_device_path = get_input_device_path(volume_control_device_name);
 
-	// We couldn't determine the volume control input device path
-	if (input_device_path == NULL)
+	// We determined the volume control input device path
+	if (input_device_path != NULL)
 	{
-		// Close the headphone jack input device
-		close(headphone_jack);
-
-		// Exit
-		return;
+		// Open the volume control input device
+		volume_control = open(input_device_path, O_RDONLY | O_NONBLOCK);
 	}
 
-	// Open the volume control input device
-	int volume_control = open(input_device_path, O_RDONLY | O_NONBLOCK);
+	// Determine the gamepad input device path
+	input_device_path = get_input_device_path(gamepad_device_name);
 
-	// We couldn't open the volume control input device
-	if (volume_control < 0)
+	// We determined the volume control input device path
+	if (input_device_path != NULL)
 	{
-		// Close the headphone jack input device
-		close(headphone_jack);
-
-		// Exit
-		return;
+		// Open the volume control input device
+		gamepad = open(input_device_path, O_RDONLY | O_NONBLOCK);
 	}
 
 	// Ensure we pick the right route on boot
 	switch_audio_route(is_headset_connected());
 
 	// Determine the highest file descriptor (needed for select)
-	int maxfd = headphone_jack > volume_control ? headphone_jack : volume_control;
+	int maxfd = headphone_jack;
+	if (maxfd < volume_control)
+		maxfd = volume_control;
+	if (maxfd < gamepad)
+		maxfd = gamepad;
 
 	// Initialize the select structure
 	fd_set rfds, wfds;
 	FD_ZERO(&rfds);
-	FD_SET(headphone_jack, &rfds);
-	FD_SET(volume_control, &rfds);
+	if (headphone_jack >= 0)
+		FD_SET(headphone_jack, &rfds);
+	if (volume_control >= 0)
+		FD_SET(volume_control, &rfds);
+	if (gamepad >= 0)
+		FD_SET(gamepad, &rfds);
 
 	// The operation loop
 	while (1)
@@ -345,18 +461,29 @@ void spreadtrum_update(const char * headphone_jack_device_name, uint16_t jack_ev
 				if (read(headphone_jack, &ev, sizeof(ev)) == sizeof(ev))
 				{
 					// Handle the event
-					input_event(&ev, jack_event_type, jack_event_code, volume_event_type, volume_down_event_code, volume_up_event_code);
+					input_event(&ev, jack_event_type, jack_event_code, volume_event_type, volume_down_event_code, volume_up_event_code, modifier_event_type, modifier_event_code);
 				}
 			}
 
-			// A internal gamepad event was captured
+			// A volume control event was captured
 			if (FD_ISSET(volume_control, &wfds))
 			{
 				// We managed to read the event data
 				if (read(volume_control, &ev, sizeof(ev)) == sizeof(ev))
 				{
 					// Handle the event
-					input_event(&ev, jack_event_type, jack_event_code, volume_event_type, volume_down_event_code, volume_up_event_code);
+					input_event(&ev, jack_event_type, jack_event_code, volume_event_type, volume_down_event_code, volume_up_event_code, modifier_event_type, modifier_event_code);
+				}
+			}
+
+			// A gamepad event was captured
+			if (FD_ISSET(gamepad, &wfds))
+			{
+				// We managed to read the event data
+				if (read(gamepad, &ev, sizeof(ev)) == sizeof(ev))
+				{
+					// Handle the event
+					input_event(&ev, jack_event_type, jack_event_code, volume_event_type, volume_down_event_code, volume_up_event_code, modifier_event_type, modifier_event_code);
 				}
 			}
 		}

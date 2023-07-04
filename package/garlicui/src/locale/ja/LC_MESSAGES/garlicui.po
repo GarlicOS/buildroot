@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/noto-sans/NotoSansJP-Regular.ttf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "選択"
+
+msgid "Back"
+msgstr "戻る"
+
+msgid "Menu"
+msgstr "メニュー"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "ライブラリ"
+
+msgid "Favorites"
+msgstr "お気に入り"
+
+msgid "Resume"
+msgstr "再開"
+
+msgid "Restart"
+msgstr "再起動"
+
+msgid "Favorite"
+msgstr "お気に入りに追加"
+
+msgid "Unfavorite"
+msgstr "お気に入りから削除"
+
+msgid "Change Date & Time"
+msgstr "日付と時刻の変更"
+
+msgid "Year"
+msgstr "年"
+
+msgid "Month"
+msgstr "月"
+
+msgid "Day"
+msgstr "日"
+
+msgid "Hour"
+msgstr "時"
+
+msgid "24H"
+msgstr "24時"
+
+msgid "Minute"
+msgstr "分"
+
+msgid "Change Language"
+msgstr "言語を変更"
+
+msgid "No games found!"
+msgstr "ゲームが見つかりません！"

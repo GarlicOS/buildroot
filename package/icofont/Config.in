@@ -1,0 +1,6 @@
+config BR2_PACKAGE_ICOFONT
+	bool "icofont"
+	help
+	  Icofont is a freely available icon font.
+
+	  https://icofont.com

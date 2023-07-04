@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/oswald/Oswald-Regular.ttf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "Piliin"
+
+msgid "Back"
+msgstr "Bumalik"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "Aklatan"
+
+msgid "Favorites"
+msgstr "Paborito"
+
+msgid "Resume"
+msgstr "Ipagpatuloy"
+
+msgid "Restart"
+msgstr "I-reset"
+
+msgid "Favorite"
+msgstr "Paborito"
+
+msgid "Unfavorite"
+msgstr "Huwag paborito"
+
+msgid "Change Date & Time"
+msgstr "Baguhin ang Petsa at Oras"
+
+msgid "Year"
+msgstr "Taon"
+
+msgid "Month"
+msgstr "Buwan"
+
+msgid "Day"
+msgstr "Araw"
+
+msgid "Hour"
+msgstr "Oras"
+
+msgid "24H"
+msgstr "24 oras"
+
+msgid "Minute"
+msgstr "Minuto"
+
+msgid "Change Language"
+msgstr "Baguhin ang Wika"
+
+msgid "No games found!"
+msgstr "Walang mga laro na natagpuan!"

@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/oswald/Oswald-Regular.ttf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "Välj"
+
+msgid "Back"
+msgstr "Tillbaka"
+
+msgid "Menu"
+msgstr "Meny"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "Bibliotek"
+
+msgid "Favorites"
+msgstr "Favoriter"
+
+msgid "Resume"
+msgstr "Återuppta"
+
+msgid "Restart"
+msgstr "Starta om"
+
+msgid "Favorite"
+msgstr "Favorit"
+
+msgid "Unfavorite"
+msgstr "Ta bort från favoriter"
+
+msgid "Change Date & Time"
+msgstr "Ändra datum och tid"
+
+msgid "Year"
+msgstr "År"
+
+msgid "Month"
+msgstr "Månad"
+
+msgid "Day"
+msgstr "Dag"
+
+msgid "Hour"
+msgstr "Timme"
+
+msgid "24H"
+msgstr "24H"
+
+msgid "Minute"
+msgstr "Minut"
+
+msgid "Change Language"
+msgstr "Byt språk"
+
+msgid "No games found!"
+msgstr "Inga spel hittades!"

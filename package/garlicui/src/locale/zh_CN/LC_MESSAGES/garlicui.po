@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/noto-sans/NotoSansSC-Regular.otf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "选择"
+
+msgid "Back"
+msgstr "返回"
+
+msgid "Menu"
+msgstr "菜单"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "库"
+
+msgid "Favorites"
+msgstr "收藏夹"
+
+msgid "Resume"
+msgstr "继续"
+
+msgid "Restart"
+msgstr "重新开始"
+
+msgid "Favorite"
+msgstr "收藏"
+
+msgid "Unfavorite"
+msgstr "取消收藏"
+
+msgid "Change Date & Time"
+msgstr "更改日期和时间"
+
+msgid "Year"
+msgstr "年"
+
+msgid "Month"
+msgstr "月"
+
+msgid "Day"
+msgstr "日"
+
+msgid "Hour"
+msgstr "小时"
+
+msgid "24H"
+msgstr "24小时"
+
+msgid "Minute"
+msgstr "分钟"
+
+msgid "Change Language"
+msgstr "更改语言"
+
+msgid "No games found!"
+msgstr "未找到游戏！"

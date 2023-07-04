@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/oswald/Oswald-Regular.ttf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "Valitse"
+
+msgid "Back"
+msgstr "Takaisin"
+
+msgid "Menu"
+msgstr "Valikko"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "Kirjasto"
+
+msgid "Favorites"
+msgstr "Suosikit"
+
+msgid "Resume"
+msgstr "Jatka"
+
+msgid "Restart"
+msgstr "Käynnistä uudelleen"
+
+msgid "Favorite"
+msgstr "Suosikki"
+
+msgid "Unfavorite"
+msgstr "Poista suosikeista"
+
+msgid "Change Date & Time"
+msgstr "Muuta päivämäärää ja aikaa"
+
+msgid "Year"
+msgstr "Vuosi"
+
+msgid "Month"
+msgstr "Kuukausi"
+
+msgid "Day"
+msgstr "Päivä"
+
+msgid "Hour"
+msgstr "Tunti"
+
+msgid "24H"
+msgstr "24 h"
+
+msgid "Minute"
+msgstr "Minuutti"
+
+msgid "Change Language"
+msgstr "Vaihda kieli"
+
+msgid "No games found!"
+msgstr "Ei löytynyt pelejä!"

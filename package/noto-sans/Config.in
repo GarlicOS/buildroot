@@ -1,0 +1,6 @@
+config BR2_PACKAGE_NOTO_SANS
+	bool "noto-sans"
+	help
+	  Noto is a global font collection for writing in all modern and ancient languages.
+
+	  https://fonts.google.com/specimen/Noto+Sans

@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/oswald/Oswald-Regular.ttf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "Избери"
+
+msgid "Back"
+msgstr "Назад"
+
+msgid "Menu"
+msgstr "Меню"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "Библиотека"
+
+msgid "Favorites"
+msgstr "Любими"
+
+msgid "Resume"
+msgstr "Продължи"
+
+msgid "Restart"
+msgstr "Рестартиране"
+
+msgid "Favorite"
+msgstr "Любим"
+
+msgid "Unfavorite"
+msgstr "Премахване от Любими"
+
+msgid "Change Date & Time"
+msgstr "Промяна на Дата и Час"
+
+msgid "Year"
+msgstr "Година"
+
+msgid "Month"
+msgstr "Месец"
+
+msgid "Day"
+msgstr "Ден"
+
+msgid "Hour"
+msgstr "Час"
+
+msgid "24H"
+msgstr "24 часа"
+
+msgid "Minute"
+msgstr "Минута"
+
+msgid "Change Language"
+msgstr "Промяна на езика"
+
+msgid "No games found!"
+msgstr "Няма намерени игри!"

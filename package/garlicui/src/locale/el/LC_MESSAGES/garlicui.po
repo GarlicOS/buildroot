@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/fira-sans/FiraSans-Regular.ttf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "Επιλογή"
+
+msgid "Back"
+msgstr "Πίσω"
+
+msgid "Menu"
+msgstr "Μενού"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "Βιβλιοθήκη"
+
+msgid "Favorites"
+msgstr "Αγαπημένα"
+
+msgid "Resume"
+msgstr "Συνέχεια"
+
+msgid "Restart"
+msgstr "Επανεκκίνηση"
+
+msgid "Favorite"
+msgstr "Αγαπημένο"
+
+msgid "Unfavorite"
+msgstr "Κατάργηση αγαπημένου"
+
+msgid "Change Date & Time"
+msgstr "Αλλαγή Ημερομηνίας & Ώρας"
+
+msgid "Year"
+msgstr "Έτος"
+
+msgid "Month"
+msgstr "Μήνας"
+
+msgid "Day"
+msgstr "Ημέρα"
+
+msgid "Hour"
+msgstr "Ώρα"
+
+msgid "24H"
+msgstr "24ωρη"
+
+msgid "Minute"
+msgstr "Λεπτό"
+
+msgid "Change Language"
+msgstr "Αλλαγή γλώσσας"
+
+msgid "No games found!"
+msgstr "Δεν βρέθηκαν παιχνίδια!"

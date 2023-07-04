@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/noto-sans/NotoSansEthiopic-Regular.ttf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "ምረጥ"
+
+msgid "Back"
+msgstr "ወደ ኋላ ተመለስ"
+
+msgid "Menu"
+msgstr "ምናሌ"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "ቤት"
+
+msgid "Favorites"
+msgstr "ዜሮች"
+
+msgid "Resume"
+msgstr "ተጨማሪ ያልታወቀ"
+
+msgid "Restart"
+msgstr "አጥፋ"
+
+msgid "Favorite"
+msgstr "የተወደደ"
+
+msgid "Unfavorite"
+msgstr "ያልተወደደ የተወደደ"
+
+msgid "Change Date & Time"
+msgstr "ቀንና ሰዓት ቀይር"
+
+msgid "Year"
+msgstr "ዓመት"
+
+msgid "Month"
+msgstr "ወር"
+
+msgid "Day"
+msgstr "ቀን"
+
+msgid "Hour"
+msgstr "ሰዓት"
+
+msgid "24H"
+msgstr "24 ሰዓት"
+
+msgid "Minute"
+msgstr "ደቂቃ"
+
+msgid "Change Language"
+msgstr "ቋንቋ ቀይር"
+
+msgid "No games found!"
+msgstr "የጨዋታ አይደለም!"

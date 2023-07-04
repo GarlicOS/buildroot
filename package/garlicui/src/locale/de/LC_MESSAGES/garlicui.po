@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/oswald/Oswald-Regular.ttf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "Auswählen"
+
+msgid "Back"
+msgstr "Zurück"
+
+msgid "Menu"
+msgstr "Menü"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "Bibliothek"
+
+msgid "Favorites"
+msgstr "Favoriten"
+
+msgid "Resume"
+msgstr "Fortsetzen"
+
+msgid "Restart"
+msgstr "Neu starten"
+
+msgid "Favorite"
+msgstr "Zu Favoriten hinzufügen"
+
+msgid "Unfavorite"
+msgstr "Aus Favoriten entfernen"
+
+msgid "Change Date & Time"
+msgstr "Datum & Uhrzeit ändern"
+
+msgid "Year"
+msgstr "Jahr"
+
+msgid "Month"
+msgstr "Monat"
+
+msgid "Day"
+msgstr "Tag"
+
+msgid "Hour"
+msgstr "Stunde"
+
+msgid "24H"
+msgstr "24H"
+
+msgid "Minute"
+msgstr "Minute"
+
+msgid "Change Language"
+msgstr "Sprache ändern"
+
+msgid "No games found!"
+msgstr "Keine Spiele gefunden!"

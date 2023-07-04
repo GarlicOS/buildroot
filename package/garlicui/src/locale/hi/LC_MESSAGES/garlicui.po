@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/noto-sans/NotoSans-Regular.ttf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "चुनें"
+
+msgid "Back"
+msgstr "वापस"
+
+msgid "Menu"
+msgstr "मेनू"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "लाइब्रेरी"
+
+msgid "Favorites"
+msgstr "पसंदीदा"
+
+msgid "Resume"
+msgstr "आगे बढ़ें"
+
+msgid "Restart"
+msgstr "रीस्टार्ट करें"
+
+msgid "Favorite"
+msgstr "पसंदीदा"
+
+msgid "Unfavorite"
+msgstr "पसंदीदा से हटाएं"
+
+msgid "Change Date & Time"
+msgstr "तिथि और समय बदलें"
+
+msgid "Year"
+msgstr "वर्ष"
+
+msgid "Month"
+msgstr "महीना"
+
+msgid "Day"
+msgstr "दिन"
+
+msgid "Hour"
+msgstr "घंटा"
+
+msgid "24H"
+msgstr "24 घंटे"
+
+msgid "Minute"
+msgstr "मिनट"
+
+msgid "Change Language"
+msgstr "भाषा बदलें"
+
+msgid "No games found!"
+msgstr "कोई खेल नहीं मिला!"

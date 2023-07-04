@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/oswald/Oswald-Regular.ttf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "Izvēlēties"
+
+msgid "Back"
+msgstr "Atpakaļ"
+
+msgid "Menu"
+msgstr "Izvēlne"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "Bibliotēka"
+
+msgid "Favorites"
+msgstr "Izlase"
+
+msgid "Resume"
+msgstr "Turpināt"
+
+msgid "Restart"
+msgstr "Pārstartēt"
+
+msgid "Favorite"
+msgstr "Izlase"
+
+msgid "Unfavorite"
+msgstr "Noņemt no izlases"
+
+msgid "Change Date & Time"
+msgstr "Mainīt datumu un laiku"
+
+msgid "Year"
+msgstr "Gads"
+
+msgid "Month"
+msgstr "Mēnesis"
+
+msgid "Day"
+msgstr "Diena"
+
+msgid "Hour"
+msgstr "Stunda"
+
+msgid "24H"
+msgstr "24h"
+
+msgid "Minute"
+msgstr "Minūte"
+
+msgid "Change Language"
+msgstr "Mainīt valodu"
+
+msgid "No games found!"
+msgstr "Nav atrastas spēles!"

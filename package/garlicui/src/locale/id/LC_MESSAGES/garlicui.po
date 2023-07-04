@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/oswald/Oswald-Regular.ttf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "Pilih"
+
+msgid "Back"
+msgstr "Kembali"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "Perpustakaan"
+
+msgid "Favorites"
+msgstr "Favorit"
+
+msgid "Resume"
+msgstr "Lanjutkan"
+
+msgid "Restart"
+msgstr "Mulai Ulang"
+
+msgid "Favorite"
+msgstr "Favorit"
+
+msgid "Unfavorite"
+msgstr "Hapus dari Favorit"
+
+msgid "Change Date & Time"
+msgstr "Ubah Tanggal & Waktu"
+
+msgid "Year"
+msgstr "Tahun"
+
+msgid "Month"
+msgstr "Bulan"
+
+msgid "Day"
+msgstr "Hari"
+
+msgid "Hour"
+msgstr "Jam"
+
+msgid "24H"
+msgstr "24 Jam"
+
+msgid "Minute"
+msgstr "Menit"
+
+msgid "Change Language"
+msgstr "Ubah Bahasa"
+
+msgid "No games found!"
+msgstr "Tidak ada game yang ditemukan!"

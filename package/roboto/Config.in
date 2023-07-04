@@ -1,0 +1,6 @@
+config BR2_PACKAGE_ROBOTO
+	bool "roboto"
+	help
+	  Roboto is a natural-width font family by Christian Robertson.
+
+	  https://fonts.google.com/specimen/Roboto

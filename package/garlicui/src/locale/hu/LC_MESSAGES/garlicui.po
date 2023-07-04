@@ -1,0 +1,62 @@
+msgid "MSGID_font_file_path"
+msgstr "/usr/share/fonts/oswald/Oswald-Regular.ttf"
+
+msgid "GarlicOS %s"
+msgstr "GarlicOS %s"
+
+msgid "Select"
+msgstr "Kiválasztás"
+
+msgid "Back"
+msgstr "Vissza"
+
+msgid "Menu"
+msgstr "Menü"
+
+msgid "RetroArch"
+msgstr "RetroArch"
+
+msgid "Library"
+msgstr "Könyvtár"
+
+msgid "Favorites"
+msgstr "Kedvencek"
+
+msgid "Resume"
+msgstr "Folytatás"
+
+msgid "Restart"
+msgstr "Újraindítás"
+
+msgid "Favorite"
+msgstr "Kedvenc"
+
+msgid "Unfavorite"
+msgstr "Kedvenc törlése"
+
+msgid "Change Date & Time"
+msgstr "Dátum és idő módosítása"
+
+msgid "Year"
+msgstr "Év"
+
+msgid "Month"
+msgstr "Hónap"
+
+msgid "Day"
+msgstr "Nap"
+
+msgid "Hour"
+msgstr "Óra"
+
+msgid "24H"
+msgstr "24 óra"
+
+msgid "Minute"
+msgstr "Perc"
+
+msgid "Change Language"
+msgstr "Nyelv váltása"
+
+msgid "No games found!"
+msgstr "Nem található játék!"
