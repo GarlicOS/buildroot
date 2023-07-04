@@ -1,5 +1,5 @@
-menuconfig BR2_PACKAGE_FCEUMM
-	bool "fceumm"
+menuconfig BR2_PACKAGE_FUSE
+	bool "fuse"
 	depends on BR2_PACKAGE_RETROARCH
 	help
-	  libretro implementation of fceumm
+	  libretro implementation of fuse
