@@ -3,6 +3,7 @@
 
 #include "rg405m.h"
 #include "pocket2plus.h"
+#include "pocketflip.h"
 
 int main(int argc, char * argv[])
 {
@@ -28,6 +29,13 @@ int main(int argc, char * argv[])
 	{
 		// Initialize the soundcard and handle routing
 		pocket2plus_main(argc, argv);
+	}
+
+	// We're handling the Retroid Pocket Flip
+	if (strcmp(code_name, "pocketflip") == 0)
+	{
+		// Initialize the soundcard and handle routing
+		pocketflip_main(argc, argv);
 	}
 	
 	// Exit
