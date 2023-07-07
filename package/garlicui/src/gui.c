@@ -1670,6 +1670,16 @@ void gui_read_configuration(struct gui_context * context)
 	// Whether the locale was set or not
 	int locale_set = 0;
 
+	// Set the default colors
+	context->colors.base.background = 0x2d2d2d;
+	context->colors.base.foreground = 0xffffff;
+	context->colors.legend.background = 0xffffff;
+	context->colors.legend.foreground = 0x757575;
+	context->colors.icon.background = 0xffffff;
+	context->colors.icon.foreground = 0x000000;
+	context->colors.notch.background = 0x000000;
+	context->colors.notch.foreground = 0xffffff;
+
 	// We managed to load the XML document
 	if (document != NULL)
 	{
@@ -1848,16 +1858,12 @@ void gui_write_configuration(struct gui_context * context)
 							// Create and attach the child node <UI>
 							xmlNodePtr uiNode = xmlNewTextChild(root, NULL, BAD_CAST "UI", BAD_CAST ui_state);
 
-							// We managed to create and attach the child node <UI>
-							if (uiNode != NULL)
-							{
-								// Save the document to a file
-								io_write_folder_configuration(document, FOLDER_CONFIGURATION_BOOT_FOLDER);
-
-								// Free the UI state
-								free(ui_state);
-							}
+							// Free the UI state
+							free(ui_state);
 						}
+
+						// Save the document to a file
+						io_write_folder_configuration(document, FOLDER_CONFIGURATION_BOOT_FOLDER);
 					}
 				}
 			}
