@@ -1,0 +1,7 @@
+<Configuration>
+  <Run>arduous</Run>
+  <Extensions>
+    <Extension>.hex</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>
