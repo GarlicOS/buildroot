@@ -47,11 +47,6 @@
 #define RETROARCH_DEFAULT_THUMBNAIL_FILE_PATH "/media/RetroArch/thumbnails/%s/%s/%s.png"
 
 /**
- * @brief The default retroarch library directory.
- */
-#define RETROARCH_DEFAULT_LIBRARY_FILE_PATH "/media/Library"
-
-/**
  * @brief A single retroarch playlist item.
  */
 struct retroarch_playlist_item

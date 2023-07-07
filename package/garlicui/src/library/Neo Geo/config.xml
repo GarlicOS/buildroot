@@ -1,0 +1,6 @@
+<Configuration>
+  <Run>fbalpha2012_neogeo</Run>
+  <Extensions>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

@@ -360,6 +360,9 @@ static void gui_restore_ui_state(struct gui_context * context, const char * ui_s
  */
 struct gui_context * gui_create_context(int argc, char * argv[])
 {
+	// Unpack the library template and system icons (for themers)
+	io_unpack_resources();
+
 	// Allocate memory for the context
 	struct gui_context * context = (struct gui_context *)calloc(1, sizeof(struct gui_context));
 

@@ -1,0 +1,8 @@
+<Configuration>
+  <Run>vecx</Run>
+  <Extensions>
+    <Extension>.bin</Extension>
+    <Extension>.vec</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

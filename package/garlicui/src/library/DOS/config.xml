@@ -1,0 +1,6 @@
+<Configuration>
+  <Run>dosbox_pure</Run>
+  <Extensions>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

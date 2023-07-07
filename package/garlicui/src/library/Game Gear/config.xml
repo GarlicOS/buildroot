@@ -1,0 +1,7 @@
+<Configuration>
+  <Run>picodrive</Run>
+  <Extensions>
+    <Extension>.gg</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

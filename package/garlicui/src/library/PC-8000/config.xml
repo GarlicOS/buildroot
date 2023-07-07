@@ -1,0 +1,9 @@
+<Configuration>
+  <Run>quasi88</Run>
+  <Extensions>
+    <Extension>.d88</Extension>
+    <Extension>.u88</Extension>
+    <Extension>.m3u</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

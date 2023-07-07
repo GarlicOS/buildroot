@@ -1,0 +1,8 @@
+<Configuration>
+  <Run>potator</Run>
+  <Extensions>
+    <Extension>.bin</Extension>
+    <Extension>.sv</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

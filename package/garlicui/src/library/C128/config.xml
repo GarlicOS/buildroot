@@ -1,0 +1,35 @@
+<Configuration>
+  <Run>vice_x128</Run>
+  <Extensions>
+    <Extension>.d64</Extension>
+    <Extension>.d71</Extension>
+    <Extension>.d80</Extension>
+    <Extension>.d81</Extension>
+    <Extension>.d82</Extension>
+    <Extension>.g64</Extension>
+    <Extension>.g41</Extension>
+    <Extension>.x64</Extension>
+    <Extension>.t64</Extension>
+    <Extension>.tap</Extension>
+    <Extension>.prg</Extension>
+    <Extension>.p00</Extension>
+    <Extension>.crt</Extension>
+    <Extension>.bin</Extension>
+    <Extension>.zip</Extension>
+    <Extension>.gz</Extension>
+    <Extension>.d6z</Extension>
+    <Extension>.d7z</Extension>
+    <Extension>.d8z</Extension>
+    <Extension>.g6z</Extension>
+    <Extension>.g4z</Extension>
+    <Extension>.x6z</Extension>
+    <Extension>.cmd</Extension>
+    <Extension>.m3u</Extension>
+    <Extension>.vfl</Extension>
+    <Extension>.vsf</Extension>
+    <Extension>.nib</Extension>
+    <Extension>.nbz</Extension>
+    <Extension>.d2m</Extension>
+    <Extension>.d4m</Extension>
+  </Extensions>
+</Configuration>

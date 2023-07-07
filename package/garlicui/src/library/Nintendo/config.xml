@@ -1,0 +1,10 @@
+<Configuration>
+  <Run>fceumm</Run>
+  <Extensions>
+    <Extension>.fds</Extension>
+    <Extension>.nes</Extension>
+    <Extension>.unif</Extension>
+    <Extension>.unf</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

@@ -1,0 +1,17 @@
+<Configuration>
+  <Run>x1</Run>
+  <Extensions>
+    <Extension>.dx1</Extension>
+    <Extension>.zip</Extension>
+    <Extension>.2d</Extension>
+    <Extension>.2hd</Extension>
+    <Extension>.tfd</Extension>
+    <Extension>.d88</Extension>
+    <Extension>.88d</Extension>
+    <Extension>.hdm</Extension>
+    <Extension>.xdf</Extension>
+    <Extension>.dup</Extension>
+    <Extension>.tap</Extension>
+    <Extension>.cmd</Extension>
+  </Extensions>
+</Configuration>

@@ -1,0 +1,17 @@
+<Configuration>
+  <Run>bluemsx</Run>
+  <Extensions>
+    <Extension>.rom</Extension>
+    <Extension>.ri</Extension>
+    <Extension>.mx1</Extension>
+    <Extension>.mx2</Extension>
+    <Extension>.col</Extension>
+    <Extension>.dsk</Extension>
+    <Extension>.cas</Extension>
+    <Extension>.sg</Extension>
+    <Extension>.sc</Extension>
+    <Extension>.sf</Extension>
+    <Extension>.m3u</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

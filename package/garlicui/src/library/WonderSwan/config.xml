@@ -1,0 +1,10 @@
+<Configuration>
+  <Run>mednafen_wswan</Run>
+  <Extensions>
+    <Extension>.ws</Extension>
+    <Extension>.wsc</Extension>
+    <Extension>.pc2</Extension>
+    <Extension>.pcv2</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

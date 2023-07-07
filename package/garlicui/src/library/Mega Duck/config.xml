@@ -1,0 +1,7 @@
+<Configuration>
+  <Run>sameduck</Run>
+  <Extensions>
+    <Extension>.bin</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

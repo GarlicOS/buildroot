@@ -1,0 +1,7 @@
+<Configuration>
+  <Run>gw</Run>
+  <Extensions>
+    <Extension>.mgw</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

@@ -1,0 +1,17 @@
+<Configuration>
+  <Run>atari800</Run>
+  <Extensions>
+    <Extension>.xfd</Extension>
+    <Extension>.atr</Extension>
+    <Extension>.cdm</Extension>
+    <Extension>.cas</Extension>
+    <Extension>.bin</Extension>
+    <Extension>.a52</Extension>
+    <Extension>.atx</Extension>
+    <Extension>.car</Extension>
+    <Extension>.rom</Extension>
+    <Extension>.com</Extension>
+    <Extension>.xex</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

@@ -1,0 +1,13 @@
+<Configuration>
+  <Run>virtualjaguar</Run>
+  <Extensions>
+    <Extension>.j64</Extension>
+    <Extension>.jag</Extension>
+    <Extension>.rom</Extension>
+    <Extension>.abs</Extension>
+    <Extension>.cof</Extension>
+    <Extension>.bin</Extension>
+    <Extension>.prg</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

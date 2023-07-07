@@ -1,0 +1,7 @@
+<Configuration>
+  <Run>fake08</Run>
+  <Extensions>
+    <Extension>.p8</Extension>
+    <Extension>.png</Extension>
+  </Extensions>
+</Configuration>

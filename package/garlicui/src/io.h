@@ -12,6 +12,16 @@
 typedef char * (*textformatter)(const char *);
 
 /**
+ * @brief The folder that contains the game library template.
+ */
+#define LIBRARY_FOLDER_TEMPLATE_PATH "/usr/share/library"
+
+/**
+ * @brief The folder that contains the game library.
+ */
+#define LIBRARY_FOLDER_PATH "/media/Library"
+
+/**
  * @brief The directory in which all boot related files are stored.
  *
  * This includes the boot script, rootfs, global configuration file, etc.
@@ -153,5 +163,20 @@ void io_sync();
  * @brief Shuts the device down.
  */
 void io_shutdown();
+
+/**
+ * @brief Copies the given file.
+ */
+void io_copy_file(const char * src_path, const char * dest_path);
+
+/**
+ * @brief Copies the given directory (but only if the destination directory doesn't exist yet).
+ */
+void io_copy_directory(const char * src_dir, const char * dest_dir);
+
+/**
+ * @brief Unpacks the library template.
+ */
+void io_unpack_resources();
 
 #endif

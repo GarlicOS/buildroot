@@ -1,0 +1,7 @@
+<Configuration>
+  <Run>gambatte</Run>
+  <Extensions>
+    <Extension>.gb</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

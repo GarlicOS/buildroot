@@ -1,0 +1,8 @@
+<Configuration>
+  <Run>prboom</Run>
+  <Extensions>
+    <Extension>.wad</Extension>
+    <Extension>.iwad</Extension>
+    <Extension>.pwad</Extension>
+  </Extensions>
+</Configuration>

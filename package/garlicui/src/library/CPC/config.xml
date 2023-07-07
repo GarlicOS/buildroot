@@ -1,0 +1,9 @@
+<Configuration>
+  <Run>crocods</Run>
+  <Extensions>
+    <Extension>.dsk</Extension>
+    <Extension>.sna</Extension>
+    <Extension>.kcr</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

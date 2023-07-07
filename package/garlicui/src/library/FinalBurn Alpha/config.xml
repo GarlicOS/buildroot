@@ -1,0 +1,8 @@
+<Configuration>
+  <Run>fbalpha2012</Run>
+  <Extensions>
+    <Extension>.iso</Extension>
+    <Extension>.zip</Extension>
+    <Extension>.7z</Extension>
+  </Extensions>
+</Configuration>

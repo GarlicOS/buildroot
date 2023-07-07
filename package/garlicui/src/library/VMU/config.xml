@@ -1,0 +1,9 @@
+<Configuration>
+  <Run>vemulator</Run>
+  <Extensions>
+    <Extension>.vms</Extension>
+    <Extension>.dci</Extension>
+    <Extension>.bin</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

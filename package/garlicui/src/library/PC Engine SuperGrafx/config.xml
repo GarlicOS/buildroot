@@ -1,0 +1,10 @@
+<Configuration>
+  <Run>mednafen_supergrafx</Run>
+  <Extensions>
+    <Extension>.pce</Extension>
+    <Extension>.sgx</Extension>
+    <Extension>.cue</Extension>
+    <Extension>.ccd</Extension>
+    <Extension>.chd</Extension>
+  </Extensions>
+</Configuration>

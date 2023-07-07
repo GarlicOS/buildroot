@@ -1,0 +1,9 @@
+<Configuration>
+  <Run>mednafen_vb</Run>
+  <Extensions>
+    <Extension>.vb</Extension>
+    <Extension>.vboy</Extension>
+    <Extension>.bin</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

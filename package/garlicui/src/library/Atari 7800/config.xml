@@ -1,0 +1,9 @@
+<Configuration>
+  <Run>prosystem</Run>
+  <Extensions>
+    <Extension>.a78</Extension>
+    <Extension>.bin</Extension>
+    <Extension>.cdf</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

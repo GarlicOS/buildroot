@@ -1,0 +1,7 @@
+<Configuration>
+  <Run>pokemini</Run>
+  <Extensions>
+    <Extension>.min</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

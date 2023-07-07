@@ -1,0 +1,7 @@
+<Configuration>
+  <Run>neocd</Run>
+  <Extensions>
+    <Extension>.cue</Extension>
+    <Extension>.chd</Extension>
+  </Extensions>
+</Configuration>

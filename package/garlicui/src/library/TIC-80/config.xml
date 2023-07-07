@@ -1,0 +1,7 @@
+<Configuration>
+  <Run>tic80</Run>
+  <Extensions>
+    <Extension>.tic</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

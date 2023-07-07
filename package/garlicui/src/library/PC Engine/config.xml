@@ -1,0 +1,12 @@
+<Configuration>
+  <Run>mednafen_pce_fast</Run>
+  <Extensions>
+    <Extension>.pce</Extension>
+    <Extension>.cue</Extension>
+    <Extension>.ccd</Extension>
+    <Extension>.chd</Extension>
+    <Extension>.toc</Extension>
+    <Extension>.m3u</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

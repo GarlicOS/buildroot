@@ -1,0 +1,12 @@
+<Configuration>
+  <Run>hatari</Run>
+  <Extensions>
+    <Extension>.st</Extension>
+    <Extension>.msa</Extension>
+    <Extension>.stx</Extension>
+    <Extension>.dim</Extension>
+    <Extension>.ipf</Extension>
+    <Extension>.m3u</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

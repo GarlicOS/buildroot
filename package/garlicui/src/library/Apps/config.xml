@@ -1,0 +1,6 @@
+<Configuration>
+  <Run>/bin/sh</Run>
+  <Extensions>
+    <Extension>.sh</Extension>
+  </Extensions>
+</Configuration>

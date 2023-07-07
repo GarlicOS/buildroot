@@ -1,0 +1,12 @@
+<Configuration>
+  <Run>snes9x</Run>
+  <Extensions>
+    <Extension>.smc</Extension>
+    <Extension>.sfc</Extension>
+    <Extension>.swc</Extension>
+    <Extension>.fig</Extension>
+    <Extension>.bs</Extension>
+    <Extension>.st</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

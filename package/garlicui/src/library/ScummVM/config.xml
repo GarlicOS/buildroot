@@ -1,0 +1,4 @@
+<Configuration>
+  <Run>scummvm</Run>
+  <ListDirectories>true</ListDirectories>
+</Configuration>

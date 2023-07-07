@@ -1,0 +1,17 @@
+<Configuration>
+  <Run>px68k</Run>
+  <Extensions>
+    <Extension>.dim</Extension>
+    <Extension>.zip</Extension>
+    <Extension>.img</Extension>
+    <Extension>.d88</Extension>
+    <Extension>.88d</Extension>
+    <Extension>.hdm</Extension>
+    <Extension>.dup</Extension>
+    <Extension>.2hd</Extension>
+    <Extension>.xdf</Extension>
+    <Extension>.hdf</Extension>
+    <Extension>.cmd</Extension>
+    <Extension>.m3u</Extension>
+  </Extensions>
+</Configuration>

@@ -1,0 +1,9 @@
+<Configuration>
+  <Run>freeintv</Run>
+  <Extensions>
+    <Extension>.int</Extension>
+    <Extension>.bin</Extension>
+    <Extension>.rom</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

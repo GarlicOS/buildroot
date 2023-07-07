@@ -15,7 +15,7 @@ static void gui_activate_library_menu(struct gui_node * this)
 	char ** content_folders = NULL;
 
 	// Get the content folder paths
-	int content_folder_count = io_get_content_items("/media/Library", &content_folders, 0, 1, io_get_display_name);
+	int content_folder_count = io_get_content_items(LIBRARY_FOLDER_PATH, &content_folders, 0, 1, io_get_display_name);
 
 	// We managed to get the content folder paths
 	if (content_folders != NULL)

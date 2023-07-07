@@ -1,0 +1,6 @@
+<Configuration>
+  <Run>tyrquake</Run>
+  <Extensions>
+    <Extension>.pak</Extension>
+  </Extensions>
+</Configuration>

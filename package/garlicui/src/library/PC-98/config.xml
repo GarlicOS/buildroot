@@ -1,0 +1,22 @@
+<Configuration>
+  <Run>nekop2</Run>
+  <Extensions>
+    <Extension>.d98</Extension>
+    <Extension>.zip</Extension>
+    <Extension>.98d</Extension>
+    <Extension>.fdi</Extension>
+    <Extension>.fdd</Extension>
+    <Extension>.2hd</Extension>
+    <Extension>.tfd</Extension>
+    <Extension>.d88</Extension>
+    <Extension>.88d</Extension>
+    <Extension>.hdm</Extension>
+    <Extension>.xdf</Extension>
+    <Extension>.dup</Extension>
+    <Extension>.cmd</Extension>
+    <Extension>.hdi</Extension>
+    <Extension>.thd</Extension>
+    <Extension>.nhd</Extension>
+    <Extension>.hdd</Extension>
+  </Extensions>
+</Configuration>

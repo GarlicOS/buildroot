@@ -1,0 +1,14 @@
+<Configuration>
+  <Run>mednafen_supafaust</Run>
+  <Extensions>
+    <Extension>.smc</Extension>
+    <Extension>.fig</Extension>
+    <Extension>.sfc</Extension>
+    <Extension>.gd3</Extension>
+    <Extension>.gd7</Extension>
+    <Extension>.dx2</Extension>
+    <Extension>.bsx</Extension>
+    <Extension>.swc</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

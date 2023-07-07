@@ -19,6 +19,7 @@ define GARLICUI_INSTALL_TARGET_CMDS
 	mkdir -p $(TARGET_DIR)/usr/share
 	cp -rf $(@D)/icons $(TARGET_DIR)/usr/share
 	cp -rf $(@D)/locale $(TARGET_DIR)/usr/share
+	cp -rf $(@D)/library $(TARGET_DIR)/usr/share
 	rm -f $(TARGET_DIR)/usr/share/locale/*/LC_MESSAGES/garlicui.po
 endef
 

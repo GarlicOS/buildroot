@@ -1,0 +1,9 @@
+<Configuration>
+  <Run>81</Run>
+  <Extensions>
+    <Extension>.p</Extension>
+    <Extension>.tzx</Extension>
+    <Extension>.t81</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

@@ -929,3 +929,110 @@ void io_shutdown()
 		fclose(sysrq);
 	}
 }
+
+/**
+ * @brief Copies the given file.
+ */
+void io_copy_file(const char * src_path, const char * dest_path)
+{
+	// Open the source file
+	FILE * src_file = fopen(src_path, "rb");
+
+	// We managed to open the source file
+	if (src_file != NULL)
+	{
+		// Open the destination file
+		FILE * dest_file = fopen(dest_path, "wb");
+
+		// We managed to open the destination file
+		if (dest_file != NULL)
+		{
+			// Allocate a buffer for file-copying
+			char buffer[4096];
+
+			// The number of bytes read into the chunk
+			size_t bytes_read;
+
+			// Keep reading chunks
+			while ((bytes_read = fread(buffer, 1, sizeof(buffer), src_file)) > 0)
+			{
+				// And write them to the destination file
+				fwrite(buffer, 1, bytes_read, dest_file);
+			}
+
+			// Close the destination file
+			fclose(dest_file);
+		}
+
+		// Close the source file
+		fclose(src_file);
+	}
+}
+
+/**
+ * @brief Copies the given directory (but only if the destination directory doesn't exist yet).
+ */
+void io_copy_directory(const char * src_dir, const char * dest_dir)
+{
+	// The destination directory doesn't exist yet
+	if (access(dest_dir, F_OK) == -1)
+	{
+		// Create the destination directory
+		if (mkdir(dest_dir, 0700) == 0)
+		{
+			// Open the source directory
+			DIR * dir = opendir(src_dir);
+
+			// We managed to open the source directory
+			if (dir != NULL)
+			{
+				// Iterate all source directory entries
+				for (struct dirent * entry = readdir(dir); entry != NULL; entry = readdir(dir))
+				{
+					// Filter out the current and parent directory entry
+					if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
+					{
+						// Construct the source and destination file paths
+						char src_path[PATH_MAX];
+						char dest_path[PATH_MAX];
+						snprintf(src_path, sizeof(src_path), "%s/%s", src_dir, entry->d_name);
+						snprintf(dest_path, sizeof(dest_path), "%s/%s", dest_dir, entry->d_name);
+
+						// The directory entry information
+						struct stat entry_stat;
+
+						// We managed to query the directory entry information
+						if (lstat(src_path, &entry_stat) == 0)
+						{
+							// We're handling a subdirectory
+							if (S_ISDIR(entry_stat.st_mode))
+							{
+								// Recursively copy the subdirectory
+								io_copy_directory(src_path, dest_path);
+							}
+
+							// We're handling a file
+							else
+							{
+								// Copy the file
+								io_copy_file(src_path, dest_path);
+							}
+						}
+					}
+				}
+
+				// Close the source directory
+				closedir(dir);
+			}
+		}
+	}
+}
+
+/**
+ * @brief Unpacks the library template.
+ */
+void io_unpack_resources()
+{
+	// Unpack the library template
+	io_copy_directory(LIBRARY_FOLDER_TEMPLATE_PATH, LIBRARY_FOLDER_PATH);
+}

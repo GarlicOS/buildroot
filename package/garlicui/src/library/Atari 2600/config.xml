@@ -1,0 +1,8 @@
+<Configuration>
+  <Run>stella2014</Run>
+  <Extensions>
+    <Extension>.a26</Extension>
+    <Extension>.bin</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

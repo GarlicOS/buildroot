@@ -1,0 +1,15 @@
+<Configuration>
+  <Run>pcsx_rearmed</Run>
+  <Extensions>
+    <Extension>.bin</Extension>
+    <Extension>.cue</Extension>
+    <Extension>.img</Extension>
+    <Extension>.mdf</Extension>
+    <Extension>.pbp</Extension>
+    <Extension>.toc</Extension>
+    <Extension>.cbn</Extension>
+    <Extension>.m3u</Extension>
+    <Extension>.ccd</Extension>
+    <Extension>.chd</Extension>
+  </Extensions>
+</Configuration>

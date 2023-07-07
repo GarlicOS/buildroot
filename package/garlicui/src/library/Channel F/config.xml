@@ -1,0 +1,8 @@
+<Configuration>
+  <Run>freechaf</Run>
+  <Extensions>
+    <Extension>.bin</Extension>
+    <Extension>.chf</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

@@ -1,0 +1,8 @@
+<Configuration>
+  <Run>mame2000</Run>
+  <Extensions>
+    <Extension>.zip</Extension>
+    <Extension>.7z</Extension>
+    <Extension>.chd</Extension>
+  </Extensions>
+</Configuration>

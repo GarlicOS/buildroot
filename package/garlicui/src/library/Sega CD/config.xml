@@ -1,0 +1,9 @@
+<Configuration>
+  <Run>genesis_plus_gx</Run>
+  <Extensions>
+    <Extension>.bin</Extension>
+    <Extension>.cue</Extension>
+    <Extension>.iso</Extension>
+    <Extension>.chd</Extension>
+  </Extensions>
+</Configuration>

@@ -1,0 +1,9 @@
+<Configuration>
+  <Run>opera</Run>
+  <Extensions>
+    <Extension>.iso</Extension>
+    <Extension>.bin</Extension>
+    <Extension>.chd</Extension>
+    <Extension>.cue</Extension>
+  </Extensions>
+</Configuration>

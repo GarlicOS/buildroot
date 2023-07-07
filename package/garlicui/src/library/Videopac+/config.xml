@@ -1,0 +1,7 @@
+<Configuration>
+  <Run>o2em</Run>
+  <Extensions>
+    <Extension>.bin</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

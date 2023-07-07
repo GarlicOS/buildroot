@@ -1,0 +1,7 @@
+<Configuration>
+  <Run>picodrive</Run>
+  <Extensions>
+    <Extension>.32x</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

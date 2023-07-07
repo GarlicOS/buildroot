@@ -1,0 +1,8 @@
+<Configuration>
+  <Run>handy</Run>
+  <Extensions>
+    <Extension>.lnx</Extension>
+    <Extension>.o</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

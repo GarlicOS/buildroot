@@ -1,0 +1,9 @@
+<Configuration>
+  <Run>mednafen_pcfx</Run>
+  <Extensions>
+    <Extension>.cue</Extension>
+    <Extension>.ccd</Extension>
+    <Extension>.toc</Extension>
+    <Extension>.chd</Extension>
+  </Extensions>
+</Configuration>

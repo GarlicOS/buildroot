@@ -1,0 +1,26 @@
+<Configuration>
+  <Run>puae2021</Run>
+  <Extensions>
+    <Extension>.adf</Extension>
+    <Extension>.adz</Extension>
+    <Extension>.dms</Extension>
+    <Extension>.fdi</Extension>
+    <Extension>.ipf</Extension>
+    <Extension>.hdf</Extension>
+    <Extension>.hdz</Extension>
+    <Extension>.lha</Extension>
+    <Extension>.slave</Extension>
+    <Extension>.info</Extension>
+    <Extension>.cue</Extension>
+    <Extension>.ccd</Extension>
+    <Extension>.nrg</Extension>
+    <Extension>.mds</Extension>
+    <Extension>.iso</Extension>
+    <Extension>.chd</Extension>
+    <Extension>.uae</Extension>
+    <Extension>.m3u</Extension>
+    <Extension>.zip</Extension>
+    <Extension>.7z</Extension>
+    <Extension>.rp9</Extension>
+  </Extensions>
+</Configuration>

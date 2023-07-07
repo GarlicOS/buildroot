@@ -1,0 +1,11 @@
+<Configuration>
+  <Run>gearsystem</Run>
+  <Extensions>
+    <Extension>.sms</Extension>
+    <Extension>.gg</Extension>
+    <Extension>.sg</Extension>
+    <Extension>.bin</Extension>
+    <Extension>.rom</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

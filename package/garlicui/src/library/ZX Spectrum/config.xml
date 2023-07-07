@@ -1,0 +1,13 @@
+<Configuration>
+  <Run>fuse</Run>
+  <Extensions>
+    <Extension>.tzx</Extension>
+    <Extension>.tap</Extension>
+    <Extension>.z80</Extension>
+    <Extension>.rzx</Extension>
+    <Extension>.scl</Extension>
+    <Extension>.trd</Extension>
+    <Extension>.dsk</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

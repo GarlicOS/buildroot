@@ -1,0 +1,7 @@
+<Configuration>
+  <Run>uzem</Run>
+  <Extensions>
+    <Extension>.uze</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

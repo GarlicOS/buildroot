@@ -1,0 +1,9 @@
+<Configuration>
+  <Run>fbneo</Run>
+  <Extensions>
+    <Extension>.zip</Extension>
+    <Extension>.7z</Extension>
+    <Extension>.cue</Extension>
+    <Extension>.ccd</Extension>
+  </Extensions>
+</Configuration>

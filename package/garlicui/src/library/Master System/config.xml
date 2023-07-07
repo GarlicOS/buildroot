@@ -1,0 +1,7 @@
+<Configuration>
+  <Run>picodrive</Run>
+  <Extensions>
+    <Extension>.sms</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

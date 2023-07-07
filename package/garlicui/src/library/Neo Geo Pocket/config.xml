@@ -1,0 +1,10 @@
+<Configuration>
+  <Run>mednafen_ngp</Run>
+  <Extensions>
+    <Extension>.ngp</Extension>
+    <Extension>.ngc</Extension>
+    <Extension>.ngpc</Extension>
+    <Extension>.npc</Extension>
+    <Extension>.zip</Extension>
+  </Extensions>
+</Configuration>

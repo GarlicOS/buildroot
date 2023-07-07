@@ -62,14 +62,14 @@ char * retroarch_get_auto_savestate_path(const char * game)
 char * retroarch_get_auto_savestate_screenshot_path(const char * game)
 {
 	// The given input path is outside of our managed library directory
-	if (strncmp(game, RETROARCH_DEFAULT_LIBRARY_FILE_PATH, strlen(RETROARCH_DEFAULT_LIBRARY_FILE_PATH)) != 0)
+	if (strncmp(game, LIBRARY_FOLDER_PATH, strlen(LIBRARY_FOLDER_PATH)) != 0)
 	{
 		// There's no reliable way for us to determine the auto savestate screenshot path
 		return NULL;
 	}
 
 	// Skip the library directory root path component
-	const char * library_relative_game_path = game + strlen(RETROARCH_DEFAULT_LIBRARY_FILE_PATH);
+	const char * library_relative_game_path = game + strlen(LIBRARY_FOLDER_PATH);
 
 	// The given input path is outside of our managed library directory
 	if (*library_relative_game_path != '/')
@@ -134,14 +134,14 @@ char * retroarch_get_auto_savestate_screenshot_path(const char * game)
 char * retroarch_get_thumbnail_path(const char * game, const char * thumbnail_type)
 {
 	// The given input path is outside of our managed library directory
-	if (strncmp(game, RETROARCH_DEFAULT_LIBRARY_FILE_PATH, strlen(RETROARCH_DEFAULT_LIBRARY_FILE_PATH)) != 0)
+	if (strncmp(game, LIBRARY_FOLDER_PATH, strlen(LIBRARY_FOLDER_PATH)) != 0)
 	{
 		// There's no reliable way for us to determine the thumbnail path
 		return NULL;
 	}
 
 	// Skip the library directory root path component
-	const char * library_relative_game_path = game + strlen(RETROARCH_DEFAULT_LIBRARY_FILE_PATH);
+	const char * library_relative_game_path = game + strlen(LIBRARY_FOLDER_PATH);
 
 	// The given input path is outside of our managed library directory
 	if (*library_relative_game_path != '/')
