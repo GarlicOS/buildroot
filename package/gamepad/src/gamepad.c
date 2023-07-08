@@ -11,6 +11,7 @@
 
 #include "gamepad.h"
 #include "rg405m.h"
+#include "pocket2plus.h"
 
 int32_t get_merged_axis_min_value(int axis)
 {
@@ -73,6 +74,13 @@ void merge_inputs(int merged_gamepad)
 	{
 		// Merge gpio-keys & retrogame_joypad
 		merge_rg405m_inputs(merged_gamepad);
+	}
+
+	// We're handling the Retroid Pocket 2+
+	if (strcmp(code_name, "pocket2plus") == 0)
+	{
+		// Convert Retroid serial console controller events and combine them with gpio-keys
+		merge_pocket2plus_inputs(merged_gamepad);
 	}
 }
 
