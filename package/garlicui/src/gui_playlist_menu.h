@@ -460,7 +460,7 @@ static void gui_activate_playlist_menu(struct gui_node * this, const char * titl
 							cJSON * path = cJSON_GetObjectItem(item, "path");
 
 							// We managed to get the game path
-							if (path != NULL)
+							if (path != NULL && access(path->valuestring, F_OK) == 0)
 							{
 								// Create the thumbnail node
 								struct gui_node * node = gui_playlist_create_thumbnail_node(this, &first_node, &previous_node, path->valuestring, focused_height, unfocused_height, focused_screenshot_fallback, unfocused_screenshot_fallback, gui_activate_content, NULL, NULL , NULL, gui_invalidate_playlist_thumbnail);
