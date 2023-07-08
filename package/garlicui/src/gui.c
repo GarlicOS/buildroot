@@ -208,7 +208,7 @@ static char * gui_serialize_ui_state(struct gui_context * context)
 	for (struct gui_node * node = context->menu.root; node != NULL; node = node->child)
 	{
 		// The node state
-		char node_state[64];
+		char node_state[64 + PATH_MAX];
 
 		// We're handling with a path based menu node
 		if (node->type == NODE_TYPE_LIBRARY_DIRECTORY_MENU || node->type == NODE_TYPE_LIBRARY_FILE)
