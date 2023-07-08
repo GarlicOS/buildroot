@@ -132,7 +132,7 @@ static void gui_activate_favorite_toggle(struct gui_node * this)
 		// Remove all playlist items that match the given path from the favorites playlist
 		retroarch_remove_playlist_items_by_path(RETROARCH_DEFAULT_FAVORITES_PLAYLIST_FILE_PATH, item_menu_node_data->path);
 
-		// The item isn't favorited
+		// The item wasn't favorited
 		if (favorited_item == NULL)
 		{
 			// Create a playlist item skeleton
@@ -146,6 +146,88 @@ static void gui_activate_favorite_toggle(struct gui_node * this)
 
 			// Add the item to the favorites playlist
 			retroarch_add_playlist_item(RETROARCH_DEFAULT_FAVORITES_PLAYLIST_FILE_PATH, &favorite_item_skeleton);
+		}
+
+		// The item was favorited
+		else
+		{
+			// Get the context menu's parent menu node
+			struct gui_node * menu = this->parent->parent;
+
+			// The context menu is running on top of the favorites playlist menu
+			if (menu->type == NODE_TYPE_PLAYLIST_FAVORITES_MENU)
+			{
+				// Get the currently selected playlist item
+				struct gui_node * unfavorited_item = menu->child;
+
+				// We have more than one item in the playlist menu
+				if (unfavorited_item->next != unfavorited_item)
+				{
+					// Unlink the unfavorited item
+					unfavorited_item->previous->next = unfavorited_item->next;
+					unfavorited_item->next->previous = unfavorited_item->previous;
+
+					// Select the previous item
+					menu->child = menu->child->previous;
+				}
+
+				// This was the last item in the playlist menu
+				else
+				{
+					// Create the menu node
+					struct gui_node * node = gui_create_node(this->context, NULL, NULL, NULL, NULL, gui_invalidate_no_game_warning_message, NODE_TYPE_NO_GAME_WARNING_MESSAGE, NULL);
+
+					// We managed to create the menu node
+					if (node != NULL)
+					{
+						// The node population status
+						int populated = 0;
+
+						// Get the localized warning message
+						const char * warning_message = gettext("No games found!");
+
+						// Pre-render the normal surface
+						node->normal_surface = TTF_RenderUTF8_Blended(this->context->fonts.small, warning_message, SDL_ToSDLColor(this->context->colors.base.foreground));
+
+						// We managed to pre-render the normal surface
+						if (node->normal_surface != NULL)
+						{
+							// Pre-render the selected surface
+							node->selected_surface = icon_circled_text(this->context->fonts.small, this->context->colors.legend.foreground, this->context->colors.legend.background, warning_message, 0, (localization_font_height() + SCREEN_MARGIN) * this->context->surfaces.scale_factor, (SCREEN_MARGIN >> 1) * this->context->surfaces.scale_factor, NULL, 0);
+
+							// We managed to pre-render the selected surface
+							if (node->selected_surface != NULL)
+							{
+								// Link the node to its parent
+								node->parent = menu;
+
+								// Loop it around itself
+								node->next = node;
+								node->previous = node;
+
+								// And set it up to be the sole child of the playlist menu
+								menu->child = node;
+
+								// Mark the node as populated
+								populated = 1;
+							}
+						}
+
+						// We failed to populate the node
+						if (!populated)
+						{
+							// Destroy the node
+							gui_destroy_node(node, 1);
+
+							// NULL the node reference
+							node = NULL;
+						}
+					}
+				}
+
+				// Destroy the unfavorited item
+				gui_destroy_node(unfavorited_item, 1);
+			}
 		}
 
 		// We have an existing normal surface
