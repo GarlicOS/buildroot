@@ -6,6 +6,9 @@
  */
 static void gui_activate_retroarch_menu(struct gui_node * this)
 {
+	// Write the context configuration to disk (so we can restore the UI state on RetroArch exit)
+	gui_write_configuration(this->context);
+
 	// Run retroarch without parameters (which opens the RetroArch menu)
 	retroarch_run(NULL, NULL);
 }
