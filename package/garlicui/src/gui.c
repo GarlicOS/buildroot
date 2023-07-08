@@ -40,7 +40,7 @@ static SDL_Surface * gui_render_menu_legend_surface(struct gui_context * context
 	SDL_Color sdl_legend_foreground_color = SDL_ToSDLColor(context->colors.legend.foreground);
 
 	// Render the menu button legend surface
-	return icon_circled_text(context->fonts.small, context->colors.legend.foreground, context->colors.legend.background, gettext("Menu"), 0, (localization_font_height() + SCREEN_MARGIN) * context->surfaces.scale_factor, (SCREEN_MARGIN >> 1) * context->surfaces.scale_factor, SVG_Load("/usr/share/icons/hamburger.svg", DEFAULT_BAR_ICON_HEIGHT * context->surfaces.scale_factor, DEFAULT_BAR_ICON_HEIGHT * context->surfaces.scale_factor, &context->colors.legend.foreground), 1);
+	return icon_circled_text(context->fonts.small, context->colors.legend.foreground, context->colors.legend.background, gettext("Menu"), 0, (localization_font_height() + SCREEN_MARGIN) * context->surfaces.scale_factor, (SCREEN_MARGIN >> 1) * context->surfaces.scale_factor, icon_load("hamburger.svg", DEFAULT_BAR_ICON_HEIGHT * context->surfaces.scale_factor, DEFAULT_BAR_ICON_HEIGHT * context->surfaces.scale_factor, &context->colors.legend.foreground), 1);
 }
 
 /**
@@ -543,7 +543,7 @@ struct gui_context * gui_create_context(int argc, char * argv[])
 		}
 
 		// Render the garlic icon
-		context->surfaces.bars.top.logo.surface = SVG_Load("/usr/share/icons/garlic.svg", DEFAULT_BAR_ICON_HEIGHT * context->surfaces.scale_factor, DEFAULT_BAR_ICON_HEIGHT * context->surfaces.scale_factor, &context->colors.base.foreground);
+		context->surfaces.bars.top.logo.surface = icon_load("garlic.svg", DEFAULT_BAR_ICON_HEIGHT * context->surfaces.scale_factor, DEFAULT_BAR_ICON_HEIGHT * context->surfaces.scale_factor, &context->colors.base.foreground);
 
 		// We failed to render the garlic icon
 		if (context->surfaces.bars.top.logo.surface == NULL)
@@ -583,7 +583,7 @@ struct gui_context * gui_create_context(int argc, char * argv[])
 		}
 
 		// Render the notch overlay
-		context->surfaces.overlays.notch.surface = SVG_Load("/usr/share/icons/notch.svg", DEFAULT_NOTCH_WIDTH * context->surfaces.scale_factor, DEFAULT_NOTCH_HEIGHT * context->surfaces.scale_factor, &context->colors.notch.background);
+		context->surfaces.overlays.notch.surface = icon_load("notch.svg", DEFAULT_NOTCH_WIDTH * context->surfaces.scale_factor, DEFAULT_NOTCH_HEIGHT * context->surfaces.scale_factor, &context->colors.notch.background);
 
 		// We failed to render the notch overlay
 		if (context->surfaces.overlays.notch.surface == NULL)

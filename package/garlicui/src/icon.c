@@ -301,3 +301,58 @@ SDL_Surface * icon_paging_card(SDL_Surface * icon, int vertical_icon_alignment, 
 	// Return the rendered surface
 	return surface;
 }
+
+/**
+ * @brief Loads a SVG vector graphic from the system icon folder and renders it at the given resolution.
+ *
+ * This function is essentially a vector graphic version of IMG_Load.
+ * The returned SDL_Surface must be freed explicitly.
+ */
+SDL_Surface * icon_load(const char * relative_file_path, int width, int height, Uint32 * default_fill_color)
+{
+	// The rendered SVG vector graphic
+	SDL_Surface * surface = NULL;
+
+	// We were given a valid relative file path
+	if (relative_file_path != NULL)
+	{
+		// Allocate a buffer for the absolute file path
+		char * absolute_file_path = calloc(1, strlen(ICON_FOLDER_PATH) + 1 + strlen(relative_file_path) + 1);
+
+		// We managed to allocate a buffer for the absolute file path
+		if (absolute_file_path != NULL)
+		{
+			// Puzzle together the absolute file path
+			sprintf(absolute_file_path, "%s/%s", ICON_FOLDER_PATH, relative_file_path);
+
+			// Load and render the SVG vector graphic
+			surface = SVG_Load(absolute_file_path, width, height, default_fill_color);
+
+			// Free the absolute file path buffer
+			free(absolute_file_path);
+		}
+
+		// Fall back to the default system icon folder
+		if (surface == NULL)
+		{
+			// Allocate a buffer for the absolute file path
+			absolute_file_path = calloc(1, strlen(ICON_FOLDER_TEMPLATE_PATH) + 1 + strlen(relative_file_path) + 1);
+
+			// We managed to allocate a buffer for the absolute file path
+			if (absolute_file_path != NULL)
+			{
+				// Puzzle together the absolute file path
+				sprintf(absolute_file_path, "%s/%s", ICON_FOLDER_TEMPLATE_PATH, relative_file_path);
+
+				// Load and render the SVG vector graphic
+				surface = SVG_Load(absolute_file_path, width, height, default_fill_color);
+
+				// Free the absolute file path buffer
+				free(absolute_file_path);
+			}
+		}
+	}
+
+	// Return the rendered SVG vector graphic
+	return surface;
+}

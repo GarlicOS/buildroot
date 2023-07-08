@@ -241,7 +241,7 @@ static void gui_invalidate_playlist_thumbnail(struct gui_node * this)
 		SDL_Surface * unfocused_screenshot_fallback = NULL;
 
 		// Render the focused height search icon
-		SDL_Surface * focused_screenshot_fallback_icon = SVG_Load("/usr/share/icons/search.svg", focused_height * 0.6f, focused_height * 0.6f, &this->context->colors.legend.foreground);
+		SDL_Surface * focused_screenshot_fallback_icon = icon_load("search.svg", focused_height * 0.6f, focused_height * 0.6f, &this->context->colors.legend.foreground);
 
 		// We managed to render the focused height search icon
 		if (focused_screenshot_fallback_icon != NULL)
@@ -424,7 +424,7 @@ static void gui_activate_playlist_menu(struct gui_node * this, const char * titl
 						SDL_Surface * unfocused_screenshot_fallback = NULL;
 
 						// Render the focused height search icon
-						SDL_Surface * focused_screenshot_fallback_icon = SVG_Load("/usr/share/icons/search.svg", focused_height * 0.6f, focused_height * 0.6f, &this->context->colors.legend.foreground);
+						SDL_Surface * focused_screenshot_fallback_icon = icon_load("search.svg", focused_height * 0.6f, focused_height * 0.6f, &this->context->colors.legend.foreground);
 
 						// We managed to render the focused height search icon
 						if (focused_screenshot_fallback_icon != NULL)
@@ -669,7 +669,7 @@ static void gui_invalidate_continue_menu(struct gui_node * this)
 	gui_activate_menu(this, title);
 
 	// Render the normal size resume icon
-	SDL_Surface * icon = SVG_Load("/usr/share/icons/resume.svg", (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor, (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor, &this->context->colors.icon.foreground);
+	SDL_Surface * icon = icon_load("resume.svg", (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor, (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor, &this->context->colors.icon.foreground);
 
 	// We managed to render the normal size resume icon
 	if (icon != NULL)
@@ -696,7 +696,7 @@ static void gui_invalidate_continue_menu(struct gui_node * this)
 	}
 
 	// Render the small size resume icon
-	icon = SVG_Load("/usr/share/icons/resume.svg", (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor * UNFOCUSED_PAGING_CARD_WIDTH_SCALE_FACTOR, (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor * UNFOCUSED_PAGING_CARD_WIDTH_SCALE_FACTOR, &this->context->colors.icon.foreground);
+	icon = icon_load("resume.svg", (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor * UNFOCUSED_PAGING_CARD_WIDTH_SCALE_FACTOR, (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor * UNFOCUSED_PAGING_CARD_WIDTH_SCALE_FACTOR, &this->context->colors.icon.foreground);
 
 	// We managed to render the small size resume icon
 	if (icon != NULL)
@@ -761,7 +761,7 @@ static void gui_invalidate_favorites_menu(struct gui_node * this)
 	gui_activate_menu(this, title);
 
 	// Render the normal size favorite icon
-	SDL_Surface * icon = SVG_Load("/usr/share/icons/favorite.svg", (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor, (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor, &this->context->colors.icon.foreground);
+	SDL_Surface * icon = icon_load("favorite.svg", (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor, (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor, &this->context->colors.icon.foreground);
 
 	// We managed to render the normal size favorite icon
 	if (icon != NULL)
@@ -788,7 +788,7 @@ static void gui_invalidate_favorites_menu(struct gui_node * this)
 	}
 
 	// Render the small size favorite icon
-	icon = SVG_Load("/usr/share/icons/favorite.svg", (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor * UNFOCUSED_PAGING_CARD_WIDTH_SCALE_FACTOR, (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor * UNFOCUSED_PAGING_CARD_WIDTH_SCALE_FACTOR, &this->context->colors.icon.foreground);
+	icon = icon_load("favorite.svg", (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor * UNFOCUSED_PAGING_CARD_WIDTH_SCALE_FACTOR, (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor * UNFOCUSED_PAGING_CARD_WIDTH_SCALE_FACTOR, &this->context->colors.icon.foreground);
 
 	// We managed to render the small size favorite icon
 	if (icon != NULL)

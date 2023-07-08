@@ -22,6 +22,16 @@ typedef char * (*textformatter)(const char *);
 #define LIBRARY_FOLDER_PATH "/media/Library"
 
 /**
+ * @brief The folder that contains the icons.
+ */
+#define ICON_FOLDER_TEMPLATE_PATH "/usr/share/icons"
+
+/**
+ * @brief The folder that contains the icon overrides.
+ */
+#define ICON_FOLDER_PATH "/media/boot/icons"
+
+/**
  * @brief The directory in which all boot related files are stored.
  *
  * This includes the boot script, rootfs, global configuration file, etc.
@@ -175,7 +185,7 @@ void io_copy_file(const char * src_path, const char * dest_path);
 void io_copy_directory(const char * src_dir, const char * dest_dir);
 
 /**
- * @brief Unpacks the library template.
+ * @brief Unpacks a variety of needed resources.
  */
 void io_unpack_resources();
 

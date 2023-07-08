@@ -1029,10 +1029,30 @@ void io_copy_directory(const char * src_dir, const char * dest_dir)
 }
 
 /**
- * @brief Unpacks the library template.
+ * @brief Creates the required RetroArch folder structure.
+ */
+static void io_create_retroarch_folder_structure()
+{
+	// NOTE: RetroArch resets its directory settings if it can't find these...
+	mkdir("/media/RetroArch", 0700);
+	mkdir("/media/RetroArch/saves", 0700);
+	mkdir("/media/RetroArch/screenshots", 0700);
+	mkdir("/media/RetroArch/states", 0700);
+	mkdir("/media/RetroArch/system", 0700);
+	mkdir("/media/RetroArch/thumbnails", 0700);
+}
+
+/**
+ * @brief Unpacks a variety of needed resources.
  */
 void io_unpack_resources()
 {
 	// Unpack the library template
 	io_copy_directory(LIBRARY_FOLDER_TEMPLATE_PATH, LIBRARY_FOLDER_PATH);
+
+	// Unpack the system icons template
+	io_copy_directory(ICON_FOLDER_TEMPLATE_PATH, ICON_FOLDER_PATH);
+
+	// Create the required RetroArch folder structure
+	io_create_retroarch_folder_structure();
 }

@@ -2,6 +2,7 @@
 #define ICON_H
 
 #include "sdl.h"
+#include "io.h"
 
 /**
  * @brief The unscaled default icon height (based on a 640x480 reference implementation).
@@ -67,5 +68,13 @@ SDL_Surface * icon_circled_text(TTF_Font * font, Uint32 foreground_color, Uint32
  * @brief Renders a paging card.
  */
 SDL_Surface * icon_paging_card(SDL_Surface * icon, int vertical_icon_alignment, const char * font_path, int font_height, Uint32 foreground_color, Uint32 background_color, int padding, int width, int height, int radius, const char * text);
+
+/**
+ * @brief Loads a SVG vector graphic from the system icon folder and renders it at the given resolution.
+ *
+ * This function is essentially a vector graphic version of IMG_Load.
+ * The returned SDL_Surface must be freed explicitly.
+ */
+SDL_Surface * icon_load(const char * relative_file_path, int width, int height, Uint32 * default_fill_color);
 
 #endif

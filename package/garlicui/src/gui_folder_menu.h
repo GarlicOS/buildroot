@@ -267,7 +267,7 @@ static void gui_invalidate_folder_menu(struct gui_node * this)
 		gui_activate_menu(this, title);
 
 		// Render the normal size folder icon
-		SDL_Surface * icon = SVG_Load("/usr/share/icons/folder.svg", (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor, (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor, &this->context->colors.icon.foreground);
+		SDL_Surface * icon = icon_load("folder.svg", (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor, (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor, &this->context->colors.icon.foreground);
 
 		// We managed to render the normal size folder icon
 		if (icon != NULL)
@@ -294,7 +294,7 @@ static void gui_invalidate_folder_menu(struct gui_node * this)
 		}
 
 		// Render the small size folder icon
-		icon = SVG_Load("/usr/share/icons/folder.svg", (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor * UNFOCUSED_PAGING_CARD_WIDTH_SCALE_FACTOR, (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor * UNFOCUSED_PAGING_CARD_WIDTH_SCALE_FACTOR, &this->context->colors.icon.foreground);
+		icon = icon_load("folder.svg", (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor * UNFOCUSED_PAGING_CARD_WIDTH_SCALE_FACTOR, (DEFAULT_PAGING_CARD_WIDTH - SCREEN_MARGIN) * this->context->surfaces.scale_factor * UNFOCUSED_PAGING_CARD_WIDTH_SCALE_FACTOR, &this->context->colors.icon.foreground);
 
 		// We managed to render the small size folder icon
 		if (icon != NULL)
