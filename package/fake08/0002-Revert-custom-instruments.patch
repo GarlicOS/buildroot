@@ -1,0 +1,488 @@
+From 5304c5785cfabce81d35df8fd54c17a28055ac33 Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Sat, 8 Jul 2023 21:03:40 +0200
+Subject: [PATCH] Revert custom instruments
+
+---
+ source/Audio.cpp    | 213 +++++++++++++++++---------------------------
+ source/Audio.h      |   3 +-
+ source/PicoRam.h    |  25 +-----
+ test/audiotests.cpp | 105 ----------------------
+ 4 files changed, 83 insertions(+), 263 deletions(-)
+
+diff --git a/source/Audio.cpp b/source/Audio.cpp
+index 314cc26..8b4f059 100644
+--- a/source/Audio.cpp
++++ b/source/Audio.cpp
+@@ -265,8 +265,6 @@ static float key_to_freq(float key)
+     return 440.f * exp2((key - 33.f) / 12.f);
+ }
+ 
+-const float C2_FREQ = key_to_freq(24);
+-
+ int16_t Audio::getCurrentSfxId(int channel){
+     return _audioState._sfxChannels[channel].sfxId;
+ }
+@@ -289,77 +287,109 @@ int16_t Audio::getMusicTickCount(){
+     return _audioState._musicChannel.offset * _audioState._musicChannel.speed;
+ }
+ 
+-float Audio::getSampleForSfx(rawSfxChannel &channel, float freqShift) {
++//adapted from zepto8 sfx.cpp (wtfpl license)
++int16_t Audio::getSampleForChannel(int channelId){
++    using std::fabs;
++    using std::fmod;
++    using std::floor;
+     using std::max;
++
+     int const samples_per_second = 22050;
+ 
+-    if (channel.sfxId < 0 || channel.sfxId > 63) {
++    int16_t sample = 0;
++
++    const int index = _audioState._sfxChannels[channelId].sfxId;
++
++    sfxChannel *channel = &_audioState._sfxChannels[channelId];
++ 
++    // Advance music using the master channel
++    if (channelId == _audioState._musicChannel.master && _audioState._musicChannel.pattern != -1)
++    {
++        float const offset_per_second = 22050.f / (183.f * _audioState._musicChannel.speed);
++        float const offset_per_sample = offset_per_second / samples_per_second;
++        _audioState._musicChannel.offset += offset_per_sample;
++        _audioState._musicChannel.volume += _audioState._musicChannel.volume_step / samples_per_second;
++        _audioState._musicChannel.volume = clamp(_audioState._musicChannel.volume, 0.f, 1.f);
++
++        if (_audioState._musicChannel.volume_step < 0 && _audioState._musicChannel.volume <= 0)
++        {
++            // Fade out is finished, stop playing the current song
++            for (int i = 0; i < 4; ++i) {
++                if (_audioState._sfxChannels[i].is_music) {
++                    _audioState._sfxChannels[i].sfxId = -1;
++                }
++            }
++            _audioState._musicChannel.pattern = -1;
++        }
++        else if (_audioState._musicChannel.offset >= _audioState._musicChannel.length)
++        {
++            int16_t next_pattern = _audioState._musicChannel.pattern + 1;
++            int16_t next_count = _audioState._musicChannel.count + 1;
++            //todo: pull out these flags, get memory storage correct as well
++            if (_memory->songs[_audioState._musicChannel.pattern].getStop()) //stop part of the loop flag
++            {
++                next_pattern = -1;
++                next_count = _audioState._musicChannel.count;
++            }
++            else if (_memory->songs[_audioState._musicChannel.pattern].getLoop()){
++                while (--next_pattern > 0 && !_memory->songs[next_pattern].getStart())
++                    ;
++            }
++
++            _audioState._musicChannel.count = next_count;
++            set_music_pattern(next_pattern);
++        }
++    }
++
++    if (index < 0 || index > 63) {
+         //no (valid) sfx here. return silence
+         return 0;
+     }
+-    struct sfx const &sfx = _memory->sfx[channel.sfxId];
++
++    struct sfx const &sfx = _memory->sfx[index];
+ 
+     // Speed must be 1—255 otherwise the SFX is invalid
+     int const speed = max(1, (int)sfx.speed);
+ 
++    float const offset = channel->offset;
++
+     // PICO-8 exports instruments as 22050 Hz WAV files with 183 samples
+     // per speed unit per note, so this is how much we should advance
+     float const offset_per_second = 22050.f / (183.f * speed);
+     float const offset_per_sample = offset_per_second / samples_per_second;
+-    float next_offset = channel.offset + offset_per_sample;
++    float next_offset = offset + offset_per_sample;
+ 
+     // Handle SFX loops. From the documentation: “Looping is turned
+     // off when the start index >= end index”.
+     float const loop_range = float(sfx.loopRangeEnd - sfx.loopRangeStart);
+-    if (loop_range > 0.f && next_offset >= sfx.loopRangeStart && channel.can_loop) {
++    if (loop_range > 0.f && next_offset >= sfx.loopRangeStart && channel->can_loop) {
+         next_offset = fmod(next_offset - sfx.loopRangeStart, loop_range)
+                     + sfx.loopRangeStart;
+     }
+ 
+-    int const note_idx = (int)floor(channel.offset);
+-    channel.current_note.n=sfx.notes[note_idx];
++    int const note_idx = (int)floor(offset);
++    channel->current_note.n=sfx.notes[note_idx];
+     int const next_note_idx = (int)floor(next_offset);
+ 
++    uint8_t key = sfx.notes[note_idx].getKey();
++    float volume = sfx.notes[note_idx].getVolume() / 7.f;
+ 
+ 
+-    /*
+-    if (volume == 0.f){
+-        //volume all the way off. return silence, but make sure to set stuff
+-        channel.offset = next_offset;
+-
+-        if (next_offset >= 32.f){
+-            channel.sfxId = -1;
+-            if (channel.getChildChannel()) {
+-              channel.getChildChannel()->sfxId = -1;
+-            }
+-        }
+-        else if (next_note_idx != note_idx){
+-            channel.prev_note = sfx.notes[note_idx];
+-        }
+-
+-        return 0;
+-    }
+-    */
+-
+     // tiniest fade in/out to fix popping
+     // the real version uses a crossfade it looks like
+     // 25 samples was estimated from looking at pcm out from pico-8
+     float const fade_duration = offset_per_sample * 25;
+-    float offset_part = fmod(channel.offset, 1.f);
++    float offset_part = fmod(channel->offset, 1.f);
+     float crossfade = 0;
+     if (offset_part < fade_duration) {
+       crossfade = (fade_duration-offset_part)/fade_duration;
+     }
+     
+-
+-    bool custom = (bool) sfx.notes[note_idx].getCustom() && channel.getChildChannel() != NULL; 
+-    // it seems we're not allowed to play custom instruments
+-    // recursively inside a custom instrument.
+-    float waveform = this->getSampleForNote(channel.current_note, channel, channel.getChildChannel(), channel.prev_note.n, freqShift, false);
++    float waveform = this->getSampleForNote(channel->current_note, *channel, channel->prev_note.n, false);
+     if (crossfade > 0) {
+       waveform *= (1.0f-crossfade);
+       note dummyNote;
+-      waveform+= crossfade * this->getSampleForNote(channel.prev_note, channel, channel.getPrevChildChannel(), dummyNote, freqShift, true);
++      waveform+= crossfade * this->getSampleForNote(channel->prev_note, *channel, dummyNote, true);
+     }
+     uint8_t len = sfx.loopRangeEnd == 0 ? 32 : sfx.loopRangeEnd;
+     bool lastNote = note_idx == len - 1;
+@@ -369,37 +399,31 @@ float Audio::getSampleForSfx(rawSfxChannel &channel, float freqShift) {
+ 
+     // Apply master music volume from fade in/out
+     // FIXME: check whether this should be done after distortion
+-    if (channel.is_music) {
++    if (channel->is_music) {
+         waveform *= _audioState._musicChannel.volume;
+     }
+ 
+-    channel.offset = next_offset;
++    channel->offset = next_offset;
+ 
+     if (next_offset >= 32.f){
+-        channel.sfxId = -1;
+-        if (custom) {
+-          channel.getChildChannel()->sfxId = -1;
+-        }
++        channel->sfxId = -1;
+     }
+     else if (next_note_idx != note_idx){
+-        channel.prev_note = channel.current_note; //sfx.notes[note_idx].getKey();
+-        channel.current_note.n = sfx.notes[next_note_idx];
+-        channel.current_note.phi = channel.prev_note.phi;
+-        if (custom) {
+-            if (!sfx.notes[next_note_idx].getCustom() ||
+-                sfx.notes[next_note_idx].getKey() != sfx.notes[note_idx].getKey() ||
+-                sfx.notes[next_note_idx].getWaveform() != sfx.notes[note_idx].getWaveform()
+-              ) {
+-                channel.rotateChannels();
+-                channel.getChildChannel()->sfxId = -1;
+-            }
+-        }
++        channel->prev_note = channel->current_note; //sfx.notes[note_idx].getKey();
++        channel->current_note.n = sfx.notes[next_note_idx];
++        channel->current_note.phi = channel->prev_note.phi;
+     }
+-    return waveform;
+ 
++    sample = (int16_t)(32767.99f * waveform);
++
++    // TODO: Apply hardware effects
++    if (_memory->hwState.distort & (1 << channelId)) {
++        sample = sample / 0x1000 * 0x1249;
++    }
++    return sample;
+ }
+ 
+-float Audio::getSampleForNote(noteChannel &channel, rawSfxChannel &parentChannel, rawSfxChannel *childChannel, note prev_note, float freqShift, bool forceRemainder) {
++float Audio::getSampleForNote(noteChannel &channel, sfxChannel &parentChannel,  note prev_note, bool forceRemainder) {
+     using std::max;
+     float offset = parentChannel.offset;
+     int const samples_per_second = 22050;
+@@ -466,86 +490,9 @@ float Audio::getSampleForNote(noteChannel &channel, rawSfxChannel &parentChannel
+             break;
+         }
+     }
+-    freq*=freqShift;
+     
+-    bool custom = (bool) channel.n.getCustom() && childChannel != NULL;
+     float waveform;
+-    if (custom) {
+-      if (childChannel->sfxId == -1) {
+-        // initialize child channel
+-        childChannel->sfxId = channel.n.getWaveform();
+-        childChannel->offset = 0;
+-        childChannel->current_note.phi = 0;
+-        childChannel->can_loop = true;
+-        // don't want to double lower volume for music subchannel
+-        childChannel->is_music = false;
+-        childChannel->prev_note.n.setKey(0);
+-        childChannel->prev_note.n.setVolume(0);
+-      }
+-      waveform = volume * this->getSampleForSfx(*childChannel, freq/C2_FREQ);
+-    } else {
+-      waveform = volume * z8::synth::waveform(channel.n.getWaveform(), channel.phi);
+-    }
++    waveform = volume * z8::synth::waveform(channel.n.getWaveform(), channel.phi);
+     channel.phi = channel.phi + freq / samples_per_second;
+     return waveform;
+ }
+-
+-
+-//adapted from zepto8 sfx.cpp (wtfpl license)
+-int16_t Audio::getSampleForChannel(int channel){
+-    using std::fabs;
+-    using std::fmod;
+-    using std::floor;
+-    using std::max;
+-
+-    int const samples_per_second = 22050;
+-
+-    int16_t sample = 0;
+-
+-    // Advance music using the master channel
+-    if (channel == _audioState._musicChannel.master && _audioState._musicChannel.pattern != -1)
+-    {
+-        float const offset_per_second = 22050.f / (183.f * _audioState._musicChannel.speed);
+-        float const offset_per_sample = offset_per_second / samples_per_second;
+-        _audioState._musicChannel.offset += offset_per_sample;
+-        _audioState._musicChannel.volume += _audioState._musicChannel.volume_step / samples_per_second;
+-        _audioState._musicChannel.volume = clamp(_audioState._musicChannel.volume, 0.f, 1.f);
+-
+-        if (_audioState._musicChannel.volume_step < 0 && _audioState._musicChannel.volume <= 0)
+-        {
+-            // Fade out is finished, stop playing the current song
+-            for (int i = 0; i < 4; ++i) {
+-                if (_audioState._sfxChannels[i].is_music) {
+-                    _audioState._sfxChannels[i].sfxId = -1;
+-                }
+-            }
+-            _audioState._musicChannel.pattern = -1;
+-        }
+-        else if (_audioState._musicChannel.offset >= _audioState._musicChannel.length)
+-        {
+-            int16_t next_pattern = _audioState._musicChannel.pattern + 1;
+-            int16_t next_count = _audioState._musicChannel.count + 1;
+-            //todo: pull out these flags, get memory storage correct as well
+-            if (_memory->songs[_audioState._musicChannel.pattern].getStop()) //stop part of the loop flag
+-            {
+-                next_pattern = -1;
+-                next_count = _audioState._musicChannel.count;
+-            }
+-            else if (_memory->songs[_audioState._musicChannel.pattern].getLoop()){
+-                while (--next_pattern > 0 && !_memory->songs[next_pattern].getStart())
+-                    ;
+-            }
+-
+-            _audioState._musicChannel.count = next_count;
+-            set_music_pattern(next_pattern);
+-        }
+-    }
+-
+-    sample = (int16_t) (32767.99f * this->getSampleForSfx(_audioState._sfxChannels[channel]));
+-
+-    // TODO: Apply hardware effects
+-    if (_memory->hwState.distort & (1 << channel)) {
+-        sample = sample / 0x1000 * 0x1249;
+-    }
+-    return sample;
+-}
+diff --git a/source/Audio.h b/source/Audio.h
+index 4d8f4db..864335e 100644
+--- a/source/Audio.h
++++ b/source/Audio.h
+@@ -93,9 +93,8 @@ class Audio {
+     void set_music_pattern(int pattern);
+     
+     public:
+-    float getSampleForSfx(rawSfxChannel &channel, float freqShift = 1.0f);
+     int16_t getSampleForChannel(int channel);
+-    float getSampleForNote(noteChannel &note_channel, rawSfxChannel &parentChannel, rawSfxChannel *childChannel, note prev_note, float freqShift, bool forceRemainder);
++    float getSampleForNote(noteChannel &channel, sfxChannel &parentChannel,  note prev_note, bool forceRemainder);
+ 
+     public:
+     Audio(PicoRam* memory);
+diff --git a/source/PicoRam.h b/source/PicoRam.h
+index ff4c4e9..90d66f0 100644
+--- a/source/PicoRam.h
++++ b/source/PicoRam.h
+@@ -135,35 +135,13 @@ struct noteChannel {
+     note n;
+ };
+ 
+-struct rawSfxChannel {
++struct sfxChannel {
+     int16_t sfxId = -1;
+     float offset = 0;
+     bool can_loop = true;
+     bool is_music = false;
+     noteChannel current_note;
+     noteChannel prev_note;
+-    virtual rawSfxChannel *getChildChannel() {
+-      return NULL;
+-    }
+-    virtual rawSfxChannel *getPrevChildChannel() {
+-      return NULL;
+-    }
+-    virtual void rotateChannels() {
+-    }
+-};
+-
+-struct sfxChannel : rawSfxChannel {
+-    rawSfxChannel customInstrumentChannel;
+-    rawSfxChannel prevInstrumentChannel;
+-    virtual rawSfxChannel *getChildChannel() {
+-      return &(this->customInstrumentChannel);
+-    }
+-    virtual rawSfxChannel *getPrevChildChannel() {
+-      return &(this->prevInstrumentChannel);
+-    }
+-    virtual void rotateChannels() {
+-      prevInstrumentChannel = customInstrumentChannel;
+-    }
+ };
+ 
+ struct audioState_t {
+@@ -317,3 +295,4 @@ struct PicoRam
+         uint8_t data[0x10000];
+     };
+ };
++
+diff --git a/test/audiotests.cpp b/test/audiotests.cpp
+index 4e01946..f9cc6b7 100644
+--- a/test/audiotests.cpp
++++ b/test/audiotests.cpp
+@@ -59,111 +59,6 @@ TEST_CASE("audio class behaves as expected") {
+     Audio* audio = new Audio(&picoRam);
+     audioState_t* audioState = audio->getAudioState();
+ 
+-   SUBCASE("custom instruments same note"){
+-        note c;
+-
+-        c.setCustom(true);
+-        c.setWaveform(1);
+-        c.setVolume(5);
+-        c.setKey(24);
+-
+-        picoRam.sfx[0].speed = 32;
+-        picoRam.sfx[0].notes[0] = c;
+-        picoRam.sfx[0].notes[1] = c;
+-
+-        picoRam.sfx[1].speed=8;
+-        //183 is one tick
+-        for (int i=0;i<8;i++) {
+-          picoRam.sfx[1].notes[i].setVolume(5);
+-          picoRam.sfx[1].notes[i].setWaveform(1);
+-        }
+-        picoRam.sfx[1].notes[0].setKey(24);
+-        picoRam.sfx[1].notes[1].setKey(26);
+-        picoRam.sfx[1].notes[2].setKey(28);
+-        picoRam.sfx[1].notes[3].setKey(29);
+-        picoRam.sfx[1].notes[4].setKey(31);
+-        picoRam.sfx[1].notes[5].setKey(33);
+-        picoRam.sfx[1].notes[6].setKey(35);
+-        picoRam.sfx[1].notes[7].setKey(36);
+-
+-        sfxChannel s;
+-        s.sfxId=0;
+-        s.offset=0;
+-        s.current_note.phi=0;
+-
+-        for (int i=0; i<183*4; i++) { audio->getSampleForSfx(s); }
+-        CHECK_EQ(s.getChildChannel()->current_note.n.getKey(), 24);
+-        for (int i=0; i<183*8; i++) { audio->getSampleForSfx(s); }
+-        CHECK_EQ(s.getChildChannel()->current_note.n.getKey(), 26);
+-        for (int i=0; i<183*8; i++) { audio->getSampleForSfx(s); }
+-        CHECK_EQ(s.getChildChannel()->current_note.n.getKey(), 28);
+-        for (int i=0; i<183*8; i++) { audio->getSampleForSfx(s); }
+-        CHECK_EQ(s.getChildChannel()->current_note.n.getKey(), 29);
+-        for (int i=0; i<183*8; i++) { audio->getSampleForSfx(s); }
+-        CHECK_EQ(s.getChildChannel()->current_note.n.getKey(), 31);
+-        for (int i=0; i<183*8; i++) { audio->getSampleForSfx(s); }
+-        CHECK_EQ(s.getChildChannel()->current_note.n.getKey(), 33);
+-        for (int i=0; i<183*8; i++) { audio->getSampleForSfx(s); }
+-        CHECK_EQ(s.getChildChannel()->current_note.n.getKey(), 35);
+-        for (int i=0; i<183*8; i++) { audio->getSampleForSfx(s); }
+-        CHECK_EQ(s.getChildChannel()->current_note.n.getKey(), 36);
+-   }
+-
+-   SUBCASE("custom instruments different note"){
+-        note c,d;
+-
+-        c.setCustom(true);
+-        c.setWaveform(1);
+-        c.setVolume(5);
+-        c.setKey(24);
+-        d.setCustom(true);
+-        d.setWaveform(1);
+-        d.setVolume(5);
+-        d.setKey(26);
+-
+-        picoRam.sfx[0].speed = 32;
+-        picoRam.sfx[0].notes[0] = c;
+-        picoRam.sfx[0].notes[1] = d;
+-
+-        picoRam.sfx[1].speed=8;
+-        //183 is one tick
+-        for (int i=0;i<8;i++) {
+-          picoRam.sfx[1].notes[i].setVolume(5);
+-          picoRam.sfx[1].notes[i].setWaveform(1);
+-        }
+-        picoRam.sfx[1].notes[0].setKey(24);
+-        picoRam.sfx[1].notes[1].setKey(26);
+-        picoRam.sfx[1].notes[2].setKey(28);
+-        picoRam.sfx[1].notes[3].setKey(29);
+-        picoRam.sfx[1].notes[4].setKey(31);
+-        picoRam.sfx[1].notes[5].setKey(33);
+-        picoRam.sfx[1].notes[6].setKey(35);
+-        picoRam.sfx[1].notes[7].setKey(36);
+-
+-        sfxChannel s;
+-        s.sfxId=0;
+-        s.offset=0;
+-        s.current_note.phi=0;
+-
+-        for (int i=0; i<183*4; i++) { audio->getSampleForSfx(s); }
+-        CHECK_EQ(s.getChildChannel()->current_note.n.getKey(), 24);
+-        for (int i=0; i<183*8; i++) { audio->getSampleForSfx(s); }
+-        CHECK_EQ(s.getChildChannel()->current_note.n.getKey(), 26);
+-        for (int i=0; i<183*8; i++) { audio->getSampleForSfx(s); }
+-        CHECK_EQ(s.getChildChannel()->current_note.n.getKey(), 28);
+-        for (int i=0; i<183*8; i++) { audio->getSampleForSfx(s); }
+-        CHECK_EQ(s.getChildChannel()->current_note.n.getKey(), 29);
+-        for (int i=0; i<183*8; i++) { audio->getSampleForSfx(s); }
+-        CHECK_EQ(s.getChildChannel()->current_note.n.getKey(), 24);
+-        for (int i=0; i<183*8; i++) { audio->getSampleForSfx(s); }
+-        CHECK_EQ(s.getChildChannel()->current_note.n.getKey(), 26);
+-        for (int i=0; i<183*8; i++) { audio->getSampleForSfx(s); }
+-        CHECK_EQ(s.getChildChannel()->current_note.n.getKey(), 28);
+-        for (int i=0; i<183*8; i++) { audio->getSampleForSfx(s); }
+-        CHECK_EQ(s.getChildChannel()->current_note.n.getKey(), 29);
+-        for (int i=0; i<183*8; i++) { audio->getSampleForSfx(s); }
+-   }
+-
+     SUBCASE("Audio constructor sets sfx channels to -1") {
+         bool allChannelsOff = true;
+         
+-- 
+2.25.1
+

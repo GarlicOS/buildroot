@@ -1,0 +1,53 @@
+From e55841d86efb8b6e5073f161392fbabf9cb64b5b Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Sat, 8 Jul 2023 20:56:02 +0200
+Subject: [PATCH] Fix save crashes
+
+---
+ platform/libretro/libretro.cpp | 9 +--------
+ source/hostCommonFunctions.cpp | 6 ++----
+ 2 files changed, 3 insertions(+), 12 deletions(-)
+
+diff --git a/platform/libretro/libretro.cpp b/platform/libretro/libretro.cpp
+index bc160db..473c49f 100644
+--- a/platform/libretro/libretro.cpp
++++ b/platform/libretro/libretro.cpp
+@@ -509,14 +509,7 @@ EXPORT bool retro_load_game(struct retro_game_info const *info)
+         setCartDirectory(containingDir);
+     }
+ 
+-    if (info->size > 0) {
+-        const unsigned char* data = reinterpret_cast<const unsigned char*>(info->data);
+-        _vm->QueueCartChange(data, info->size);
+-        
+-    }
+-    else {
+-        _vm->QueueCartChange(info->path);
+-    }
++    _vm->QueueCartChange(info->path);
+ 
+     return true;
+ }
+diff --git a/source/hostCommonFunctions.cpp b/source/hostCommonFunctions.cpp
+index 2a0aa50..5d33cbc 100644
+--- a/source/hostCommonFunctions.cpp
++++ b/source/hostCommonFunctions.cpp
+@@ -206,13 +206,11 @@ std::string Host::getCartDataFileContents(std::string cartDataKey) {
+ }
+ 
+ void Host::saveCartData(std::string cartDataKey, std::string contents) {
+-    FILE * file = freopen(getCartDataFile(cartDataKey).c_str(), "w", stderr);
++    std::string cartDataFile = getCartDataFile(cartDataKey);
++    FILE * file = fopen(cartDataFile.c_str(), "w");
+     if( file != NULL ) {
+ 		//Initialize data
+         fprintf(file, "%s", contents.c_str());
+-		
+-        fflush(file);
+-        
+         fclose(file);
+ 	}
+ }
+-- 
+2.25.1
+
