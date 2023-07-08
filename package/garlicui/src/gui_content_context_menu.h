@@ -68,6 +68,9 @@ static void gui_activate_restart(struct gui_node * this)
 			// Delete the item's savestate
 			remove(savestate_path);
 
+			// Flush all pending write operations to disk
+			io_sync();
+
 			// Start the game
 			gui_activate_content(this->parent->parent->child);
 		}

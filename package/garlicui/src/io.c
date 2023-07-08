@@ -900,8 +900,12 @@ int io_does_folder_contain_games(const char * path, int include_files, int inclu
  */
 void io_sync()
 {
-	// Sync the pending write operations to disk
-	system("sync");
+	// Do this a few times for good measure (some MicroSD cards are weird)
+	for (int i = 0; i < 5; i++)
+	{
+		// Sync the pending write operations to disk
+		system("sync");
+	}
 }
 
 /**
@@ -909,12 +913,8 @@ void io_sync()
  */
 void io_shutdown()
 {
-	// Do this a few times for good measure (some MicroSD cards are weird)
-	for (int i = 0; i < 5; i++)
-	{
-		// Flush all pending write operations to disk
-		io_sync();
-	}
+	// Flush all pending write operations to disk
+	io_sync();
 
 	// Open the SysRq trigger file
 	FILE * sysrq = fopen("/proc/sysrq-trigger", "w");
