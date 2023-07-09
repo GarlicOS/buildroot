@@ -1,0 +1,173 @@
+From 55f283d92e171b2e28446c4d77cab0b368530265 Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Sun, 9 Jul 2023 01:44:19 +0200
+Subject: [PATCH] Implement "Keep Aspect Ratio"
+
+---
+ gfx/drivers/sdl_gfx.c                     | 89 +++++++++++++++++++++--
+ libretro-common/include/gfx/video_frame.h | 11 ++-
+ 2 files changed, 90 insertions(+), 10 deletions(-)
+
+diff --git a/gfx/drivers/sdl_gfx.c b/gfx/drivers/sdl_gfx.c
+index d015987..190b73e 100644
+--- a/gfx/drivers/sdl_gfx.c
++++ b/gfx/drivers/sdl_gfx.c
+@@ -60,6 +60,11 @@ typedef struct sdl_video
+    sdl_menu_frame_t menu;
+    SDL_Surface *screen;
+ 
++   int x;
++   int y;
++   int w;
++   int h;
++
+    void *font;
+    const font_renderer_driver_t *font_driver;
+ } sdl_video_t;
+@@ -237,6 +242,67 @@ static void sdl_gfx_set_handles(void)
+ #endif
+ }
+ 
++static void sdl_refresh_viewport(sdl_video_t *vid)
++{
++   // Get the settings
++   settings_t *settings = config_get_ptr();
++   bool video_scale_integer = settings->bools.video_scale_integer;
++   unsigned aspect_ratio_idx = settings->uints.video_aspect_ratio_idx;
++
++   // We have a valid screen surface to work with
++   if (vid->screen)
++   {
++      // We always start off with a full screen viewport
++      int x = 0;
++      int y = 0;
++      unsigned w = vid->screen->w;
++      unsigned h = vid->screen->h;
++
++      // We want a specific aspect ratio
++      if (aspect_ratio_idx != ASPECT_RATIO_FULL)
++      {
++         // The calculated aspect ratios & delta
++         float delta;
++         float device_aspect  = (float)w / h;
++         float desired_aspect = video_driver_get_aspect_ratio();
++
++         // The screen size deviates enough from the desired aspect ratio
++         if (fabsf(device_aspect - desired_aspect) >= 0.0001f)
++         {
++            if (device_aspect > desired_aspect)
++            {
++               delta = (desired_aspect / device_aspect - 1.0f) / 2.0f + 0.5f;
++               x = (int)roundf(w * (0.5f - delta));
++               w = (unsigned)roundf(2.0f * w * delta);
++            }
++            else
++            {
++               delta  = (device_aspect / desired_aspect - 1.0f) / 2.0f + 0.5f;
++               y = (int)roundf(h * (0.5f - delta));
++               h = (unsigned)roundf(2.0f * h * delta);
++            }
++
++            // The viewport would overflow the screen surface buffer
++            if (h >= vid->screen->h)
++            {
++               // Leave one row of pixels unused (enabling us to make use of pixel buffer shifts in RA's scaler)
++               h = vid->screen->h - 1;
++            }
++         }
++      }
++
++      // At least one of the values changed
++      if (vid->x != x || vid->y != y || vid->w != w || vid->h != h)
++      {
++         // Configure the viewport
++         vid->x = x;
++         vid->y = y;
++         vid->w = w;
++         vid->h = h;
++      }
++   }
++}
++
+ static void *sdl_gfx_init(const video_info_t *video,
+       input_driver_t **input, void **input_data)
+ {
+@@ -337,6 +403,8 @@ static void *sdl_gfx_init(const video_info_t *video,
+       goto error;
+    }
+ 
++   sdl_refresh_viewport(vid);
++
+    return vid;
+ 
+ error:
+@@ -372,6 +440,8 @@ static bool sdl_gfx_frame(void *data, const void *frame, unsigned width,
+    if (!vid)
+       return true;
+ 
++   sdl_refresh_viewport(vid);
++
+    title[0] = '\0';
+ 
+    video_driver_get_window_title(title, sizeof(title));
+@@ -388,22 +458,29 @@ static bool sdl_gfx_frame(void *data, const void *frame, unsigned width,
+       if (SDL_MUSTLOCK(vid->screen))
+          SDL_LockSurface(vid->screen);
+ 
++      char * pixels = vid->screen->pixels;
++
++      if (vid->w != vid->screen->w || vid->h != vid->screen->h)
++      {
++         pixels += (vid->y * vid->screen->pitch) + (vid->x * sizeof(uint32_t));
++         SDL_FillRect(vid->screen, NULL, SDL_MapRGB(vid->screen->format, 0, 0, 0));
++      }
++
+       video_frame_scale(
+             &vid->scaler,
+-            vid->screen->pixels,
++            pixels,
+             frame,
+             vid->scaler.in_fmt,
+-            vid->screen->w,
+-            vid->screen->h,
++            vid->w,
++            vid->h,
+             vid->screen->pitch,
+             width,
+             height,
+-            pitch); 
+-
++            pitch);
+ 
+       if (SDL_MUSTLOCK(vid->screen))
+          SDL_UnlockSurface(vid->screen);
+-      
++
+       if (msg)
+          sdl_render_msg(vid, vid->screen,
+          msg, vid->screen->w, vid->screen->h, vid->screen->format,
+diff --git a/libretro-common/include/gfx/video_frame.h b/libretro-common/include/gfx/video_frame.h
+index 05ba3f7..cc359f0 100644
+--- a/libretro-common/include/gfx/video_frame.h
++++ b/libretro-common/include/gfx/video_frame.h
+@@ -82,10 +82,13 @@ static INLINE void video_frame_scale(
+       unsigned pitch)
+ {
+    if (
+-            width  != (unsigned)scaler->in_width
+-         || height != (unsigned)scaler->in_height
+-         || format != scaler->in_fmt
+-         || pitch  != (unsigned)scaler->in_stride
++            width         != (unsigned)scaler->in_width
++         || height        != (unsigned)scaler->in_height
++         || format        != scaler->in_fmt
++         || pitch         != (unsigned)scaler->in_stride
++         || scaler_width  != (unsigned)scaler->out_width
++         || scaler_height != (unsigned)scaler->out_height
++         || scaler_pitch  != (unsigned)scaler->out_stride
+       )
+    {
+       scaler->in_fmt    = format;
+-- 
+2.25.1
+
