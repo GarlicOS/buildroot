@@ -497,7 +497,7 @@ SDL_Surface * SDL_ConvertToRGBASurface(SDL_Surface * surface, int free_input_sur
 	if (surface != NULL)
 	{
 		// Create a new surface with the desired format
-		convertedSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, surface->w, surface->h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
+		convertedSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, surface->w, surface->h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 
 		// We managed to create a new surface
 		if (convertedSurface != NULL)
