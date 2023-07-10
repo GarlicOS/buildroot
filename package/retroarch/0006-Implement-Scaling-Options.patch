@@ -1,0 +1,224 @@
+From 9b45e3c6a72ad004e741ea60243f462af1283916 Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Sun, 9 Jul 2023 01:44:19 +0200
+Subject: [PATCH] Implement Scaling Options
+
+---
+ gfx/drivers/sdl_gfx.c                     | 150 ++++++++++++++++++++--
+ libretro-common/include/gfx/video_frame.h |  11 +-
+ 2 files changed, 148 insertions(+), 13 deletions(-)
+
+diff --git a/gfx/drivers/sdl_gfx.c b/gfx/drivers/sdl_gfx.c
+index d015987..f94fefc 100644
+--- a/gfx/drivers/sdl_gfx.c
++++ b/gfx/drivers/sdl_gfx.c
+@@ -60,6 +60,14 @@ typedef struct sdl_video
+    sdl_menu_frame_t menu;
+    SDL_Surface *screen;
+ 
++   SDL_Rect system_viewport;
++   SDL_Rect screen_viewport;
++   unsigned system_shift;
++   unsigned screen_shift;
++   bool video_scale_integer;
++   bool video_scale_integer_overscale;
++   unsigned aspect_ratio_idx;
++
+    void *font;
+    const font_renderer_driver_t *font_driver;
+ } sdl_video_t;
+@@ -237,6 +245,121 @@ static void sdl_gfx_set_handles(void)
+ #endif
+ }
+ 
++static void sdl_refresh_viewport(sdl_video_t *vid, unsigned width, unsigned height, unsigned pitch)
++{
++   // Get the settings
++   settings_t *settings = config_get_ptr();
++   vid->video_scale_integer = settings->bools.video_scale_integer;
++   vid->video_scale_integer_overscale = settings->bools.video_scale_integer_overscale;
++   vid->aspect_ratio_idx = settings->uints.video_aspect_ratio_idx;
++
++   // We always start off with a full system viewport
++   vid->system_viewport.x = 0;
++   vid->system_viewport.y = 0;
++   vid->system_viewport.w = width;
++   vid->system_viewport.h = height;
++   vid->system_shift = 0;
++
++   // We have a valid screen surface to work with
++   if (vid->screen)
++   {
++      // We always start off with a full screen viewport
++      vid->screen_viewport.x = 0;
++      vid->screen_viewport.y = 0;
++      vid->screen_viewport.w = vid->screen->w;
++      vid->screen_viewport.h = vid->screen->h;
++      vid->screen_shift = 0;
++
++      // We're trying to do integer scaling
++      if (vid->video_scale_integer)
++      {
++         // Calculate the scaling factor
++         float scale_x = (float)vid->screen_viewport.w / width;
++         float scale_y = (float)vid->screen_viewport.h / height;
++         int scale = scale_x > scale_y ? (int)scale_y : (int)scale_x;
++
++         // We can't underrun 1x scale with integer scaling
++         if (scale < 1)
++         {
++            scale = 1;
++         }
++
++         // We want to overscale
++         if (vid->video_scale_integer_overscale)
++         {
++            scale++;
++         }
++
++         // Update the screen viewport
++         vid->screen_viewport.w = width * scale;
++         vid->screen_viewport.h = height * scale;
++         vid->screen_viewport.x += (vid->screen->w - vid->screen_viewport.w) / 2;
++         vid->screen_viewport.y += (vid->screen->h - vid->screen_viewport.h) / 2;
++
++         // Calculate the next batch of viewport data
++         if (vid->screen_viewport.y < 0)
++         {
++            vid->screen_viewport.y *= (-1);
++            vid->system_viewport.y = height * ((float)vid->screen_viewport.y / vid->screen->h);
++            vid->system_viewport.h -= vid->system_viewport.y << 1;
++            vid->system_shift += vid->system_viewport.y * pitch;
++            vid->screen_viewport.y = 0;
++         }
++         if (vid->screen_viewport.x < 0)
++         {
++            vid->screen_viewport.x *= (-1);
++            vid->system_viewport.x = width * ((float)vid->screen_viewport.x / vid->screen->w);
++            vid->system_viewport.w -= vid->system_viewport.x << 1;
++            vid->system_shift += vid->system_viewport.x * pitch / width;
++            vid->screen_viewport.x = 0;
++         }
++
++         // We can't exceed the screen dimensions
++         if (vid->screen_viewport.w > vid->screen->w)
++         {
++            vid->screen_viewport.w = vid->screen->w;
++         }
++         if (vid->screen_viewport.h > vid->screen->h)
++         {
++            vid->screen_viewport.h = vid->screen->h;
++         }
++      }
++
++      // We want a specific aspect ratio
++      else if (vid->aspect_ratio_idx != ASPECT_RATIO_FULL)
++      {
++         // The calculated aspect ratios & delta
++         float delta;
++         float device_aspect = (float)vid->screen_viewport.w / vid->screen_viewport.h;
++         float desired_aspect = video_driver_get_aspect_ratio();
++
++         // The screen size deviates enough from the desired aspect ratio
++         if (fabsf(device_aspect - desired_aspect) >= 0.0001f)
++         {
++            // Calculate the viewport's position & dimension
++            if (device_aspect > desired_aspect)
++            {
++               delta = (desired_aspect / device_aspect - 1.0f) / 2.0f + 0.5f;
++               vid->screen_viewport.x = (int)roundf(vid->screen_viewport.w * (0.5f - delta));
++               vid->screen_viewport.w = (unsigned)roundf(2.0f * vid->screen_viewport.w * delta);
++            }
++            else
++            {
++               delta  = (device_aspect / desired_aspect - 1.0f) / 2.0f + 0.5f;
++               vid->screen_viewport.y = (int)roundf(vid->screen_viewport.h * (0.5f - delta));
++               vid->screen_viewport.h = (unsigned)roundf(2.0f * vid->screen_viewport.h * delta);
++            }
++         }
++      }
++
++      // Calculate the screen viewport shift
++      if (vid->screen_viewport.x != 0 || vid->screen_viewport.y != 0)
++      {
++         vid->screen_shift += (vid->screen_viewport.y * vid->screen->pitch) + (vid->screen_viewport.x * sizeof(uint32_t));
++      }
++   }
++}
++
+ static void *sdl_gfx_init(const video_info_t *video,
+       input_driver_t **input, void **input_data)
+ {
+@@ -372,6 +495,8 @@ static bool sdl_gfx_frame(void *data, const void *frame, unsigned width,
+    if (!vid)
+       return true;
+ 
++   sdl_refresh_viewport(vid, width, height, pitch);
++
+    title[0] = '\0';
+ 
+    video_driver_get_window_title(title, sizeof(title));
+@@ -388,22 +513,29 @@ static bool sdl_gfx_frame(void *data, const void *frame, unsigned width,
+       if (SDL_MUSTLOCK(vid->screen))
+          SDL_LockSurface(vid->screen);
+ 
++      char * system_pixels = (char *)frame + vid->system_shift;
++      char * screen_pixels = (char *)vid->screen->pixels + vid->screen_shift;
++
++      if (vid->video_scale_integer || vid->aspect_ratio_idx != ASPECT_RATIO_FULL)
++      {
++         SDL_FillRect(vid->screen, NULL, SDL_MapRGB(vid->screen->format, 0, 0, 0));
++      }
++
+       video_frame_scale(
+             &vid->scaler,
+-            vid->screen->pixels,
+-            frame,
++            screen_pixels,
++            system_pixels,
+             vid->scaler.in_fmt,
+-            vid->screen->w,
+-            vid->screen->h,
++            vid->screen_viewport.w,
++            vid->screen_viewport.h,
+             vid->screen->pitch,
+-            width,
+-            height,
+-            pitch); 
+-
++            vid->system_viewport.w,
++            vid->system_viewport.h,
++            pitch);
+ 
+       if (SDL_MUSTLOCK(vid->screen))
+          SDL_UnlockSurface(vid->screen);
+-      
++
+       if (msg)
+          sdl_render_msg(vid, vid->screen,
+          msg, vid->screen->w, vid->screen->h, vid->screen->format,
+diff --git a/libretro-common/include/gfx/video_frame.h b/libretro-common/include/gfx/video_frame.h
+index 05ba3f7..cc359f0 100644
+--- a/libretro-common/include/gfx/video_frame.h
++++ b/libretro-common/include/gfx/video_frame.h
+@@ -82,10 +82,13 @@ static INLINE void video_frame_scale(
+       unsigned pitch)
+ {
+    if (
+-            width  != (unsigned)scaler->in_width
+-         || height != (unsigned)scaler->in_height
+-         || format != scaler->in_fmt
+-         || pitch  != (unsigned)scaler->in_stride
++            width         != (unsigned)scaler->in_width
++         || height        != (unsigned)scaler->in_height
++         || format        != scaler->in_fmt
++         || pitch         != (unsigned)scaler->in_stride
++         || scaler_width  != (unsigned)scaler->out_width
++         || scaler_height != (unsigned)scaler->out_height
++         || scaler_pitch  != (unsigned)scaler->out_stride
+       )
+    {
+       scaler->in_fmt    = format;
+-- 
+2.25.1
+
