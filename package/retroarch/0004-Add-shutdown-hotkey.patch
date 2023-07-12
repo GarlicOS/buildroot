@@ -1,7 +1,7 @@
-From fb2706f633360a9b1b8a7990a1b709fc3073b4bf Mon Sep 17 00:00:00 2001
+From 2c615050c792302bbb585f32e5d81910da662d39 Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
-Date: Mon, 3 Jul 2023 18:19:44 +0200
-Subject: [PATCH 1/1] Add shutdown hotkey
+Date: Wed, 12 Jul 2023 18:08:40 +0200
+Subject: [PATCH] Add shutdown hotkey
 
 ---
  command.h                    |  1 +
@@ -155,7 +155,7 @@ index d8090df..54b54e4 100644
                 BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_input_meta_close_content_key);
                 return 0;
 diff --git a/runloop.c b/runloop.c
-index 10fb8c2..35d12f4 100644
+index 10fb8c2..507065b 100644
 --- a/runloop.c
 +++ b/runloop.c
 @@ -5598,6 +5598,70 @@ static enum runloop_state_enum runloop_check_state(
@@ -220,7 +220,7 @@ index 10fb8c2..35d12f4 100644
 +
 +         old_shutdown_key = shutdown_key;
 +
-+         runloop_st->shutdown = 1;
++         runloop_st->shutdown = true;
 +
 +         return RUNLOOP_STATE_QUIT;
 +      }
@@ -239,14 +239,14 @@ index 10fb8c2..35d12f4 100644
        case RUNLOOP_STATE_POLLED_AND_SLEEP:
  #ifdef HAVE_NETWORKING
 diff --git a/runloop.h b/runloop.h
-index 3ba255f..6b5a21e 100644
+index 3ba255f..9f11115 100644
 --- a/runloop.h
 +++ b/runloop.h
 @@ -267,6 +267,7 @@ struct runloop
  #endif
  
     uint32_t flags;
-+   int8_t shutdown;
++   bool shutdown;
     int8_t run_frames_and_pause;
  
     char runtime_content_path_basename[8192];
