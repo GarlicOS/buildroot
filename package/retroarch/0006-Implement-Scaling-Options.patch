@@ -1,15 +1,15 @@
-From 9b45e3c6a72ad004e741ea60243f462af1283916 Mon Sep 17 00:00:00 2001
+From 634baf44b7ff2a39da9547c8bc24d78055e9c9e8 Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Sun, 9 Jul 2023 01:44:19 +0200
 Subject: [PATCH] Implement Scaling Options
 
 ---
- gfx/drivers/sdl_gfx.c                     | 150 ++++++++++++++++++++--
+ gfx/drivers/sdl_gfx.c                     | 169 ++++++++++++++++++++--
  libretro-common/include/gfx/video_frame.h |  11 +-
- 2 files changed, 148 insertions(+), 13 deletions(-)
+ 2 files changed, 167 insertions(+), 13 deletions(-)
 
 diff --git a/gfx/drivers/sdl_gfx.c b/gfx/drivers/sdl_gfx.c
-index d015987..f94fefc 100644
+index d015987..e93265b 100644
 --- a/gfx/drivers/sdl_gfx.c
 +++ b/gfx/drivers/sdl_gfx.c
 @@ -60,6 +60,14 @@ typedef struct sdl_video
@@ -27,7 +27,7 @@ index d015987..f94fefc 100644
     void *font;
     const font_renderer_driver_t *font_driver;
  } sdl_video_t;
-@@ -237,6 +245,121 @@ static void sdl_gfx_set_handles(void)
+@@ -237,6 +245,140 @@ static void sdl_gfx_set_handles(void)
  #endif
  }
  
@@ -111,6 +111,25 @@ index d015987..f94fefc 100644
 +         }
 +      }
 +
++      // We want a custom aspect ratio
++      else if (vid->aspect_ratio_idx == ASPECT_RATIO_CUSTOM)
++      {
++         // Get the custom viewport structure
++         const struct video_viewport * custom_viewport = (const struct video_viewport *)video_viewport_get_custom();
++
++         // Set up the screen viewport dimension
++         vid->screen_viewport.w = custom_viewport->width > 0 && custom_viewport->width < vid->screen->w ? custom_viewport->width : vid->screen->w;
++         vid->screen_viewport.h = custom_viewport->height > 0 && custom_viewport->height < vid->screen->h ? custom_viewport->height : vid->screen->h;
++
++         // Calculate the maximum shift in both directions
++         unsigned max_x_shift = vid->screen->w - vid->screen_viewport.w;
++         unsigned max_y_shift = vid->screen->h - vid->screen_viewport.h;
++
++         // Calculate the screen viewport position
++         vid->screen_viewport.x = custom_viewport->x > max_x_shift ? max_x_shift : custom_viewport->x > 0 ? custom_viewport->x : 0;
++         vid->screen_viewport.y = custom_viewport->y > max_y_shift ? max_y_shift : custom_viewport->y > 0 ? custom_viewport->y : 0;
++      }
++
 +      // We want a specific aspect ratio
 +      else if (vid->aspect_ratio_idx != ASPECT_RATIO_FULL)
 +      {
@@ -149,7 +168,7 @@ index d015987..f94fefc 100644
  static void *sdl_gfx_init(const video_info_t *video,
        input_driver_t **input, void **input_data)
  {
-@@ -372,6 +495,8 @@ static bool sdl_gfx_frame(void *data, const void *frame, unsigned width,
+@@ -372,6 +514,8 @@ static bool sdl_gfx_frame(void *data, const void *frame, unsigned width,
     if (!vid)
        return true;
  
@@ -158,7 +177,7 @@ index d015987..f94fefc 100644
     title[0] = '\0';
  
     video_driver_get_window_title(title, sizeof(title));
-@@ -388,22 +513,29 @@ static bool sdl_gfx_frame(void *data, const void *frame, unsigned width,
+@@ -388,22 +532,29 @@ static bool sdl_gfx_frame(void *data, const void *frame, unsigned width,
        if (SDL_MUSTLOCK(vid->screen))
           SDL_LockSurface(vid->screen);
  
