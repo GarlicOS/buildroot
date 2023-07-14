@@ -29,7 +29,7 @@ static int32_t get_pocket2plus_axis_min_value(int axis)
 		default:
 			break;
 	}
-	
+
 	return -1;
 }
 
@@ -45,7 +45,7 @@ static int32_t get_pocket2plus_axis_max_value(int axis)
 		default:
 			break;
 	}
-	
+
 	return 1;
 }
 
@@ -84,7 +84,7 @@ static int translate_scancode(int scancode)
 		default:
 			break;
 	}
-	
+
 	return scancode;
 }
 
@@ -103,7 +103,7 @@ static int translate_axiscode(int axis)
 		default:
 			break;
 	}
-	
+
 	return axis;
 }
 
@@ -125,7 +125,7 @@ static int32_t scale_axis_value(int32_t value, int32_t input_min_value, int32_t 
 		// Force the value into the bounds
 		scaled_value = output_min_value;
 	}
-	
+
 	// We're overshooting the maximum output value
 	else if (scaled_value > output_max_value)
 	{
@@ -141,10 +141,10 @@ static void scale_and_translate_axis(struct input_event * ev)
 {
 	// Translate the axis code
 	uint16_t new_code = translate_axiscode(ev->code);
-	
+
 	// Scale range
 	int32_t new_value = scale_axis_value(ev->value, get_pocket2plus_axis_min_value(ev->code), get_pocket2plus_axis_max_value(ev->code), get_merged_axis_min_value(new_code), get_merged_axis_max_value(new_code));
-	
+
 	// Replace the old values
 	ev->code = new_code;
 	ev->value = new_value;
@@ -188,7 +188,7 @@ static int convert_to_axis_event(struct input_event * ev)
 		default:
 			break;
 	}
-	
+
 	return 0;
 }
 
@@ -197,10 +197,6 @@ static void input_event(int fd, struct input_event * ev)
 	// We're handling a key event
 	if (ev->type == EV_KEY)
 	{
-		// Filter out repeat events (these occur on the POCKET2PLUS_GPIO_KEYS input device)
-		if (ev->value == BTN_REPEAT)
-			return;
-		
 		// Convert the key to an axis event where necessary
 		if (!convert_to_axis_event(ev))
 		{
@@ -208,16 +204,23 @@ static void input_event(int fd, struct input_event * ev)
 			ev->code = translate_scancode(ev->code);
 		}
 	}
-	
+
 	// We're handling a axis event
 	else if (ev->type == EV_ABS)
 	{
 		// Convert the axis where necessary
 		scale_and_translate_axis(ev);
 	}
-	
-	// Pass the event through to the merged gamepad
-	write(fd, ev, sizeof(*ev));
+
+	// Trigger global hotkeys
+	hotkey(ev);
+
+	// Filter out repeat events (these occur on the RG405M_GPIO_KEYS input device)
+	if (ev->value != BTN_REPEAT)
+	{
+		// Pass the event through to the merged gamepad
+		write(fd, ev, sizeof(*ev));
+	}
 }
 
 static void init_uart(int gamepad)
@@ -246,7 +249,8 @@ static void init_uart(int gamepad)
 	if (cfsetispeed(&uart_config, 0x1002) < 0 || cfsetospeed(&uart_config, 0x1002) < 0)
 	{
 		printf("Error setting uart config.\n");
-	} else 
+	}
+	else 
 	{
 		printf("Success setting uart config.\n");
 	}
@@ -255,11 +259,11 @@ static void init_uart(int gamepad)
 	if (tcsetattr(gamepad, TCSAFLUSH, &uart_config) < 0) 
 	{
 		printf("Error in tcsetattr.\n");
-	} else
+	}
+	else
 	{
 		printf("Success in tcsetattr.\n");
 	}
-
 }
 
 static void enable_analog_sticks(int gamepad)
@@ -292,44 +296,43 @@ void merge_pocket2plus_inputs(int merged_gamepad)
 {
 	// Open the gpio-keys (houses the power and volume buttons)
 	int gpio_keys = open(POCKET2PLUS_GPIO_KEYS, O_RDONLY | O_NONBLOCK);
-	
+
 	// Open the Retroid serial port for gamepad input
 	int gamepad = open(POCKET2PLUS_GAMEPAD, 0x102);
 
 	// Initialize Retroid serial port and enable analog stick support
 	init_uart(gamepad);
 	enable_analog_sticks(gamepad);
-	
+
 	// Determine the highest file descriptor (needed for select)
 	int maxfd = gpio_keys > gamepad ? gpio_keys : gamepad;
-	
+
 	// Initialize the select structure
 	fd_set rfds, wfds;
 	FD_ZERO(&rfds);
 	FD_SET(gpio_keys, &rfds);
 	FD_SET(gamepad, &rfds);
-	
+
 	// The operation loop
 	while(1)
 	{
-
 		// Set the timeout to 1 second
 		struct timeval tv;
 		tv.tv_sec = 1;
 		tv.tv_usec = 0;
-		
+
 		// Reset the select structure
 		memcpy(&wfds, &rfds, sizeof(fd_set));
-		
+
 		// Wait for incoming events
 		int select_result = select(maxfd + 1, &wfds, NULL, NULL, &tv);
-		
+
 		// We've received at least one incoming event
 		if (select_result > 0)
 		{
 			// The captured input event
 			struct input_event ev;
-			
+
 			// A gpio-keys event was captured
 			if (FD_ISSET(gpio_keys, &wfds))
 			{
@@ -340,7 +343,7 @@ void merge_pocket2plus_inputs(int merged_gamepad)
 					input_event(merged_gamepad, &ev);
 				}
 			}
-			
+
 			// A Retroid serial gamepad event was captured
 			if (FD_ISSET(gamepad, &wfds))
 			{
@@ -398,10 +401,10 @@ void merge_pocket2plus_inputs(int merged_gamepad)
 			}
 		}
 	}
-	
+
 	// Close the Retroid serial input device
 	close(gamepad);
-	
+
 	// Close the gpio-keys input device
 	close(gpio_keys);
 }

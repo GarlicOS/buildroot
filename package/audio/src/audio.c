@@ -9,14 +9,14 @@ int main(int argc, char * argv[])
 {
 	// Get the device codename
 	char * code_name = getenv("DEVICE_CODENAME");
-	
+
 	// The bootloader didn't set the codename properly
 	if (code_name == NULL)
 	{
 		// Which means we can't provide audio
 		return 1;
 	}
-	
+
 	// We're handling the Anbernic RG405M
 	if (strcmp(code_name, "rg405m") == 0)
 	{
@@ -37,7 +37,7 @@ int main(int argc, char * argv[])
 		// Initialize the soundcard and handle routing
 		pocketflip_main(argc, argv);
 	}
-	
+
 	// Exit
 	return 0;
 }

@@ -55,4 +55,6 @@
 int32_t get_merged_axis_min_value(int axis);
 int32_t get_merged_axis_max_value(int axis);
 
+void hotkey(struct input_event * ev);
+
 #endif
