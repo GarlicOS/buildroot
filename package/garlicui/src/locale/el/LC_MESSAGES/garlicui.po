@@ -28,6 +28,9 @@ msgstr "Συνέχεια"
 msgid "Restart"
 msgstr "Επανεκκίνηση"
 
+msgid "Remove"
+msgstr "Αφαίρεση"
+
 msgid "Favorite"
 msgstr "Αγαπημένο"
 

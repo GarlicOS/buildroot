@@ -28,6 +28,9 @@ msgstr "Nadaljuj"
 msgid "Restart"
 msgstr "Ponovni zagon"
 
+msgid "Remove"
+msgstr "Odstrani"
+
 msgid "Favorite"
 msgstr "Priljubljeno"
 

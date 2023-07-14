@@ -28,6 +28,9 @@ msgstr "Sambung semula"
 msgid "Restart"
 msgstr "Mulakan semula"
 
+msgid "Remove"
+msgstr "Padam"
+
 msgid "Favorite"
 msgstr "Kegemaran"
 

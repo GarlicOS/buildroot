@@ -202,6 +202,11 @@
 #define NODE_TYPE_NO_GAME_WARNING_MESSAGE 19
 
 /**
+ * @brief The remove from history action node type.
+ */
+#define NODE_TYPE_CONTEXT_MENU_REMOVE_FROM_HISTORY_ACTION 20
+
+/**
  * The supported buttons.
  */
 #define POWER_BUTTON 0

@@ -28,6 +28,9 @@ msgstr "Jatka"
 msgid "Restart"
 msgstr "Käynnistä uudelleen"
 
+msgid "Remove"
+msgstr "Poista"
+
 msgid "Favorite"
 msgstr "Suosikki"
 

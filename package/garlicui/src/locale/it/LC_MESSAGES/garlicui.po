@@ -28,6 +28,9 @@ msgstr "Riprendi"
 msgid "Restart"
 msgstr "Riavvia"
 
+msgid "Remove"
+msgstr "Rimuovi"
+
 msgid "Favorite"
 msgstr "Preferito"
 

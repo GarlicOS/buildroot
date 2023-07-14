@@ -28,6 +28,9 @@ msgstr "再開"
 msgid "Restart"
 msgstr "再起動"
 
+msgid "Remove"
+msgstr "削除"
+
 msgid "Favorite"
 msgstr "お気に入りに追加"
 

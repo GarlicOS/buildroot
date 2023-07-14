@@ -28,6 +28,9 @@ msgstr "ተጨማሪ ያልታወቀ"
 msgid "Restart"
 msgstr "አጥፋ"
 
+msgid "Remove"
+msgstr "አጥፋ"
+
 msgid "Favorite"
 msgstr "የተወደደ"
 

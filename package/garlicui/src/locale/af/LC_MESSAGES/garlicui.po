@@ -28,6 +28,9 @@ msgstr "Hervat"
 msgid "Restart"
 msgstr "Herbegin"
 
+msgid "Remove"
+msgstr "Verwyder"
+
 msgid "Favorite"
 msgstr "Gunsteling"
 

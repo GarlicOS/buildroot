@@ -28,6 +28,9 @@ msgstr "Turpināt"
 msgid "Restart"
 msgstr "Pārstartēt"
 
+msgid "Remove"
+msgstr "Noņemt"
+
 msgid "Favorite"
 msgstr "Izlase"
 

@@ -28,6 +28,9 @@ msgstr "Lanjutkan"
 msgid "Restart"
 msgstr "Mulai Ulang"
 
+msgid "Remove"
+msgstr "Hapus"
+
 msgid "Favorite"
 msgstr "Favorit"
 

@@ -28,6 +28,9 @@ msgstr "Pokračovať"
 msgid "Restart"
 msgstr "Reštartovať"
 
+msgid "Remove"
+msgstr "Odstrániť"
+
 msgid "Favorite"
 msgstr "Obľúbené"
 

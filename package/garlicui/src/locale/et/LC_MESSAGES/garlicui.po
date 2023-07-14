@@ -28,6 +28,9 @@ msgstr "Jätka"
 msgid "Restart"
 msgstr "Alusta uuesti"
 
+msgid "Remove"
+msgstr "Eemalda"
+
 msgid "Favorite"
 msgstr "Lemmik"
 

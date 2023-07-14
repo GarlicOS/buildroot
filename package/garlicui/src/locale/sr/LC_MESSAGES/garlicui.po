@@ -28,6 +28,9 @@ msgstr "Nastavi"
 msgid "Restart"
 msgstr "Ponovo pokreni"
 
+msgid "Remove"
+msgstr "Уклони"
+
 msgid "Favorite"
 msgstr "Omiljeni"
 

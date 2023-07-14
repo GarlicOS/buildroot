@@ -28,6 +28,9 @@ msgstr "Devam Et"
 msgid "Restart"
 msgstr "Yeniden Başlat"
 
+msgid "Remove"
+msgstr "Kaldır"
+
 msgid "Favorite"
 msgstr "Favori"
 

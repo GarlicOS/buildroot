@@ -28,6 +28,9 @@ msgstr "Wznów"
 msgid "Restart"
 msgstr "Uruchom ponownie"
 
+msgid "Remove"
+msgstr "Usuń"
+
 msgid "Favorite"
 msgstr "Ulubione"
 

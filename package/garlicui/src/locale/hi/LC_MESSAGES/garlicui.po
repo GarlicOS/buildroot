@@ -28,6 +28,9 @@ msgstr "आगे बढ़ें"
 msgid "Restart"
 msgstr "रीस्टार्ट करें"
 
+msgid "Remove"
+msgstr "हटाएँ"
+
 msgid "Favorite"
 msgstr "पसंदीदा"
 

@@ -28,6 +28,9 @@ msgstr "Fortsett"
 msgid "Restart"
 msgstr "Start på nytt"
 
+msgid "Remove"
+msgstr "Fjern"
+
 msgid "Favorite"
 msgstr "Favoritt"
 

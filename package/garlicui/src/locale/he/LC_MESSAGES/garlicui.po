@@ -28,6 +28,9 @@ msgstr "המשך"
 msgid "Restart"
 msgstr "אתחל"
 
+msgid "Remove"
+msgstr "הסר"
+
 msgid "Favorite"
 msgstr "מועדף"
 

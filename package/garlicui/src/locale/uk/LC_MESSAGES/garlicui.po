@@ -28,6 +28,9 @@ msgstr "Продовжити"
 msgid "Restart"
 msgstr "Перезавантажити"
 
+msgid "Remove"
+msgstr "Видалити"
+
 msgid "Favorite"
 msgstr "Улюблене"
 

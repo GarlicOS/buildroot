@@ -28,6 +28,9 @@ msgstr "Continuați"
 msgid "Restart"
 msgstr "Reporniți"
 
+msgid "Remove"
+msgstr "Elimină"
+
 msgid "Favorite"
 msgstr "Favorit"
 

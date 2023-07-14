@@ -28,6 +28,9 @@ msgstr "继续"
 msgid "Restart"
 msgstr "重新开始"
 
+msgid "Remove"
+msgstr "移除"
+
 msgid "Favorite"
 msgstr "收藏"
 

@@ -28,6 +28,9 @@ msgstr "Återuppta"
 msgid "Restart"
 msgstr "Starta om"
 
+msgid "Remove"
+msgstr "Ta bort"
+
 msgid "Favorite"
 msgstr "Favorit"
 

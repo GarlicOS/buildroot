@@ -28,6 +28,9 @@ msgstr "Coshisa"
 msgid "Restart"
 msgstr "Qalisa kabusha"
 
+msgid "Remove"
+msgstr "Susa"
+
 msgid "Favorite"
 msgstr "Ezempendulo"
 

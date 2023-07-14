@@ -28,6 +28,9 @@ msgstr "Halda áfram"
 msgid "Restart"
 msgstr "Endurræsa"
 
+msgid "Remove"
+msgstr "Fjarlægja"
+
 msgid "Favorite"
 msgstr "Uppáhald"
 

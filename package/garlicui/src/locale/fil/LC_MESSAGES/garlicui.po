@@ -28,6 +28,9 @@ msgstr "Ipagpatuloy"
 msgid "Restart"
 msgstr "I-reset"
 
+msgid "Remove"
+msgstr "Alisin"
+
 msgid "Favorite"
 msgstr "Paborito"
 

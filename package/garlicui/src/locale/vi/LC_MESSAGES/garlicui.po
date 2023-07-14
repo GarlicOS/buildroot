@@ -28,6 +28,9 @@ msgstr "Tiếp tục"
 msgid "Restart"
 msgstr "Khởi động lại"
 
+msgid "Remove"
+msgstr "Xóa"
+
 msgid "Favorite"
 msgstr "Yêu thích"
 

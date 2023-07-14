@@ -28,6 +28,9 @@ msgstr "ดำเนินการต่อ"
 msgid "Restart"
 msgstr "เริ่มต้นใหม่"
 
+msgid "Remove"
+msgstr "ลบ"
+
 msgid "Favorite"
 msgstr "รายการโปรด"
 

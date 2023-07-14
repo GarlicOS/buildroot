@@ -28,6 +28,9 @@ msgstr "Resume"
 msgid "Restart"
 msgstr "Restart"
 
+msgid "Remove"
+msgstr "Remove"
+
 msgid "Favorite"
 msgstr "Favorite"
 

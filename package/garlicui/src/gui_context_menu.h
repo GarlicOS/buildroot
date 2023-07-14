@@ -118,6 +118,13 @@ static void gui_activate_context_menu(struct gui_node * this)
 					// Create a node for resetting
 					struct gui_node * reset_node = gui_create_context_menu_item(this, &first_node, &previous_node, gettext("Restart"), gui_activate_restart, NULL, NULL, NULL, gui_invalidate_restart, NODE_TYPE_CONTEXT_MENU_RESTART_ACTION, NULL);
 
+					// We're in the resume menu
+					if (this->parent->type == NODE_TYPE_PLAYLIST_CONTINUE_MENU)
+					{
+						// Create a node for removing items from the history playlist
+						struct gui_node * remove_from_history_playlist_node = gui_create_context_menu_item(this, &first_node, &previous_node, gettext("Remove"), gui_activate_history_remove, NULL, NULL, NULL, gui_invalidate_history_remove, NODE_TYPE_CONTEXT_MENU_REMOVE_FROM_HISTORY_ACTION, NULL);
+					}
+
 					// Create a node for toggling favorites
 					struct gui_node * favorite_toggle_node = gui_create_context_menu_item(this, &first_node, &previous_node, gettext(favorited_item != NULL ? "Unfavorite" : "Favorite"), gui_activate_favorite_toggle, NULL, NULL, NULL, gui_invalidate_favorite_toggle, NODE_TYPE_CONTEXT_MENU_FAVORITE_ACTION, NULL);
 

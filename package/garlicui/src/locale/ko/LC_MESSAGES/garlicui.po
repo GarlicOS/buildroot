@@ -28,6 +28,9 @@ msgstr "계속"
 msgid "Restart"
 msgstr "재시작"
 
+msgid "Remove"
+msgstr "제거"
+
 msgid "Favorite"
 msgstr "즐겨찾기"
 
