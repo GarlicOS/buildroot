@@ -357,6 +357,26 @@ void merge_pocket2plus_inputs(int merged_gamepad)
 				}
 
 				// Convert proper Retroid input events to a normal input event, then send to merged gamepad
+				if (readlen == 8)
+				{
+					// Create a fake event for the Retroid controller
+					struct input_event uart_ev;
+					// Pull event type from the serial event
+					uart_ev.type = buffer[0];
+					// Pull keycode and pressed status from read serial line
+					uart_ev.code = buffer[3];
+					// Concatenate the last two bytes of hex values (this is the full input value for analog events)
+					uart_ev.value = (buffer[6]<<8) | (buffer[7]);
+					// Pass the event through to our merged gamepad
+					input_event(merged_gamepad, &uart_ev);
+					// Send a sync event, otherwise input won't register
+					uart_ev.type = EV_SYN;
+					uart_ev.code = 0;
+					uart_ev.value = 0;
+					input_event(merged_gamepad, &uart_ev);
+				}
+
+				// Convert proper Retroid input events to a normal input event, then send to merged gamepad
 				if (readlen == 20)
 				{
 					// Create a fake event for the Retroid controller
