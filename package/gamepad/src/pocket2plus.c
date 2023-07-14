@@ -116,6 +116,9 @@ static int32_t scale_axis_value(int32_t value, int32_t input_min_value, int32_t 
 	// Scale the input value to the output range
 	int32_t scaled_value = ((value - input_min_value) * output_range / input_range) + output_min_value;
 
+	// Multiply scaled value by -1 (Retroid analog axes are in the opposite direction of merged_gamepad)
+	scaled_value = scaled_value * -1;
+
 	// We're undershooting the minimum output value
 	if (scaled_value < output_min_value)
 	{
@@ -259,6 +262,32 @@ static void init_uart(int gamepad)
 
 }
 
+static void enable_analog_sticks(int gamepad)
+{
+	// Reverse Engineered using Ghidra
+	long *buffer;
+	unsigned char unknown;
+	int counter;
+
+	buffer = (long *)calloc(0x100,1);
+	*buffer = 0x2e;
+	buffer[1] = 1;
+	buffer[2] = 2;
+	buffer[3] = 0xe;
+	buffer[4] = 3;
+	buffer[5] = 0;
+
+	unknown = *(unsigned char *)(buffer + 2);
+	for (counter = 0; counter < (int)(unknown + 4); counter = counter + 1)
+	{
+		write(gamepad, (void *)(buffer + counter), 1);
+		usleep(100);
+	}
+
+	// Close buffer pointer
+	free(buffer);
+}
+
 void merge_pocket2plus_inputs(int merged_gamepad)
 {
 	// Open the gpio-keys (houses the power and volume buttons)
@@ -267,8 +296,9 @@ void merge_pocket2plus_inputs(int merged_gamepad)
 	// Open the Retroid serial port for gamepad input
 	int gamepad = open(POCKET2PLUS_GAMEPAD, 0x102);
 
-	// Initialize Retroid serial port
+	// Initialize Retroid serial port and enable analog stick support
 	init_uart(gamepad);
+	enable_analog_sticks(gamepad);
 	
 	// Determine the highest file descriptor (needed for select)
 	int maxfd = gpio_keys > gamepad ? gpio_keys : gamepad;
@@ -331,10 +361,12 @@ void merge_pocket2plus_inputs(int merged_gamepad)
 				{
 					// Create a fake event for the Retroid controller
 					struct input_event uart_ev;
-					uart_ev.type = EV_KEY;
+					// Pull event type from the serial event
+					uart_ev.type = buffer[12];
 					// Pull keycode and pressed status from read serial line
 					uart_ev.code = buffer[15];
-					uart_ev.value = buffer[19];
+					// Concatenate the last two bytes of hex values (this is the full input value for analog events)
+					uart_ev.value = (buffer[18]<<8) | (buffer[19]);
 					// Pass the event through to our merged gamepad
 					input_event(merged_gamepad, &uart_ev);
 					// Send a sync event, otherwise input won't register
