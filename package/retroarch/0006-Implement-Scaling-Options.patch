@@ -1,7 +1,7 @@
-From 634baf44b7ff2a39da9547c8bc24d78055e9c9e8 Mon Sep 17 00:00:00 2001
+From 4db52f186c643c5bed50477bb782c556da452a58 Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Sun, 9 Jul 2023 01:44:19 +0200
-Subject: [PATCH] Implement Scaling Options
+Subject: [PATCH 5/6] Implement Scaling Options
 
 ---
  gfx/drivers/sdl_gfx.c                     | 169 ++++++++++++++++++++--

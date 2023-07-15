@@ -1,7 +1,7 @@
-From 702462c06cd0082217c704ac6c23496d24c2848d Mon Sep 17 00:00:00 2001
+From 84f04b759ff34664f2f220d729a9b7fffe256705 Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Sat, 15 Jul 2023 23:08:26 +0200
-Subject: [PATCH] Ignore NULL frames
+Subject: [PATCH 6/6] Ignore NULL frames
 
 ---
  gfx/drivers/sdl_gfx.c | 2 +-

@@ -1,7 +1,7 @@
-From 2c615050c792302bbb585f32e5d81910da662d39 Mon Sep 17 00:00:00 2001
+From a957c20f77e121fe2555afa4e4403ba629f3325b Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Wed, 12 Jul 2023 18:08:40 +0200
-Subject: [PATCH] Add shutdown hotkey
+Subject: [PATCH 3/6] Add shutdown hotkey
 
 ---
  command.h                    |  1 +
@@ -97,10 +97,10 @@ index b428b68..2aa8a80 100644
     RARCH_RESET,
     RARCH_FAST_FORWARD_KEY,
 diff --git a/input/input_driver.c b/input/input_driver.c
-index 37f58b6..f6c0afd 100644
+index cc3e045..b1e85cc 100644
 --- a/input/input_driver.c
 +++ b/input/input_driver.c
-@@ -4134,6 +4134,31 @@ static void input_keys_pressed(
+@@ -4144,6 +4144,31 @@ static void input_keys_pressed(
        }
     }
  
