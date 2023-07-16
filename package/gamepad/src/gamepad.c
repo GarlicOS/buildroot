@@ -218,6 +218,22 @@ static int get_persistent_volume()
 	return persistent_volume;
 }
 
+static void set_persistent_volume(int volume)
+{
+	// Open the persistent volume file
+	FILE * file = fopen(PERSISTENT_VOLUME_PATH, "w");
+
+	// We managed to open the persistent volume file
+	if (file != NULL)
+	{
+		// Set the current volume
+		fprintf(file, "%d", volume);
+
+		// Close the persistent volume file
+		fclose(file);
+	}
+}
+
 size_t read_bytes(int fd, void * buffer, size_t count)
 {
 	// The total number of bytes read
@@ -284,18 +300,8 @@ static int change_volume(int direction)
 		// Keep track of the accumulated volume shift
 		current_volume += direction;
 
-		// Open the persistent volume file
-		FILE * file = fopen(PERSISTENT_VOLUME_PATH, "w");
-
-		// We managed to open the persistent volume file
-		if (file != NULL)
-		{
-			// Set the current volume
-			fprintf(file, "%d", current_volume);
-
-			// Close the persistent volume file
-			fclose(file);
-		}
+		// Update the persistent volume file
+		set_persistent_volume(current_volume);
 	}
 
 	// Return the result
@@ -540,10 +546,10 @@ int main(int argc, char * argv[])
 	set_brightness(get_persistent_brightness());
 
 	// Restore the volume
-	current_volume = get_persistent_volume();
-	for (int i = 0; i < abs(current_volume); i++)
+	int persistent_volume = get_persistent_volume();
+	for (int i = 0; i < abs(persistent_volume); i++)
 	{
-		change_volume(current_volume < 0 ? -1 : 1);
+		change_volume(persistent_volume < 0 ? -1 : 1);
 	}
 
 	// Merge the gamepad input devices
