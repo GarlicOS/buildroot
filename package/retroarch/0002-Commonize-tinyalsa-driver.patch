@@ -1,4 +1,4 @@
-From 63726e4562698f71741b1800ffcf10a2e742b2b8 Mon Sep 17 00:00:00 2001
+From 1c5cd55c20a60eba5cad76125f8078abf2d0a09c Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Wed, 3 May 2023 15:53:05 +0200
 Subject: [PATCH 1/6] Commonize tinyalsa driver

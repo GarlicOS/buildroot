@@ -1,4 +1,4 @@
-From 84f04b759ff34664f2f220d729a9b7fffe256705 Mon Sep 17 00:00:00 2001
+From 70e25d817f62a1876ca5923e33c03013d578e4ea Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Sat, 15 Jul 2023 23:08:26 +0200
 Subject: [PATCH 6/6] Ignore NULL frames

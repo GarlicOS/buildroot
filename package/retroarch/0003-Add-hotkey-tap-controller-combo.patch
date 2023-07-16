@@ -1,16 +1,16 @@
-From 2d56474c3732ecfa00b99f192cccbf764eb69584 Mon Sep 17 00:00:00 2001
+From cacc0c4d8c51ba49eb17558a352c0588d796e9f7 Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Thu, 8 Jun 2023 15:54:19 +0200
 Subject: [PATCH 2/6] Add hotkey tap controller combo
 
 ---
  input/input_defines.h |  1 +
- input/input_driver.c  | 39 +++++++++++++++++++++++++++++++++++++++
+ input/input_driver.c  | 50 +++++++++++++++++++++++++++++++++++++++++++
  intl/msg_hash_us.h    |  4 ++++
  menu/menu_setting.c   |  3 +++
  msg_hash.h            |  1 +
- retroarch.c           | 10 ++++++++++
- 6 files changed, 58 insertions(+)
+ retroarch.c           | 10 +++++++++
+ 6 files changed, 69 insertions(+)
 
 diff --git a/input/input_defines.h b/input/input_defines.h
 index 75e6768..b428b68 100644
@@ -25,18 +25,19 @@ index 75e6768..b428b68 100644
     INPUT_COMBO_L2_R2,
     INPUT_COMBO_LAST
 diff --git a/input/input_driver.c b/input/input_driver.c
-index 4d76862..cc3e045 100644
+index 4d76862..cf5bd24 100644
 --- a/input/input_driver.c
 +++ b/input/input_driver.c
-@@ -562,6 +562,7 @@ bool input_driver_button_combo(
+@@ -562,6 +562,8 @@ bool input_driver_button_combo(
        retro_time_t current_time,
        input_bits_t* p_input)
  {
 +   static bool last_enable_hotkey_button_state = false;
++   static unsigned enable_hotkey_button_repeat = 0;
     switch (mode)
     {
        case INPUT_COMBO_DOWN_Y_L_R:
-@@ -700,6 +701,44 @@ bool input_driver_button_combo(
+@@ -700,6 +702,53 @@ bool input_driver_button_combo(
              }
           }
           break;
@@ -45,36 +46,45 @@ index 4d76862..cc3e045 100644
 +            bool current_enable_hotkey_button_state = BIT256_GET_PTR(p_input, RARCH_ENABLE_HOTKEY);
 +
 +            /* Pressing other buttons while this key is held down triggers this callback too.
-+             * We need to suppress this, otherwise we just end up restarting the timer. */
++             * We need to suppress this, otherwise we just end up restarting the timer.
++             * Furthermore RA has a bug that causes a 2-frame button state error that needs working around. */
 +            if (last_enable_hotkey_button_state != current_enable_hotkey_button_state)
 +            {
-+               rarch_timer_t *timer = &input_driver_st.combo_timers[INPUT_COMBO_TAP_HOTKEY];
-+
 +               last_enable_hotkey_button_state = current_enable_hotkey_button_state;
++               enable_hotkey_button_repeat = 1;
++            }
++            else if (enable_hotkey_button_repeat < 3)
++            {
++               enable_hotkey_button_repeat++;
 +
-+               if (!current_enable_hotkey_button_state)
++               if (enable_hotkey_button_repeat == 3)
 +               {
-+                  /* timer only runs while the enable hotkey is held down */
-+                  bool result = timer->timeout_us > 0;
-+                  timer->timer_end   = true;
-+                  timer->timer_begin = false;
-+                  timer->timeout_end = 0;
-+                  return result;
-+               }
++                  rarch_timer_t *timer = &input_driver_st.combo_timers[INPUT_COMBO_TAP_HOTKEY];
 +
-+               /* User started holding down the hotkey enable button, start the timer */
-+               if (!timer->timer_begin)
-+               {
-+                  uint64_t current_usec = cpu_features_get_time_usec();
-+                  timer->timeout_us     = 175000;
-+                  timer->current        = current_usec;
-+                  timer->timeout_end    = timer->current + timer->timeout_us;
-+                  timer->timer_begin    = true;
-+                  timer->timer_end      = false;
-+               }
++                  if (!current_enable_hotkey_button_state)
++                  {
++                     /* timer only runs while the enable hotkey is held down */
++                     bool result = timer->timeout_us > 0;
++                     timer->timer_end   = true;
++                     timer->timer_begin = false;
++                     timer->timeout_end = 0;
++                     return result;
++                  }
 +
-+               timer->current           = current_time;
-+               timer->timeout_us        = (timer->timeout_end - timer->current);
++                  /* User started holding down the hotkey enable button, start the timer */
++                  if (!timer->timer_begin)
++                  {
++                     uint64_t current_usec = cpu_features_get_time_usec();
++                     timer->timeout_us     = 175000;
++                     timer->current        = current_usec;
++                     timer->timeout_end    = timer->current + timer->timeout_us;
++                     timer->timer_begin    = true;
++                     timer->timer_end      = false;
++                  }
++
++                  timer->current           = current_time;
++                  timer->timeout_us        = (timer->timeout_end - timer->current);
++               }
 +            }
 +         }
 +         break;
