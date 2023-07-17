@@ -2275,8 +2275,8 @@ index fee4174..02935a8 100644
 +	tinyalsa->config.channels = 2;
 +	tinyalsa->config.period_size = period_size;
 +	tinyalsa->config.period_count = 4;
-+	tinyalsa->config.start_threshold = tinyalsa->config.period_size * tinyalsa->config.period_count;
-+	tinyalsa->config.stop_threshold = tinyalsa->config.period_size * tinyalsa->config.period_count;
++	tinyalsa->config.start_threshold = tinyalsa->config.period_size;
++	tinyalsa->config.stop_threshold = 0;
 +	tinyalsa->config.silence_threshold = tinyalsa->config.period_size * tinyalsa->config.period_count;
 +	tinyalsa->config.silence_size = 0;
 +
