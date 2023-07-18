@@ -294,35 +294,35 @@ static void enable_analog_sticks(int gamepad)
 }
 
 // Struct to send to threads
-typedef struct volumekey_event {
+typedef struct _volumekey_event {
 	int merged_gamepad;
 	int volume_pressed;
 	int volume_keycode;
 	int volume_thread_running;
-};
+} volumekey_event;
 
 // Function to simulate volume key repeat by waiting one second before going into a loop of sending repeat events every 200ms
 void *simulate_volumekey_repeat(void *volumekey_struct)
 {
 	// Update thread status to show thread is running
-	((struct volumekey_event*)volumekey_struct)->volume_thread_running = 1;
+	((volumekey_event*)volumekey_struct)->volume_thread_running = 1;
 	// Wait a second before starting to repeat
 	sleep(1);
 	// While volume key pressed returns true(1), send repeat volume key events
-	while(((struct volumekey_event*)volumekey_struct)->volume_pressed == 1)
+	while(((volumekey_event*)volumekey_struct)->volume_pressed == 1)
 	{
 		// Make volume key repeat event
 		struct input_event repeat_ev;
 		repeat_ev.type = EV_KEY;
-		repeat_ev.code = ((struct volumekey_event*)volumekey_struct)->volume_keycode;
+		repeat_ev.code = ((volumekey_event*)volumekey_struct)->volume_keycode;
 		repeat_ev.value = BTN_REPEAT;
 		// Send volume key repeat event
-		input_event(((struct volumekey_event*)volumekey_struct)->merged_gamepad, &repeat_ev);
+		input_event(((volumekey_event*)volumekey_struct)->merged_gamepad, &repeat_ev);
 		// Wait 200ms
 		usleep(200000);
 	}
 	// Update thread status to indicate the thread is stopping
-	((struct volumekey_event*)volumekey_struct)->volume_thread_running = 0;
+	((volumekey_event*)volumekey_struct)->volume_thread_running = 0;
 	return NULL;
 }
 
@@ -335,11 +335,11 @@ void merge_pocket2plus_inputs(int merged_gamepad)
 	int volumeup_pressed = 0;
 	int volumedown_pressed = 0;
 	pthread_t volumeup_thread, volumedown_thread;
-	struct volumekey_event volumeup_struct;
+	volumekey_event volumeup_struct;
 	volumeup_struct.merged_gamepad = merged_gamepad;
 	volumeup_struct.volume_keycode = KEY_VOLUMEUP;
 	volumeup_struct.volume_thread_running = 0;
-	struct volumekey_event volumedown_struct;
+	volumekey_event volumedown_struct;
 	volumedown_struct.merged_gamepad = merged_gamepad;
 	volumedown_struct.volume_keycode = KEY_VOLUMEDOWN;
 	volumedown_struct.volume_thread_running = 0;
