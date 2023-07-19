@@ -12,6 +12,7 @@
 
 #include "gamepad.h"
 #include "rg405m.h"
+#include "rg35xxplus.h"
 #include "pocket2plus.h"
 
 #define AUDIO_CONTROL_PIPE "/tmp/audio_control"
@@ -460,8 +461,15 @@ void merge_inputs(int merged_gamepad)
 		merge_rg405m_inputs(merged_gamepad);
 	}
 
+	// We're handling the Anbernic RG35XX+
+	else if (strcmp(code_name, "rg35xx+") == 0)
+	{
+		// Wrap gpio-keys
+		merge_rg35xxplus_inputs(merged_gamepad);
+	}
+
 	// We're handling the Retroid Pocket 2+
-	if (strcmp(code_name, "pocket2plus") == 0)
+	else if (strcmp(code_name, "pocket2plus") == 0)
 	{
 		// Convert Retroid serial console controller events and combine them with gpio-keys
 		merge_pocket2plus_inputs(merged_gamepad);
