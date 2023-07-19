@@ -10,6 +10,7 @@
 #include "tinymix.h"
 #include "rg35xxplus.h"
 
+#define MINIMUM_VOLUME 20
 #define HEADSET_STATE_PATH "/sys/module/snd_soc_sunxi_component_jack/parameters/jack_state"
 
 int init_rg35xxplus_alsa()
@@ -46,11 +47,50 @@ static void switch_audio_route(int32_t headphones_plugged_in)
 		return;
 	}
 
-	// Set the mixer values
-	set_value(mixer, "SPK Switch", headphones_plugged_in ? "0" : "1");
+	// The current volume
+	int cur_volume;
+
+	// The minimum volume
+	int min_volume;
+
+	// The maximum volume
+	int max_volume;
+
+	// Get the volume settings
+	if (get_int_value(mixer, "digital volume", &cur_volume, &min_volume, &max_volume))
+	{
+		// We're below the known minimum audible volume
+		if (min_volume < MINIMUM_VOLUME)
+		{
+			// Cap to the known minimum audible volume
+			min_volume = MINIMUM_VOLUME;
+		}
+
+		// Set the mixer values
+		set_value(mixer, "SPK Switch", headphones_plugged_in ? "0" : cur_volume > min_volume ? "1" : "0");
+	}
 
 	// Close the mixer
 	mixer_close(mixer);
+}
+
+static int is_headset_connected()
+{
+	// The current headset state
+	int state = 0;
+
+	// Open the headset state device
+	FILE * fd = fopen(HEADSET_STATE_PATH, "r");
+
+	// We managed to open the headset state device
+	if (fd != NULL)
+	{
+		// Fetch the state
+		state = fgetc(fd) - '0';
+	}
+
+	// Return the state
+	return state;
 }
 
 static int adjust_volume(int delta)
@@ -79,6 +119,13 @@ static int adjust_volume(int delta)
 		// Get the volume settings
 		if (get_int_value(mixer, "digital volume", &cur_volume, &min_volume, &max_volume))
 		{
+			// We're below the known minimum audible volume
+			if (min_volume < MINIMUM_VOLUME)
+			{
+				// Cap to the known minimum audible volume
+				min_volume = MINIMUM_VOLUME;
+			}
+
 			// Backup the starting volume
 			starting_volume = cur_volume;
 
@@ -104,6 +151,9 @@ static int adjust_volume(int delta)
 			// Set the new volume
 			set_value(mixer, "digital volume", new_volume);
 
+			// Turn the speaker on or off (based on volume)
+			switch_audio_route(is_headset_connected());
+
 			// We caused an actual change in volume
 			result = starting_volume != cur_volume;
 		}
@@ -114,25 +164,6 @@ static int adjust_volume(int delta)
 
 	// Return the result
 	return result;
-}
-
-static int is_headset_connected()
-{
-	// The current headset state
-	int state = 0;
-
-	// Open the headset state device
-	FILE * fd = fopen(HEADSET_STATE_PATH, "r");
-
-	// We managed to open the headset state device
-	if (fd != NULL)
-	{
-		// Fetch the state
-		state = fgetc(fd) - '0';
-	}
-
-	// Return the state
-	return state;
 }
 
 static void rg35xxplus_update()
