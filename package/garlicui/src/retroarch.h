@@ -62,7 +62,7 @@ struct retroarch_playlist_item
 /**
  * @brief Starts the given game with the given core.
  */
-int retroarch_run(const char * core, const char * game);
+int retroarch_run(struct gui_context * context, const char * core, const char * game);
 
 /**
  * @brief Gets the given game's auto savestate path.
@@ -120,6 +120,6 @@ void retroarch_add_playlist_item(const char * playlist, struct retroarch_playlis
 /**
  * @brief Attempts to resume the last played game.
  */
-void retroarch_resume_last_game();
+void retroarch_resume_last_game(struct gui_context * context);
 
 #endif

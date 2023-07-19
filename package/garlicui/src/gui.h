@@ -1,6 +1,16 @@
 #ifndef GUI_H
 #define GUI_H
 
+/**
+ * @brief Forward definition of struct gui_node.
+ */
+struct gui_node;
+
+/**
+ * @brief Forward definition of struct gui_context.
+ */
+struct gui_context;
+
 #include "io.h"
 #include "battery.h"
 #include "clock.h"
@@ -233,11 +243,6 @@
 #define RIGHT_ANALOG_X_AXIS 3
 #define RIGHT_ANALOG_Y_AXIS 4
 #define RIGHT_TRIGGER_AXIS 5
-
-/**
- * @brief Forward definition of struct gui_node.
- */
-struct gui_node;
 
 /**
  * @brief Function pointer type for gui_node callback functions.

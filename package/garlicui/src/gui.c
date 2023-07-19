@@ -408,7 +408,7 @@ struct gui_context * gui_create_context(int argc, char * argv[])
 				gui_write_configuration(context);
 
 				// Try resuming the last played game
-				retroarch_resume_last_game();
+				retroarch_resume_last_game(context);
 			}
 		}
 
@@ -847,6 +847,15 @@ void gui_destroy_context(struct gui_context * context)
 		SDL_JoystickClose(context->inputs.internal.joystick);
 	}
 
+	// Quit the IMG library
+	IMG_Quit();
+
+	// Quit the TTF library
+	TTF_Quit();
+
+	// Quit SDL itself
+	SDL_Quit();
+
 	// Free the context itself
 	free(context);
 }
@@ -910,6 +919,9 @@ void gui_destroy_node(struct gui_node * node, int free_root)
 			// And move on to the next child
 			child = next_child;
 		} while (child != node->child);
+
+		// NULL the child reference
+		node->child = NULL;
 	}
 
 	// The caller wants to close this node

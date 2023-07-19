@@ -43,7 +43,7 @@ static void gui_activate_content(struct gui_node * this)
 						if (access(core_path, F_OK) == 0)
 						{
 							// Run retroarch
-							retroarch_run(core_path, data->path);
+							retroarch_run(this->context, core_path, data->path);
 						}
 
 						// We've got no retroarch core with this name
@@ -53,7 +53,7 @@ static void gui_activate_content(struct gui_node * this)
 							const char * args[] = { runner, data->path, NULL };
 
 							// Try running the application directly
-							process_run(args, 1);
+							process_run(this->context, args, 1);
 						}
 
 						// Free the full core path

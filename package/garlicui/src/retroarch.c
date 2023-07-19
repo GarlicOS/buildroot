@@ -11,7 +11,7 @@
 /**
  * @brief Starts the given game with the given core.
  */
-int retroarch_run(const char * core, const char * game)
+int retroarch_run(struct gui_context * context, const char * core, const char * game)
 {
 	// Puzzle together the process arguments
 	const char * args[] = { "retroarch", "-L", core, game, NULL };
@@ -24,7 +24,7 @@ int retroarch_run(const char * core, const char * game)
 	}
 
 	// Start the retroarch process
-	return process_run(args, 1);
+	return process_run(context, args, 1);
 }
 
 /**
@@ -812,7 +812,7 @@ void retroarch_add_playlist_item(const char * playlist, struct retroarch_playlis
 /**
  * @brief Attempts to resume the last played game.
  */
-void retroarch_resume_last_game()
+void retroarch_resume_last_game(struct gui_context * context)
 {
 	// Get the last played game
 	struct retroarch_playlist_item * last_game = retroarch_get_playlist_item(RETROARCH_DEFAULT_HISTORY_PLAYLIST_FILE_PATH, NULL);
@@ -821,7 +821,7 @@ void retroarch_resume_last_game()
 	if (last_game != NULL)
 	{
 		// Resume the game
-		retroarch_run(last_game->core_path, last_game->path);
+		retroarch_run(context, last_game->core_path, last_game->path);
 
 		// Free the playlist item
 		retroarch_free_playlist_item(last_game);

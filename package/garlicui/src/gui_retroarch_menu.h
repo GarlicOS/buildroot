@@ -10,7 +10,7 @@ static void gui_activate_retroarch_menu(struct gui_node * this)
 	gui_write_configuration(this->context);
 
 	// Run retroarch without parameters (which opens the RetroArch menu)
-	retroarch_run(NULL, NULL);
+	retroarch_run(this->context, NULL, NULL);
 }
 
 /**
