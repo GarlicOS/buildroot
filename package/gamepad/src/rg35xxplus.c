@@ -12,6 +12,8 @@
 #include "gamepad.h"
 #include "rg35xxplus.h"
 
+static struct input_event last_volume_event;
+
 static int translate_scancode(int scancode)
 {
 	switch (scancode)
@@ -90,6 +92,13 @@ static void input_event(int fd, struct input_event * ev)
 	// Trigger global hotkeys
 	hotkey(ev);
 
+	// We're dealing with a volume event
+	if (ev->type == EV_KEY && (ev->code == MERGED_SCANCODE_VOLUME_MINUS || ev->code == MERGED_SCANCODE_VOLUME_PLUS))
+	{
+		// Make a copy of the event for simulated repeat events
+		last_volume_event = *ev;
+	}
+
 	// Pass the event through to the merged gamepad
 	write(fd, ev, sizeof(*ev));
 }
@@ -114,10 +123,10 @@ void merge_rg35xxplus_inputs(int merged_gamepad)
 	// The operation loop
 	while(1)
 	{
-		// Set the timeout to 1 second
+		// Set the timeout to 200 milliseconds
 		struct timeval tv;
-		tv.tv_sec = 1;
-		tv.tv_usec = 0;
+		tv.tv_sec = 0;
+		tv.tv_usec = 200000;
 
 		// Reset the select structure
 		memcpy(&wfds, &rfds, sizeof(fd_set));
@@ -151,6 +160,17 @@ void merge_rg35xxplus_inputs(int merged_gamepad)
 					// Pass the event through to our merged gamepad
 					input_event(merged_gamepad, &ev);
 				}
+			}
+		}
+
+		// We've received no incoming events
+		else
+		{
+			// But a volume button is currently held
+			if (last_volume_event.type == EV_KEY && last_volume_event.value != BTN_RELEASED)
+			{
+				// Trigger global hotkeys
+				hotkey(&last_volume_event);
 			}
 		}
 	}
