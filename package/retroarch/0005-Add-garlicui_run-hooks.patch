@@ -1,17 +1,17 @@
-From c68f3fec211b20598f9f599eaa0898f0a77a9b4d Mon Sep 17 00:00:00 2001
+From 45245f676e72277e7c70efbc1ffde5e4307f765e Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Mon, 3 Jul 2023 18:50:42 +0200
 Subject: [PATCH 4/6] Add garlicui_run hooks
 
 ---
- retroarch.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 46 insertions(+), 2 deletions(-)
+ retroarch.c | 51 +++++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 49 insertions(+), 2 deletions(-)
 
 diff --git a/retroarch.c b/retroarch.c
-index 006c932..a90c946 100644
+index 006c932..d17c3d6 100644
 --- a/retroarch.c
 +++ b/retroarch.c
-@@ -2085,6 +2085,49 @@ bool is_accessibility_enabled(bool accessibility_enable, bool accessibility_enab
+@@ -2085,6 +2085,52 @@ bool is_accessibility_enabled(bool accessibility_enable, bool accessibility_enab
  }
  #endif
  
@@ -51,6 +51,9 @@ index 006c932..a90c946 100644
 +   // Shut down the audio driver before swapping the process image (required for Spreadtrum devices)
 +   audio_driver_deinit();
 +
++   // Quit SDL (to ensure the /dev/fb* descriptor gets closed)
++   SDL_Quit();
++
 +   // Replace the current process with the new process
 +   execvp(args[0], (char * const*)args);
 +
@@ -61,7 +64,7 @@ index 006c932..a90c946 100644
  /**
   * command_event:
   * @cmd                  : Event command index.
-@@ -2768,6 +2811,7 @@ bool command_event(enum event_command cmd, void *data)
+@@ -2768,6 +2814,7 @@ bool command_event(enum event_command cmd, void *data)
        case CMD_EVENT_QUIT:
           if (!retroarch_main_quit())
              return false;
@@ -69,7 +72,7 @@ index 006c932..a90c946 100644
           break;
        case CMD_EVENT_CHEEVOS_HARDCORE_MODE_TOGGLE:
  #ifdef HAVE_CHEEVOS
-@@ -3281,7 +3325,7 @@ bool command_event(enum event_command cmd, void *data)
+@@ -3281,7 +3328,7 @@ bool command_event(enum event_command cmd, void *data)
  #ifdef HAVE_LAKKA
           system("(sleep 1 && shutdown -P now) & disown");
  #else
@@ -78,7 +81,7 @@ index 006c932..a90c946 100644
           system("shutdown -P now");
  #endif /* HAVE_LAKKA */
  #endif
-@@ -3296,7 +3340,7 @@ bool command_event(enum event_command cmd, void *data)
+@@ -3296,7 +3343,7 @@ bool command_event(enum event_command cmd, void *data)
  #ifdef HAVE_LAKKA
           system("(sleep 1 && shutdown -r now) & disown");
  #else
