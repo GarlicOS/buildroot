@@ -21,6 +21,9 @@
 #define PERSISTENT_VOLUME_PATH "/root/.config/volume"
 #define DEFAULT_BRIGHTNESS 72
 
+#define SUNXI_DISP_LCD_SET_BRIGHTNESS 0x102
+#define SUNXI_DISP_LCD_GET_BRIGHTNESS 0x103
+
 static int current_volume = 0;
 
 static int get_min_brightness()
@@ -82,6 +85,37 @@ static int get_max_brightness()
 	return maximum_brightness;
 }
 
+static int get_sunxi_brightness()
+{
+	// The current brightness
+	int current_brightness = -1;
+
+	// Open the sunxi display device
+	int disp = open("/dev/disp", O_RDWR);
+
+	// We managed to open the sunxi display device
+	if (disp >= 0)
+	{
+		// The argument buffer
+		unsigned long arg[3];
+
+		// Initialize the argument buffer
+		memset(arg, 0, sizeof(arg));
+
+		// Set the display number (only here for documentation's sake)
+		arg[0] = 0;
+
+		// Get the current brightness
+		current_brightness = ioctl(disp, SUNXI_DISP_LCD_GET_BRIGHTNESS, (void*)arg);
+
+		// Close the sunxi display device
+		close(disp);
+	}
+
+	// Return the current brightness
+	return current_brightness;
+}
+
 static int get_brightness()
 {
 	// The current brightness
@@ -93,17 +127,28 @@ static int get_brightness()
 	// We've been given a valid brightness path
 	if (brightness_path_env != NULL)
 	{
-		// Open the brightness sysfs node
-		FILE * file = fopen(brightness_path_env, "r");
-
-		// We managed to open the brightness sysfs node
-		if (file != NULL)
+		// We're handling a sunxi device
+		if (strcmp(brightness_path_env, "/dev/disp") == 0)
 		{
-			// Read the current brightness
-			fscanf(file, "%d", &current_brightness);
+			// Get the brightness
+			current_brightness = get_sunxi_brightness();
+		}
 
-			// Close the brightness sysfs node
-			fclose(file);
+		// We're handling a regular device
+		else
+		{
+			// Open the brightness sysfs node
+			FILE * file = fopen(brightness_path_env, "r");
+
+			// We managed to open the brightness sysfs node
+			if (file != NULL)
+			{
+				// Read the current brightness
+				fscanf(file, "%d", &current_brightness);
+
+				// Close the brightness sysfs node
+				fclose(file);
+			}
 		}
 	}
 
@@ -133,6 +178,34 @@ static int get_persistent_brightness()
 	return persistent_brightness;
 }
 
+static void set_sunxi_brightness(int value)
+{
+	// Open the sunxi display device
+	int disp = open("/dev/disp", O_RDWR);
+
+	// We managed to open the sunxi display device
+	if (disp >= 0)
+	{
+		// The argument buffer
+		unsigned long arg[3];
+
+		// Initialize the argument buffer
+		memset(arg, 0, sizeof(arg));
+
+		// Set the display number (only here for documentation's sake)
+		arg[0] = 0;
+
+		// Set the brightness
+		arg[1] = value;
+
+		// Write it to the sunxi display device
+		ioctl(disp, SUNXI_DISP_LCD_SET_BRIGHTNESS, (void*)arg);
+
+		// Close the sunxi display device
+		close(disp);
+	}
+}
+
 static void set_brightness(int value)
 {
 	// Get the brightness path
@@ -141,30 +214,41 @@ static void set_brightness(int value)
 	// We've been given a valid brightness path
 	if (brightness_path_env != NULL)
 	{
-		// Open the brightness sysfs node
-		FILE * file = fopen(brightness_path_env, "w");
-
-		// We managed to open the brightness sysfs node
-		if (file != NULL)
+		// We're handling a sunxi device
+		if (strcmp(brightness_path_env, "/dev/disp") == 0)
 		{
-			// Set the current brightness
-			fprintf(file, "%d", value);
+			// Set the brightness
+			set_sunxi_brightness(value);
+		}
 
-			// Close the brightness sysfs node
-			fclose(file);
+		// We're handling a regular device
+		else
+		{
+			// Open the brightness sysfs node
+			FILE * file = fopen(brightness_path_env, "w");
+
+			// We managed to open the brightness sysfs node
+			if (file != NULL)
+			{
+				// Set the current brightness
+				fprintf(file, "%d", value);
+
+				// Close the brightness sysfs node
+				fclose(file);
+			}
 		}
 
 		// Open the persistent brightness file
-		file = fopen(PERSISTENT_BRIGHTNESS_PATH, "w");
+		FILE * persistent_file = fopen(PERSISTENT_BRIGHTNESS_PATH, "w");
 
 		// We managed to open the persistent brightness file
-		if (file != NULL)
+		if (persistent_file != NULL)
 		{
 			// Set the current brightness
-			fprintf(file, "%d", value);
+			fprintf(persistent_file, "%d", value);
 
 			// Close the persistent brightness file
-			fclose(file);
+			fclose(persistent_file);
 		}
 	}
 }
