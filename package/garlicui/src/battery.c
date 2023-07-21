@@ -18,14 +18,18 @@
  */
 static const char * battery_capacity_path()
 {
-	// The static buffer that holds the path
-	static char buffer[PATH_MAX];
+	// Get the device-specific battery capacity path
+	const char * path = (const char *)getenv("BATTERY_CAPACITY_PATH");
 
-	// Set the path
-	strcpy(buffer, "/sys/class/power_supply/battery/capacity");
+	// We have no device-specific battery capacity path to work with
+	if (path == NULL)
+	{
+		// Fall back to a "safe" default
+		path = "/sys/class/power_supply/battery/capacity";
+	}
 
-	// Return the static buffer
-	return (const char *)buffer;
+	// Return the battery capacity path
+	return path;
 }
 
 /**
@@ -33,14 +37,18 @@ static const char * battery_capacity_path()
  */
 static const char * battery_charger_online_status_path()
 {
-	// The static buffer that holds the path
-	static char buffer[PATH_MAX];
+	// Get the device-specific charger online path
+	const char * path = (const char *)getenv("CHARGER_ONLINE_PATH");
 
-	// Set the path
-	strcpy(buffer, "/sys/class/power_supply/usb/online");
+	// We have no device-specific charger online path to work with
+	if (path == NULL)
+	{
+		// Fall back to a "safe" default
+		path = "/sys/class/power_supply/usb/online";
+	}
 
-	// Return the static buffer
-	return (const char *)buffer;
+	// Return the charger online path
+	return path;
 }
 
 /**
