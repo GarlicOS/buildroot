@@ -129,7 +129,7 @@ SDL_Surface * battery_render(float scale_factor, Uint32 color)
 		int fill_width = (int)((float)max_fill_width * (float)percentage / 100.0f);
 
 		// Fill the battery main body
-		boxRGBA(surface, battery_outline_width + battery_fill_padding, battery_outline_width + battery_fill_padding, surface->w - (battery_outline_width << 1) - battery_fill_padding - 1, surface->h - battery_outline_width - battery_fill_padding - 1, battery_color.r, battery_color.g, battery_color.b, 0xff);
+		boxRGBA(surface, battery_outline_width + battery_fill_padding, battery_outline_width + battery_fill_padding, battery_outline_width + battery_fill_padding + fill_width - 1, surface->h - battery_outline_width - battery_fill_padding - 1, battery_color.r, battery_color.g, battery_color.b, 0xff);
 	}
 
 	// Return the rendered battery icon
