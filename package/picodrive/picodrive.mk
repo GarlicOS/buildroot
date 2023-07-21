@@ -15,6 +15,12 @@ PICODRIVE_MAKE_OPTS += \
 	CC=$(TARGET_CROSS)gcc \
 	CXX=$(TARGET_CROSS)g++
 
+ifeq ($(BR2_aarch64),y)
+PICODRIVE_MAKE_OPTS += platform=aarch64
+else ifeq ($(BR2_arm),y)
+PICODRIVE_MAKE_OPTS += platform=armv
+endif
+
 define PICODRIVE_BUILD_CMDS
 	$(TARGET_MAKE_ENV) $(TARGET_CONFIGURE_ARGS) $(MAKE) -C $(@D) -f Makefile.libretro $(PICODRIVE_MAKE_OPTS)
 endef
