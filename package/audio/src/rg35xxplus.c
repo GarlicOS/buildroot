@@ -87,6 +87,9 @@ static int is_headset_connected()
 	{
 		// Fetch the state
 		state = fgetc(fd) - '0';
+
+		// Close the headset state device
+		fclose(fd);
 	}
 
 	// Return the state
