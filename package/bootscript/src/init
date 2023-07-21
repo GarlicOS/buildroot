@@ -6,5 +6,8 @@ gamepad &
 # Start the audio provider
 audio &
 
+# Start the display provider
+display &
+
 # Start GarlicUI
 garlicui

@@ -1,0 +1,4 @@
+menuconfig BR2_PACKAGE_DISPLAY
+	bool "Universal Display Provider"
+	help
+	  Initializes external displays and controls display routes
