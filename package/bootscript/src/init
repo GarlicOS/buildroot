@@ -9,5 +9,18 @@ audio &
 # Start the display provider
 display &
 
-# Start GarlicUI
-garlicui
+# Be crash resistant
+while true
+do
+	if [ -f /tmp/command ]
+	then
+		# Move the command (so we don't risk getting deadlocked by crashing processes)
+		mv /tmp/command /tmp/current_command
+
+		# Execute the command
+		/bin/sh /tmp/current_command
+	else
+		# Start GarlicUI
+		garlicui
+	fi
+done

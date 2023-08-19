@@ -1,7 +1,7 @@
-From 68bf0d81269bedb62d3aac949cd1f6e63ee9b9d0 Mon Sep 17 00:00:00 2001
+From 6c1e370ad590c939043a482f1db116b266b0e29f Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Fri, 21 Jul 2023 19:27:10 +0200
-Subject: [PATCH] Write auto savestate thumbnails synchronously
+Subject: [PATCH 7/7] Write auto savestate thumbnails synchronously
 
 ---
  tasks/task_screenshot.c | 5 ++++-

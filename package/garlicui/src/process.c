@@ -47,16 +47,43 @@ int process_run(struct gui_context * context, const char * args[], int replace_p
 	// The user wants to replace the parent process
 	if (replace_parent)
 	{
-		// Clone the arguments (the original will no longer be available after destroying the GUI context)
-		char ** clone_args = clone_arguments(args);
+		// Open the command file
+		FILE * command_file = fopen("/tmp/command", "w");
 
-		// Destroy the GUI context (which in turn shuts down SDL, which in turn closes the /dev/fb* descriptor)
-		gui_destroy_context(context);
+		// We managed to open the command file
+		if (command_file != NULL)
+		{
+			// Iterate all arguments
+			for (int i = 0; args[i] != NULL; i++)
+			{
+				// The argument contains whitespaces
+				if (strchr(args[i], ' ') != NULL)
+				{
+					// Write the argument to the file
+					fprintf(command_file, "\"%s\"", args[i]);
+				}
 
-		// Replace the current process with the new process
-		execvp(args[0], (char * const*)clone_args);
+				// The argument doesn't contain whitespaces
+				else
+				{
+					// Write the argument to the file
+					fprintf(command_file, "%s", args[i]);
+				}
 
-		// NOTE: If execvp ever fails at this point then we're royally screwed...
+				// We haven't reached the last argument yet
+				if (args[i + 1] != NULL)
+				{
+					// Which means we need a space separator
+					fprintf(command_file, " ");
+				}
+			}
+
+			// Close the command file
+			fclose(command_file);
+
+			// Exit the application
+			exit(0);
+		}
 	}
 
 	// The user wants to start a child process

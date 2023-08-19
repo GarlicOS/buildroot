@@ -1,7 +1,7 @@
-From 2cb6ca27a22a0e1bfab415c4ecb48af701d8eb46 Mon Sep 17 00:00:00 2001
+From 096d22e591c4d4f16ad91ad1412a3feca3ecbdde Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Wed, 12 Jul 2023 18:08:40 +0200
-Subject: [PATCH 3/6] Add shutdown hotkey
+Subject: [PATCH 3/7] Add shutdown hotkey
 
 ---
  command.h                    |  1 +

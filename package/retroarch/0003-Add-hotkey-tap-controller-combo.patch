@@ -1,7 +1,7 @@
-From dca4ec568ea1aa1b9db479446a9e22627b95a0f1 Mon Sep 17 00:00:00 2001
+From 6ecf9cd2db75121e356b1c559a432afedb723ac3 Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Thu, 8 Jun 2023 15:54:19 +0200
-Subject: [PATCH 2/6] Add hotkey tap controller combo
+Subject: [PATCH 2/7] Add hotkey tap controller combo
 
 ---
  input/input_defines.h |  1 +

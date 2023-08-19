@@ -1,28 +1,25 @@
-From 45245f676e72277e7c70efbc1ffde5e4307f765e Mon Sep 17 00:00:00 2001
+From 8b069c726e368d86cce9274be2ffd0dfbe82fc20 Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Mon, 3 Jul 2023 18:50:42 +0200
-Subject: [PATCH 4/6] Add garlicui_run hooks
+Subject: [PATCH 4/7] Add garlicui_run hooks
 
 ---
- retroarch.c | 51 +++++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 49 insertions(+), 2 deletions(-)
+ retroarch.c | 80 +++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 78 insertions(+), 2 deletions(-)
 
 diff --git a/retroarch.c b/retroarch.c
-index 006c932..d17c3d6 100644
+index 006c932..d6f10fc 100644
 --- a/retroarch.c
 +++ b/retroarch.c
-@@ -2085,6 +2085,52 @@ bool is_accessibility_enabled(bool accessibility_enable, bool accessibility_enab
+@@ -2085,6 +2085,81 @@ bool is_accessibility_enabled(bool accessibility_enable, bool accessibility_enab
  }
  #endif
  
 +/**
 + * @brief Swaps over to GarlicUI and executes the given action.
 + */
-+int garlicui_run(const char * action, ...)
++void garlicui_run(const char * action, ...)
 +{
-+   // The exit code of the child process
-+   int exit_code = -1;
-+
 +   // The argument list
 +   const char *args[256] = { "garlicui", NULL };
 +
@@ -54,17 +51,49 @@ index 006c932..d17c3d6 100644
 +   // Quit SDL (to ensure the /dev/fb* descriptor gets closed)
 +   SDL_Quit();
 +
-+   // Replace the current process with the new process
-+   execvp(args[0], (char * const*)args);
++   // Open the command file
++   FILE * command_file = fopen("/tmp/command", "w");
 +
-+   // Return the exit code of the child process
-+   return exit_code;
++   // We managed to open the command file
++   if (command_file != NULL)
++   {
++      // Iterate all arguments
++      for (int i = 0; args[i] != NULL; i++)
++      {
++         // The argument contains whitespaces
++         if (strchr(args[i], ' ') != NULL)
++         {
++            // Write the argument to the file
++            fprintf(command_file, "\"%s\"", args[i]);
++         }
++
++         // The argument doesn't contain whitespaces
++         else
++         {
++            // Write the argument to the file
++            fprintf(command_file, "%s", args[i]);
++         }
++
++         // We haven't reached the last argument yet
++         if (args[i + 1] != NULL)
++         {
++            // Which means we need a space separator
++            fprintf(command_file, " ");
++         }
++      }
++
++      // Close the command file
++      fclose(command_file);
++
++      // Exit the application
++      exit(0);
++   }
 +}
 +
  /**
   * command_event:
   * @cmd                  : Event command index.
-@@ -2768,6 +2814,7 @@ bool command_event(enum event_command cmd, void *data)
+@@ -2768,6 +2843,7 @@ bool command_event(enum event_command cmd, void *data)
        case CMD_EVENT_QUIT:
           if (!retroarch_main_quit())
              return false;
@@ -72,7 +101,7 @@ index 006c932..d17c3d6 100644
           break;
        case CMD_EVENT_CHEEVOS_HARDCORE_MODE_TOGGLE:
  #ifdef HAVE_CHEEVOS
-@@ -3281,7 +3328,7 @@ bool command_event(enum event_command cmd, void *data)
+@@ -3281,7 +3357,7 @@ bool command_event(enum event_command cmd, void *data)
  #ifdef HAVE_LAKKA
           system("(sleep 1 && shutdown -P now) & disown");
  #else
@@ -81,7 +110,7 @@ index 006c932..d17c3d6 100644
           system("shutdown -P now");
  #endif /* HAVE_LAKKA */
  #endif
-@@ -3296,7 +3343,7 @@ bool command_event(enum event_command cmd, void *data)
+@@ -3296,7 +3372,7 @@ bool command_event(enum event_command cmd, void *data)
  #ifdef HAVE_LAKKA
           system("(sleep 1 && shutdown -r now) & disown");
  #else
