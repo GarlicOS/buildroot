@@ -1,10 +1,10 @@
-From 376fe630c89a4b4a2429cbcfaaf9384842b1c4eb Mon Sep 17 00:00:00 2001
+From d4a7d020ef7b22b2cdd3800e7680a5063a7fecba Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Wed, 3 May 2023 15:53:05 +0200
 Subject: [PATCH] Commonize tinyalsa driver
 
 ---
- audio/drivers/tinyalsa.c                      | 2495 ++--------------
+ audio/drivers/tinyalsa.c                      | 2489 ++--------------
  ...-make-compiler-variable-overwritable.patch |   53 +
  .../0002-Commonize-tinyalsa-driver.patch      | 2586 +++++++++++++++++
  ...0003-Add-hotkey-tap-controller-combo.patch |  165 ++
@@ -17,7 +17,7 @@ Subject: [PATCH] Commonize tinyalsa driver
  oldpatches/retroarch/Config.in                |  153 +
  oldpatches/retroarch/Internal Gamepad.cfg     |   43 +
  oldpatches/retroarch/retroarch.mk             |  219 ++
- 13 files changed, 4195 insertions(+), 2303 deletions(-)
+ 13 files changed, 4187 insertions(+), 2305 deletions(-)
  create mode 100644 oldpatches/retroarch/0001-make-compiler-variable-overwritable.patch
  create mode 100644 oldpatches/retroarch/0002-Commonize-tinyalsa-driver.patch
  create mode 100644 oldpatches/retroarch/0003-Add-hotkey-tap-controller-combo.patch
@@ -32,7 +32,7 @@ Subject: [PATCH] Commonize tinyalsa driver
  create mode 100644 oldpatches/retroarch/retroarch.mk
 
 diff --git a/audio/drivers/tinyalsa.c b/audio/drivers/tinyalsa.c
-index fee4174..97d8f09 100644
+index fee4174..77fa286 100644
 --- a/audio/drivers/tinyalsa.c
 +++ b/audio/drivers/tinyalsa.c
 @@ -1,31 +1,3 @@
@@ -67,7 +67,7 @@ index fee4174..97d8f09 100644
  /*  RetroArch - A frontend for libretro.
   *  Copyright (C) 2010-2014 - Hans-Kristian Arntzen
   *  Copyright (C) 2011-2017 - Daniel De Matteis
-@@ -64,2346 +36,263 @@
+@@ -64,2346 +36,253 @@
  #include <retro_inline.h>
  #include <retro_endianness.h>
  
@@ -2186,6 +2186,10 @@ index fee4174..97d8f09 100644
 -   unsigned int orig_rate       = rate;
 -   unsigned int max_rate, min_rate, buffer_size;
 -   float initial_latency;
+-
+-   struct pcm_config         config;
+-
+-   tinyalsa_t *tinyalsa      = (tinyalsa_t*)calloc(1, sizeof(tinyalsa_t));
 +	unsigned int card = 0;
 +	unsigned int device = 0;
 +	unsigned int frames_per_ms = 0;
@@ -2194,26 +2198,18 @@ index fee4174..97d8f09 100644
 +	struct pcm_params *params;
 +	float initial_latency;
  
--   struct pcm_config         config;
-+	tinyalsa_t *tinyalsa = (tinyalsa_t*)calloc(1, sizeof(tinyalsa_t));
- 
--   tinyalsa_t *tinyalsa      = (tinyalsa_t*)calloc(1, sizeof(tinyalsa_t));
-+	if (!tinyalsa)
-+		return NULL;
- 
 -   if (!tinyalsa)
 -      return NULL;
-+	if (devicestr)
-+		sscanf(devicestr, "%u,%u", &card, &device);
++	tinyalsa_t *tinyalsa = (tinyalsa_t*)calloc(1, sizeof(tinyalsa_t));
  
 -   if (devicestr)
 -      sscanf(devicestr, "%u,%u", &card, &device);
-+	tinyalsa->card = card;
-+	tinyalsa->device = device;
-+	tinyalsa->use_mmap = getenv("ALSA_FORCE_MMAP") != NULL;
++	if (!tinyalsa)
++		return NULL;
  
 -   RARCH_LOG("[TINYALSA]: Using card: %u, device: %u.\n", card, device);
-+	RARCH_LOG("[TINYALSA]: Using card: %u, device: %u.\n", card, device);
++	if (devicestr)
++		sscanf(devicestr, "%u,%u", &card, &device);
  
 -   tinyalsa->params = pcm_params_get(card, device, PCM_OUT);
 -   if (!tinyalsa->params)
@@ -2221,9 +2217,22 @@ index fee4174..97d8f09 100644
 -      RARCH_ERR("[TINYALSA]: params: Cannot open audio device.\n");
 -      goto error;
 -   }
--
++	tinyalsa->card = card;
++	tinyalsa->device = device;
++	tinyalsa->use_mmap = getenv("ALSA_FORCE_MMAP") != NULL;
+ 
 -   if (pcm_params_can_pause(tinyalsa->params))
 -      tinyalsa->can_pause = true;
++	RARCH_LOG("[TINYALSA]: Using card: %u, device: %u.\n", card, device);
+ 
+-   min_rate = pcm_params_get_min(tinyalsa->params, PCM_PARAM_RATE);
+-   max_rate = pcm_params_get_max(tinyalsa->params, PCM_PARAM_RATE);
+-
+-   if (!(rate >= min_rate && rate <= max_rate))
+-   {
+-      RARCH_WARN("[TINYALSA]: Sample rate cannot be larger than %uHz "\
+-                 "or smaller than %uHz.\n", max_rate, min_rate);
+-      RARCH_WARN("[TINYALSA]: Trying to set a valid sample rate.\n");
 +	params = pcm_params_get(card, device, PCM_OUT);
 +	if (!params)
 +	{
@@ -2231,36 +2240,20 @@ index fee4174..97d8f09 100644
 +		goto error;
 +	}
  
--   min_rate = pcm_params_get_min(tinyalsa->params, PCM_PARAM_RATE);
--   max_rate = pcm_params_get_max(tinyalsa->params, PCM_PARAM_RATE);
-+	min_rate = pcm_params_get_min(params, PCM_PARAM_RATE);
-+	max_rate = pcm_params_get_max(params, PCM_PARAM_RATE);
- 
--   if (!(rate >= min_rate && rate <= max_rate))
--   {
--      RARCH_WARN("[TINYALSA]: Sample rate cannot be larger than %uHz "\
--                 "or smaller than %uHz.\n", max_rate, min_rate);
--      RARCH_WARN("[TINYALSA]: Trying to set a valid sample rate.\n");
-+	if (!(rate >= min_rate && rate <= max_rate))
-+	{
-+		RARCH_WARN("[TINYALSA]: Sample rate cannot be larger than %uHz or smaller than %uHz.\n", max_rate, min_rate);
-+		RARCH_WARN("[TINYALSA]: Trying to set a valid sample rate.\n");
- 
 -      if (rate > max_rate)
 -         rate = max_rate;
 -      else if (rate < min_rate)
 -         rate = min_rate;
 -   }
-+		if (rate > max_rate)
-+			rate = max_rate;
-+		else if (rate < min_rate)
-+			rate = min_rate;
-+	}
++	min_rate = pcm_params_get_min(params, PCM_PARAM_RATE);
++	max_rate = pcm_params_get_max(params, PCM_PARAM_RATE);
  
 -   if (orig_rate != rate)
 -      *new_rate = rate;
-+	if (orig_rate != rate)
-+		*new_rate = rate;
++	if (!(rate >= min_rate && rate <= max_rate))
++	{
++		RARCH_WARN("[TINYALSA]: Sample rate cannot be larger than %uHz or smaller than %uHz.\n", max_rate, min_rate);
++		RARCH_WARN("[TINYALSA]: Trying to set a valid sample rate.\n");
  
 -   config.rate              = rate;
 -   config.format            = is_little_endian() ?\
@@ -2271,34 +2264,15 @@ index fee4174..97d8f09 100644
 -   config.start_threshold   = config.period_size;
 -   config.stop_threshold    = 0;
 -   config.silence_threshold = 0;
-+	unsigned int period_size = 1024;
-+	char * period_size_override = getenv("ALSA_DEFAULT_PERIOD_SIZE");
-+	if (period_size_override != NULL)
-+	{
-+		period_size = (unsigned int)atoi(period_size_override);
++		if (rate > max_rate)
++			rate = max_rate;
++		else if (rate < min_rate)
++			rate = min_rate;
 +	}
  
 -   tinyalsa->pcm = pcm_open(card, device, PCM_OUT, &config);
-+	tinyalsa->config.rate = rate;
-+	tinyalsa->config.format = is_little_endian() ? PCM_FORMAT_S16_LE : PCM_FORMAT_S16_BE;
-+	tinyalsa->config.channels = 2;
-+	tinyalsa->config.period_size = period_size;
-+	tinyalsa->config.period_count = 4;
-+	tinyalsa->config.start_threshold = tinyalsa->config.period_size;
-+	tinyalsa->config.avail_min = tinyalsa->config.period_size;
-+
-+	if (tinyalsa->use_mmap)
-+	{
-+		tinyalsa->config.stop_threshold = -1;
-+		tinyalsa->config.silence_threshold = 0;
-+		tinyalsa->config.silence_size = -1;
-+	}
-+	else
-+	{
-+		tinyalsa->config.stop_threshold = 0;
-+		tinyalsa->config.silence_threshold = tinyalsa->config.period_size * tinyalsa->config.period_count;
-+		tinyalsa->config.silence_size = 0;
-+	}
++	if (orig_rate != rate)
++		*new_rate = rate;
  
 -   if (!tinyalsa->pcm)
 -   {
@@ -2310,11 +2284,29 @@ index fee4174..97d8f09 100644
 -      RARCH_ERR("[TINYALSA]: Cannot open audio device.\n");
 -      goto error;
 -   }
-+	tinyalsa->pcm = pcm_open(card, device, PCM_OUT | PCM_NONBLOCK | (tinyalsa->use_mmap ? PCM_MMAP | PCM_NOIRQ | PCM_MONOTONIC | PCM_NORESTART : 0), &tinyalsa->config);
++	unsigned int period_size = 1024;
++	char * period_size_override = getenv("ALSA_DEFAULT_PERIOD_SIZE");
++	if (period_size_override != NULL)
++	{
++		period_size = (unsigned int)atoi(period_size_override);
++	}
  
 -   buffer_size           = pcm_get_buffer_size(tinyalsa->pcm);
 -   tinyalsa->buffer_size = pcm_frames_to_bytes(tinyalsa->pcm, buffer_size);
 -   tinyalsa->frame_bits  = pcm_format_to_bits(config.format) * 2;
++	tinyalsa->config.rate = rate;
++	tinyalsa->config.format = is_little_endian() ? PCM_FORMAT_S16_LE : PCM_FORMAT_S16_BE;
++	tinyalsa->config.channels = 2;
++	tinyalsa->config.period_size = period_size;
++	tinyalsa->config.period_count = 4;
++	tinyalsa->config.start_threshold = tinyalsa->config.period_size;
++	tinyalsa->config.stop_threshold = tinyalsa->use_mmap ? -1 : 0;
++	tinyalsa->config.avail_min = tinyalsa->config.period_size;
++	tinyalsa->config.silence_threshold = tinyalsa->config.period_size * tinyalsa->config.period_count;
++	tinyalsa->config.silence_size = 0;
++
++	tinyalsa->pcm = pcm_open(card, device, PCM_OUT | PCM_NONBLOCK | (tinyalsa->use_mmap ? PCM_MMAP | PCM_NOIRQ | PCM_MONOTONIC | PCM_NORESTART : 0), &tinyalsa->config);
++
 +	if (!tinyalsa->pcm)
 +	{
 +		RARCH_ERR("[TINYALSA]: Failed to allocate memory for pcm.\n");
@@ -2593,7 +2585,7 @@ index fee4174..97d8f09 100644
  }
  
  static size_t tinyalsa_buffer_size(void *data)
-@@ -2414,17 +303,17 @@ static size_t tinyalsa_buffer_size(void *data)
+@@ -2414,17 +293,17 @@ static size_t tinyalsa_buffer_size(void *data)
  }
  
  audio_driver_t audio_tinyalsa = {
