@@ -14,6 +14,7 @@
 #include "rg405m.h"
 #include "rg35xxplus.h"
 #include "pocket2plus.h"
+#include "pocket3.h"
 
 #define AUDIO_CONTROL_PIPE "/tmp/audio_control"
 #define AUDIO_RESPONSE_PIPE "/tmp/audio_response"
@@ -557,6 +558,14 @@ void merge_inputs(int merged_gamepad)
 	{
 		// Convert Retroid serial console controller events and combine them with gpio-keys
 		merge_pocket2plus_inputs(merged_gamepad);
+	}
+
+	// We're handling the Retroid Pocket 3 or Retroid Pocket 3+
+	else if (strcmp(code_name, "pocket3") == 0 || strcmp(code_name, "pocket3plus") == 0)
+	{
+		// Convert Retroid serial console controller events and combine them with gpio-keys
+		// merge_pocket3_inputs(merged_gamepad);
+		// Disabled for now until it is tested on RP3+
 	}
 }
 
