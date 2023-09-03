@@ -8,15 +8,11 @@
 #include <unistd.h>
 #include <linux/input.h>
 #include <linux/uinput.h>
-#include <termios.h>
-#include <errno.h>
 #include <pthread.h>
 
 #include "gamepad.h"
 #include "pocket2plus.h"
-
-struct termios orig_config;
-struct termios uart_config;
+#include "retroid_input.h"
 
 static int32_t get_pocket2plus_axis_min_value(int axis)
 {
@@ -224,75 +220,6 @@ static void input_event(int fd, struct input_event * ev)
 	}
 }
 
-static void init_uart(int gamepad)
-{
-	// Check that gamepad port was actually read
-	if (gamepad == -1)
-	{
-		printf("Failed to open uart port\n");
-	}
-
-	// 8 bits per character 
-	uart_config.c_cflag &= ~CSIZE;
-	uart_config.c_cflag |= CS8;
-
-	// Return from read if we receive at least one byte
-	uart_config.c_cc[VMIN]  = 1;
-	uart_config.c_cc[VTIME] = 0;
-
-	// Get originally tcconfig
-	if (tcgetattr(gamepad, &orig_config) != 0)
-	{
-    	printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
-	}
-
-	// Set uart baud rate
-	if (cfsetispeed(&uart_config, 0x1002) < 0 || cfsetospeed(&uart_config, 0x1002) < 0)
-	{
-		printf("Error setting uart config.\n");
-	}
-	else 
-	{
-		printf("Success setting uart config.\n");
-	}
-
-	// Send uart config
-	if (tcsetattr(gamepad, TCSAFLUSH, &uart_config) < 0) 
-	{
-		printf("Error in tcsetattr.\n");
-	}
-	else
-	{
-		printf("Success in tcsetattr.\n");
-	}
-}
-
-static void enable_analog_sticks(int gamepad)
-{
-	// Reverse Engineered using Ghidra
-	long *buffer;
-	unsigned char unknown;
-	int counter;
-
-	buffer = (long *)calloc(0x100,1);
-	*buffer = 0x2e;
-	buffer[1] = 1;
-	buffer[2] = 2;
-	buffer[3] = 0xe;
-	buffer[4] = 3;
-	buffer[5] = 0;
-
-	unknown = *(unsigned char *)(buffer + 2);
-	for (counter = 0; counter < (int)(unknown + 4); counter = counter + 1)
-	{
-		write(gamepad, (void *)(buffer + counter), 1);
-		usleep(100);
-	}
-
-	// Close buffer pointer
-	free(buffer);
-}
-
 // Struct to send to threads
 typedef struct _volumekey_event {
 	int merged_gamepad;
@@ -302,7 +229,7 @@ typedef struct _volumekey_event {
 } volumekey_event;
 
 // Function to simulate volume key repeat by waiting one second before going into a loop of sending repeat events every 200ms
-void *simulate_volumekey_repeat(void *volumekey_struct)
+void *simulate_volumekey_repeat_pocket2plus(void *volumekey_struct)
 {
 	// Update thread status to show thread is running
 	((volumekey_event*)volumekey_struct)->volume_thread_running = 1;
@@ -394,7 +321,7 @@ void merge_pocket2plus_inputs(int merged_gamepad)
 						// Run thread if volume up key is pressed and thread does not already exist
 						if (volumeup_pressed == 1 && volumeup_struct.volume_thread_running == 0)
 						{
-							pthread_create(&volumeup_thread, NULL, &simulate_volumekey_repeat, (void *)&volumeup_struct);
+							pthread_create(&volumeup_thread, NULL, &simulate_volumekey_repeat_pocket2plus, (void *)&volumeup_struct);
 						}
 					}
 					if (ev.code == KEY_VOLUMEDOWN)
@@ -404,7 +331,7 @@ void merge_pocket2plus_inputs(int merged_gamepad)
 						// Run thread if volume down key is pressed and thread does not already exist
 						if (volumedown_pressed == 1 && volumedown_struct.volume_thread_running == 0)
 						{
-							pthread_create(&volumedown_thread, NULL, &simulate_volumekey_repeat, (void *)&volumedown_struct);
+							pthread_create(&volumedown_thread, NULL, &simulate_volumekey_repeat_pocket2plus, (void *)&volumedown_struct);
 						}
 					}
 					// Pass the event through to our merged gamepad
