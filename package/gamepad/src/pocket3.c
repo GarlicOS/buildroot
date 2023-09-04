@@ -349,7 +349,7 @@ void merge_pocket3_inputs(int merged_gamepad)
 
 				// Check to see if we read 20 bytes from Retroid's serial port
 				// A proper serial input event should be 20 bytes long
-				if (readlen > 0 && readlen < 20)
+				if (readlen > 0 && readlen < 20 && readlen != 8 && readlen != 16)
 				{
 					printf("Error: read length is %d. Something went wrong.\n", readlen);
 				}
@@ -365,6 +365,26 @@ void merge_pocket3_inputs(int merged_gamepad)
 					uart_ev.code = buffer[3];
 					// Concatenate the last two bytes of hex values (this is the full input value for analog events)
 					uart_ev.value = (buffer[6]<<8) | (buffer[7]);
+					// Pass the event through to our merged gamepad
+					input_event(merged_gamepad, &uart_ev);
+					// Send a sync event, otherwise input won't register
+					uart_ev.type = EV_SYN;
+					uart_ev.code = 0;
+					uart_ev.value = 0;
+					input_event(merged_gamepad, &uart_ev);
+				}
+
+				// Convert proper Retroid input events to a normal input event, then send to merged gamepad
+				if (readlen == 16)
+				{
+					// Create a fake event for the Retroid controller
+					struct input_event uart_ev;
+					// Pull event type from the serial event
+					uart_ev.type = buffer[8];
+					// Pull keycode and pressed status from read serial line
+					uart_ev.code = buffer[11];
+					// Concatenate the last two bytes of hex values (this is the full input value for analog events)
+					uart_ev.value = (buffer[14]<<8) | (buffer[15]);
 					// Pass the event through to our merged gamepad
 					input_event(merged_gamepad, &uart_ev);
 					// Send a sync event, otherwise input won't register
