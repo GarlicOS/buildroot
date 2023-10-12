@@ -1,4 +1,4 @@
-From 096d22e591c4d4f16ad91ad1412a3feca3ecbdde Mon Sep 17 00:00:00 2001
+From ee92a3752be33fcc4c668517857064a4a7ae87fe Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Wed, 12 Jul 2023 18:08:40 +0200
 Subject: [PATCH 3/7] Add shutdown hotkey
@@ -239,7 +239,7 @@ index 10fb8c2..507065b 100644
        case RUNLOOP_STATE_POLLED_AND_SLEEP:
  #ifdef HAVE_NETWORKING
 diff --git a/runloop.h b/runloop.h
-index 3ba255f..9f11115 100644
+index 3ba255f..dec2d3f 100644
 --- a/runloop.h
 +++ b/runloop.h
 @@ -267,6 +267,7 @@ struct runloop
