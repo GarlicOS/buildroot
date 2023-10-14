@@ -1,4 +1,4 @@
-From 68e748a87b8179c3d45226bf4596205b321bcd90 Mon Sep 17 00:00:00 2001
+From c8896061d6ddd957610516880f697aa3e0847490 Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Fri, 21 Jul 2023 19:27:10 +0200
 Subject: [PATCH 7/7] Write auto savestate thumbnails synchronously
