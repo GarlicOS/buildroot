@@ -81,8 +81,17 @@ int process_run(struct gui_context * context, const char * args[], int replace_p
 			// Close the command file
 			fclose(command_file);
 
+			// Sync all changes to disk
+			io_sync();
+
+			// Quit SDL (which helps avoid a fbcon driver black screen issue)
+			SDL_Quit();
+
 			// Exit the application
 			exit(0);
+
+			// Exit the function
+			return 0;
 		}
 	}
 
