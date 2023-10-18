@@ -1,5 +1,5 @@
 <Configuration>
-  <Run>mednafen_supafaust</Run>
+  <Run>snes9x</Run>
   <Extensions>
     <Extension>.smc</Extension>
     <Extension>.fig</Extension>
