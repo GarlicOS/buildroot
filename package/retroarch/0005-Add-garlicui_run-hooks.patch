@@ -1,4 +1,4 @@
-From 3f5feddef45ba886f6e77c153d2e9f23808295c9 Mon Sep 17 00:00:00 2001
+From a5e499d7732ff7711e0c9b82c2f4cdbff0225973 Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Mon, 3 Jul 2023 18:50:42 +0200
 Subject: [PATCH 4/7] Add garlicui_run hooks
