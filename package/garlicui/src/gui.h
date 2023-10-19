@@ -445,7 +445,7 @@ struct gui_context_settings
 {
 	int meridian_time; /** The user's current meridian time setting */
 	char locale[16]; /** The user's current locale setting (intentionally 1 frame late so surfaces can be re-rendered) */
-	char ui_state[128]; /** The UI state of the previous GarlicUI instance (populated on load, restored post-main-menu activation) */
+	char ui_state[128 + PATH_MAX * 2]; /** The UI state of the previous GarlicUI instance (populated on load, restored post-main-menu activation) */
 	int resume; /** The auto-resume flag */
 };
 
