@@ -237,7 +237,7 @@ static char * gui_serialize_ui_state(struct gui_context * context)
 			if (ui_state != NULL)
 			{
 				// Put in a separator
-				strcat(resized_ui_state, ",");
+				strcat(resized_ui_state, "|");
 			}
 
 			// We're adding the first menu to the state
@@ -270,22 +270,22 @@ static void gui_restore_ui_state(struct gui_context * context, const char * ui_s
 	// We managed to copy the UI state buffer
 	if (copy != NULL)
 	{
-		// The "," split save pointer
+		// The "|" split save pointer
 		char * saveptr1 = NULL;
 
 		// The ":" split save pointer
 		char * saveptr2 = NULL;
 
-		// Split the string by ","
-		char * token = strtok_r(copy, ",", &saveptr1);
+		// Split the string by "|"
+		char * token = strtok_r(copy, "|", &saveptr1);
 
-		// Iterate all "," split tokens
+		// Iterate all "|" split tokens
 		while (token != NULL)
 		{
-			// Copy the "," split token buffer
+			// Copy the "|" split token buffer
 			char * pair = strdup(token);
 
-			// We managed to copy the "," split token buffer
+			// We managed to copy the "|" split token buffer
 			if (pair != NULL)
 			{
 				// Split each pair by ":" to get the node type and child index
@@ -339,12 +339,12 @@ static void gui_restore_ui_state(struct gui_context * context, const char * ui_s
 					}
 				}
 
-				// Free the ":" split token copy buffer
+				// Free the "|" split token copy buffer
 				free(pair);
 			}
 
-			// Fetch the next ":" split token
-			token = strtok_r(NULL, ",", &saveptr1);
+			// Fetch the next "|" split token
+			token = strtok_r(NULL, "|", &saveptr1);
 		}
 
 		// Free the UI state copy buffer
