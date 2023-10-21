@@ -1,0 +1,5 @@
+menuconfig BR2_PACKAGE_SNES9X2010
+	bool "snes9x2010"
+	depends on BR2_PACKAGE_RETROARCH
+	help
+	  libretro implementation of snes9x2010
