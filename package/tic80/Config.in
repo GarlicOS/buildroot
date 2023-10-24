@@ -1,5 +1,6 @@
 menuconfig BR2_PACKAGE_TIC80
 	bool "tic80"
 	depends on BR2_PACKAGE_RETROARCH
+	depends on BR2_PACKAGE_LIBCURL
 	help
 	  libretro implementation of tic80
