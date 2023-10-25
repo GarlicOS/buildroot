@@ -373,6 +373,10 @@ static void gui_activate_playlist_menu(struct gui_node * this, const char * titl
 	// The previous node
 	struct gui_node * previous_node = NULL;
 
+	// The tapped items
+	size_t tapped_item_count = 0;
+	char ** tapped_items = NULL;
+
 	// Open the playlist file
 	FILE * file = fopen(data->path, "r");
 
@@ -462,8 +466,32 @@ static void gui_activate_playlist_menu(struct gui_node * this, const char * titl
 							// We managed to get the game path
 							if (path != NULL && access(path->valuestring, F_OK) == 0)
 							{
-								// Create the thumbnail node
-								struct gui_node * node = gui_playlist_create_thumbnail_node(this, &first_node, &previous_node, path->valuestring, focused_height, unfocused_height, focused_screenshot_fallback, unfocused_screenshot_fallback, gui_activate_content, NULL, NULL , NULL, gui_invalidate_playlist_thumbnail);
+								// The tapped status of the item
+								int tapped = 0;
+
+								// Iterate the tapped item paths
+								for (size_t tap_index = 0; tap_index < tapped_item_count; tap_index++)
+								{
+									// Compare the item paths
+									if (strcmp(tapped_items[tap_index], path->valuestring) == 0)
+									{
+										// Mark the item as tapped
+										tapped = 1;
+									}
+								}
+
+								// We haven't tapped this item yet
+								if (!tapped)
+								{
+									// Create the thumbnail node
+									struct gui_node * node = gui_playlist_create_thumbnail_node(this, &first_node, &previous_node, path->valuestring, focused_height, unfocused_height, focused_screenshot_fallback, unfocused_screenshot_fallback, gui_activate_content, NULL, NULL , NULL, gui_invalidate_playlist_thumbnail);
+
+									// Make room for the tapped item pointer
+									tapped_items = realloc(tapped_items, sizeof(char *) * ++tapped_item_count);
+
+									// Keep track of the tapped item
+									tapped_items[tapped_item_count - 1] = strdup(path->valuestring);
+								}
 							}
 						}
 
@@ -579,6 +607,20 @@ static void gui_activate_playlist_menu(struct gui_node * this, const char * titl
 
 		// Make this node take focus on screen
 		this->context->menu.active = this;
+	}
+
+	// We have a tap buffer
+	if (tapped_items != NULL && tapped_item_count > 0)
+	{
+		// Iterate the tapped item paths
+		for (size_t tap_index = 0; tap_index < tapped_item_count; tap_index++)
+		{
+			// Free the tapped item path
+			free(tapped_items[tap_index]);
+		}
+
+		// Free the tapped item array
+		free(tapped_items);
 	}
 }
 
