@@ -7,7 +7,7 @@ MO_FILES = $(patsubst %.po,%.mo,$(PO_FILES))
 all: $(TARGET) translations
 
 $(TARGET): $(wildcard *.c)
-	$(CC) $(CFLAGS) -lSDL -lSDL_image -lSDL_ttf -lSDL_gfx -lrsvg-2 -lcairo -lgobject-2.0 -lglib-2.0 -lxml2 -lcjson -licuuc -DVERSION='"$(VERSION)"' -o '$@' $^
+	$(CC) $(CFLAGS) -lSDL -lSDL_image -lSDL_ttf -lSDL_gfx -lrsvg-2 -lcairo -lgobject-2.0 -lglib-2.0 -lxml2 -lcjson -licuuc -lm -DVERSION='"$(VERSION)"' -o '$@' $^
 
 translations: $(MO_FILES)
 

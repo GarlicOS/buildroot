@@ -1,6 +1,8 @@
 #ifndef GAMEPAD_H
 #define GAMEPAD_H
 
+#include <stdint.h>
+
 // The button states
 #define BTN_RELEASED 0
 #define BTN_PRESSED 1

@@ -519,20 +519,21 @@ int io_get_content_items(const char * path, char *** items, int include_files, i
 			continue;
 		}
 
-		// Increment the item count
-		item_count++;
-
-		// Increase the item array size
-		collected_items = realloc(collected_items, item_count * sizeof(char *));
-
 		// Put together a relative path
 		sprintf(relative_path, "%s/%s", path, entry->d_name);
 
 		// And convert it to an absolute path
-		realpath(relative_path, absolute_path);
+		if (realpath(relative_path, absolute_path))
+		{
+			// Increment the item count
+			item_count++;
 
-		// Duplicate the absolute path and store it inside the array
-		collected_items[item_count - 1] = strdup(absolute_path);
+			// Increase the item array size
+			collected_items = realloc(collected_items, item_count * sizeof(char *));
+
+			// Duplicate the absolute path and store it inside the array
+			collected_items[item_count - 1] = strdup(absolute_path);
+		}
 	}
 
 	// Close the directory
@@ -904,7 +905,7 @@ void io_sync()
 	for (int i = 0; i < 5; i++)
 	{
 		// Sync the pending write operations to disk
-		system("sync");
+		(void)!system("sync");
 	}
 }
 
