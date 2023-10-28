@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2023.02-460-ge0d812adff Configuration
+# Buildroot 2023.02-461-g6586781ce9 Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 BR2_HOST_GCC_AT_LEAST_4_9=y
@@ -451,8 +451,8 @@ BR2_TARGET_GENERIC_REMOUNT_ROOTFS_RW=y
 BR2_SYSTEM_DHCP=""
 BR2_SYSTEM_DEFAULT_PATH="/bin:/sbin:/usr/bin:/usr/sbin"
 # BR2_ENABLE_LOCALE_PURGE is not set
-BR2_GENERATE_LOCALE=""
-# BR2_SYSTEM_ENABLE_NLS is not set
+BR2_GENERATE_LOCALE="af_ZA am_ET bg_BG ca_ES cs_CZ da_DK de_DE el_GR en_US es_ES et_EE fi_FI fil_PH fr_FR he_IL hi_IN hr_HR hu_HU id_ID is_IS it_IT ja_JP ko_KR lt_LT lv_LV ms_MY nb_NO nl_NL pl_PL pt_BR pt_PT ro_RO ru_RU sk_SK sl_SI sr_RS sv_SE sw_KE th_TH tr_TR uk_UA vi_VN zh_CN zh_TW zu_ZA"
+BR2_SYSTEM_ENABLE_NLS=y
 # BR2_TARGET_TZ_INFO is not set
 BR2_ROOTFS_USERS_TABLES=""
 BR2_ROOTFS_OVERLAY=""
@@ -820,7 +820,7 @@ BR2_PACKAGE_CMAKE_ARCH_SUPPORTS=y
 # BR2_PACKAGE_CXXTEST is not set
 # BR2_PACKAGE_FLEX is not set
 # BR2_PACKAGE_GETTEXT is not set
-BR2_PACKAGE_PROVIDES_HOST_GETTEXT="host-gettext-tiny"
+BR2_PACKAGE_PROVIDES_HOST_GETTEXT="host-gettext-gnu"
 # BR2_PACKAGE_GIT is not set
 # BR2_PACKAGE_GIT_CRYPT is not set
 # BR2_PACKAGE_GPERF is not set

@@ -63,14 +63,21 @@ int localization_font_height()
  */
 void localization_change_locale(const char * locale)
 {
+	// Set the language environment variable
+	setenv("LANGUAGE", locale, 1);
+	setenv("LC_ALL", locale, 1);
+	setenv("LC_MESSAGES", locale, 1);
+	setenv("LANG", locale, 1);
+
 	// Set the desired locale
 	setlocale(LC_ALL, locale);
-
-	// Set the directory where translation files are located
-	bindtextdomain("garlicui", LOCALIZATION_DIRECTORY);
+	setlocale(LC_MESSAGES, locale);
 
 	// Set the text domain for translations
 	textdomain("garlicui");
+
+	// Set the directory where translation files are located
+	bindtextdomain("garlicui", LOCALIZATION_DIRECTORY);
 }
 
 /**
