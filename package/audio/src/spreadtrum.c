@@ -135,6 +135,7 @@ int init_spreadtrum_alsa()
 	set_value(mixer, "Inter PA Config", "303");
 	set_value(mixer, "HPL Gain HPL Playback Volume", "6");
 	set_value(mixer, "HPR Gain HPR Playback Volume", "6");
+	set_value(mixer, "HeadPhone Function", "1");
 
 	// Close the mixer
 	mixer_close(mixer);
