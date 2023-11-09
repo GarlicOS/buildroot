@@ -11,7 +11,7 @@
 #include <linux/uinput.h>
 
 #include "gamepad.h"
-#include "rg405m.h"
+#include "rg405.h"
 #include "rg35xxplus.h"
 #include "retroid_input.h"
 
@@ -538,11 +538,11 @@ void merge_inputs(int merged_gamepad)
 		return;
 	}
 
-	// We're handling the Anbernic RG405M
-	if (strcmp(code_name, "rg405m") == 0)
+	// We're handling the Anbernic RG405
+	if (strcmp(code_name, "rg405") == 0)
 	{
 		// Merge gpio-keys & retrogame_joypad
-		merge_rg405m_inputs(merged_gamepad);
+		merge_rg405_inputs(merged_gamepad);
 	}
 
 	// We're handling the Anbernic RG35XX+

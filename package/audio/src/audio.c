@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "rg405m.h"
+#include "rg405.h"
 #include "rg35xxplus.h"
 #include "pocket2plus.h"
 #include "pocketflip.h"
@@ -18,11 +18,11 @@ int main(int argc, char * argv[])
 		return 1;
 	}
 
-	// We're handling the Anbernic RG405M
-	if (strcmp(code_name, "rg405m") == 0)
+	// We're handling the Anbernic RG405
+	if (strcmp(code_name, "rg405") == 0)
 	{
 		// Initialize the soundcard and handle routing
-		rg405m_main(argc, argv);
+		rg405_main(argc, argv);
 	}
 
 	// We're handling the Anbernic RG35XX+

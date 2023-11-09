@@ -1,9 +1,9 @@
 #include <linux/input.h>
 
 #include "spreadtrum.h"
-#include "rg405m.h"
+#include "rg405.h"
 
-int rg405m_main(int argc, char * argv[])
+int rg405_main(int argc, char * argv[])
 {
 	// Initialize AGDSP
 	if (init_spreadtrum_agdsp())

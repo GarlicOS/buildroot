@@ -216,7 +216,7 @@ static void input_event(int fd, struct input_event * ev)
 	// Trigger global hotkeys
 	hotkey(ev);
 
-	// Filter out repeat events (these occur on the RG405M_GPIO_KEYS input device)
+	// Filter out repeat events
 	if (ev->value != BTN_REPEAT)
 	{
 		// Pass the event through to the merged gamepad
