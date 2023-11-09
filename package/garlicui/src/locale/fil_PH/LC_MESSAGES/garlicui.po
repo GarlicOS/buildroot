@@ -58,6 +58,9 @@ msgstr "24 oras"
 msgid "Minute"
 msgstr "Minuto"
 
+msgid "UTC Offset"
+msgstr "UTC Offset"
+
 msgid "Change Language"
 msgstr "Baguhin ang Wika"
 

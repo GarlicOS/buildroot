@@ -217,6 +217,11 @@ struct gui_context;
 #define NODE_TYPE_CONTEXT_MENU_REMOVE_FROM_HISTORY_ACTION 20
 
 /**
+ * @brief Represents a date & time UTC offset setter.
+ */
+#define NODE_TYPE_CONTEXT_MENU_DATE_AND_TIME_UTC_OFFSET_SETTER 21
+
+/**
  * The supported buttons.
  */
 #define POWER_BUTTON 0
@@ -515,6 +520,7 @@ struct gui_rtc_menu_node_data
 {
 	struct gui_menu_node_data base; /** The base menu data */
 	time_t local_time; /** The local time (set on activation) */
+	int utc_offset; /** The local timezone as a UTC offset (set on activation) */
 	int meridian_time; /** The current meridian time setting (set on activation) */
 };
 

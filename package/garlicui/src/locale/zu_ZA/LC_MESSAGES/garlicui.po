@@ -58,6 +58,9 @@ msgstr "24H"
 msgid "Minute"
 msgstr "Imizuzu"
 
+msgid "UTC Offset"
+msgstr "UTC Isiphetho"
+
 msgid "Change Language"
 msgstr "Shintsha IsiZulu"
 

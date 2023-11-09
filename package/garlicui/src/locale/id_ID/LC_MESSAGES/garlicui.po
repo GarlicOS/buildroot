@@ -58,6 +58,9 @@ msgstr "24 Jam"
 msgid "Minute"
 msgstr "Menit"
 
+msgid "UTC Offset"
+msgstr "UTC Offset"
+
 msgid "Change Language"
 msgstr "Ubah Bahasa"
 

@@ -58,6 +58,9 @@ msgstr "24 val."
 msgid "Minute"
 msgstr "Minutė"
 
+msgid "UTC Offset"
+msgstr "UTC Skirtumas"
+
 msgid "Change Language"
 msgstr "Pakeisti kalbą"
 

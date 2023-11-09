@@ -100,8 +100,25 @@ static struct gui_node * gui_create_rtc_menu_item(struct gui_node * this, struct
 		// Get the part we're actually interested in
 		clock_render_text_parts(rtc_menu_node_data->local_time, rtc_menu_node_data->meridian_time, type == NODE_TYPE_CONTEXT_MENU_DATE_AND_TIME_YEAR_SETTER ? &text : NULL, type == NODE_TYPE_CONTEXT_MENU_DATE_AND_TIME_MONTH_SETTER ? &text : NULL, type == NODE_TYPE_CONTEXT_MENU_DATE_AND_TIME_DAY_SETTER ? &text : NULL, type == NODE_TYPE_CONTEXT_MENU_DATE_AND_TIME_HOUR_SETTER ? &text : NULL, type == NODE_TYPE_CONTEXT_MENU_DATE_AND_TIME_MINUTE_SETTER ? &text : NULL, NULL);
 
-		// Duplicate the text (to prevent follow-up calls to clock_render_text_parts from overwriting the static buffer)
-		text = strdup(text);
+		// We're rendering the UTC offset
+		if (type == NODE_TYPE_CONTEXT_MENU_DATE_AND_TIME_UTC_OFFSET_SETTER)
+		{
+			// The UTC offset string buffer
+			char offset[4];
+
+			// Render the UTC offset into the string buffer
+			sprintf(offset, "%d", rtc_menu_node_data->utc_offset);
+
+			// Duplicate the UTC offset string (so we can share the rest of the malloc / free logic)
+			text = strdup(offset);
+		}
+
+		// We're rendering a clock component
+		else if (text != NULL)
+		{
+			// Duplicate the text (to prevent follow-up calls to clock_render_text_parts from overwriting the static buffer)
+			text = strdup(text);
+		}
 
 		// We managed to duplicate the text
 		if (text != NULL)
@@ -223,6 +240,9 @@ static void gui_activate_rtc_menu(struct gui_node * this)
 	// Get the current local time
 	time(&rtc_menu_node_data->local_time);
 
+	// Get the current UTC offset
+	rtc_menu_node_data->utc_offset = clock_get_utc_offset();
+
 	// Get the current meridian time setting
 	rtc_menu_node_data->meridian_time = this->context->settings.meridian_time;
 
@@ -249,6 +269,9 @@ static void gui_activate_rtc_menu(struct gui_node * this)
 
 	// Create a minute node
 	struct gui_node * minute_node = gui_create_rtc_menu_item(this, &first_node, &previous_node, gettext("Minute"), NULL, NULL, NULL, NULL, NULL, NODE_TYPE_CONTEXT_MENU_DATE_AND_TIME_MINUTE_SETTER, NULL);
+
+	// Create a UTC offset node
+	struct gui_node * utc_offset_node = gui_create_rtc_menu_item(this, &first_node, &previous_node, gettext("UTC Offset"), NULL, NULL, NULL, NULL, NULL, NODE_TYPE_CONTEXT_MENU_DATE_AND_TIME_UTC_OFFSET_SETTER, NULL);
 
 	// Link the first & last nodes together
 	if (first_node != NULL && previous_node != NULL)
@@ -282,7 +305,7 @@ static void gui_deactivate_rtc_menu(struct gui_node * this)
 		struct gui_rtc_menu_node_data * rtc_menu_node_data = (struct gui_rtc_menu_node_data *)this->data;
 
 		// Set the current local time (which will also set the RTC)
-		clock_set_current_time(rtc_menu_node_data->local_time);
+		clock_set_current_time(rtc_menu_node_data->local_time, rtc_menu_node_data->utc_offset);
 
 		// Activate the new meridian time setting
 		this->context->settings.meridian_time = rtc_menu_node_data->meridian_time;
@@ -483,6 +506,33 @@ static void gui_change_rtc(struct gui_node * this, int direction)
 
 			// Create a replacement node
 			replacement_node = gui_create_rtc_menu_item(this, NULL, NULL, gettext("Minute"), NULL, NULL, NULL, NULL, NULL, NODE_TYPE_CONTEXT_MENU_DATE_AND_TIME_MINUTE_SETTER, NULL);
+
+			// Prevent fall-through
+			break;
+		}
+
+		// The user changed the UTC offset setting
+		case NODE_TYPE_CONTEXT_MENU_DATE_AND_TIME_UTC_OFFSET_SETTER:
+		{
+			// Update the UTC offset
+			rtc_menu_node_data->utc_offset += direction;
+
+			// We've fallen below the minimum value
+			if (rtc_menu_node_data->utc_offset > 14)
+			{
+				// Roll-over into the valid range
+				rtc_menu_node_data->utc_offset = -12;
+			}
+
+			// We've risen above the maximum value
+			else if (rtc_menu_node_data->utc_offset < -12)
+			{
+				// Roll-over into the valid range
+				rtc_menu_node_data->utc_offset = 14;
+			}
+
+			// Create a replacement node
+			replacement_node = gui_create_rtc_menu_item(this, NULL, NULL, gettext("UTC Offset"), NULL, NULL, NULL, NULL, NULL, NODE_TYPE_CONTEXT_MENU_DATE_AND_TIME_UTC_OFFSET_SETTER, NULL);
 
 			// Prevent fall-through
 			break;

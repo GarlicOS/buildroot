@@ -58,6 +58,9 @@ msgstr "24H"
 msgid "Minute"
 msgstr "Dakika"
 
+msgid "UTC Offset"
+msgstr "UTC Tofauti"
+
 msgid "Change Language"
 msgstr "Badilisha Lugha"
 

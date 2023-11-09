@@ -58,6 +58,9 @@ msgstr "24H"
 msgid "Minute"
 msgstr "Phút"
 
+msgid "UTC Offset"
+msgstr "UTC Offset"
+
 msgid "Change Language"
 msgstr "Thay đổi ngôn ngữ"
 

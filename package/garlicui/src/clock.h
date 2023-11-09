@@ -6,7 +6,17 @@
 /**
  * @brief Sets the current time.
  */
-void clock_set_current_time(time_t timestamp);
+void clock_set_current_time(time_t timestamp, int utc_offset);
+
+/**
+ * @brief Returns the UTC offset.
+ */
+int clock_get_utc_offset();
+
+/**
+ * @brief Sets the UTC offset.
+ */
+int clock_set_utc_offset(int offset);
 
 /**
  * @brief Checks whether the given year is a leap year.

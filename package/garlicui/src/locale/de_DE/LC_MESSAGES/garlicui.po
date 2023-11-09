@@ -58,6 +58,9 @@ msgstr "24H"
 msgid "Minute"
 msgstr "Minute"
 
+msgid "UTC Offset"
+msgstr "UTC-Unterschied"
+
 msgid "Change Language"
 msgstr "Sprache ändern"
 

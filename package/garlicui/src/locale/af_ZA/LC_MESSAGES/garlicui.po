@@ -58,6 +58,9 @@ msgstr "24U"
 msgid "Minute"
 msgstr "Minuut"
 
+msgid "UTC Offset"
+msgstr "Tydsaanduiding UTC"
+
 msgid "Change Language"
 msgstr "Verander Taal"
 

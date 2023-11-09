@@ -58,6 +58,9 @@ msgstr "24 sata"
 msgid "Minute"
 msgstr "Minuta"
 
+msgid "UTC Offset"
+msgstr "UTC Pomak"
+
 msgid "Change Language"
 msgstr "Promijeni jezik"
 

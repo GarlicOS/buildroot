@@ -58,6 +58,9 @@ msgstr "24S"
 msgid "Minute"
 msgstr "Dakika"
 
+msgid "UTC Offset"
+msgstr "UTC Farkı"
+
 msgid "Change Language"
 msgstr "Dili Değiştir"
 

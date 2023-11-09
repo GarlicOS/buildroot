@@ -18,15 +18,23 @@
 /**
  * @brief Sets the current time.
  */
-void clock_set_current_time(time_t timestamp)
+void clock_set_current_time(time_t timestamp, int utc_offset)
 {
 	// Convert the given timestamp into a timeval structure
 	struct timeval tv;
 	tv.tv_sec = timestamp;
 	tv.tv_usec = 0;
 
+	// Create a structure for the timezone
+	struct timezone tz;
+	tz.tz_minuteswest = utc_offset * (-60);
+	tz.tz_dsttime = 0;
+
 	// Set the time of day (which will save the time into the RTC if the system has one)
-	settimeofday(&tv, NULL);
+	settimeofday(&tv, &tz);
+
+	// Subtract the UTC offset for the RTC
+	timestamp -= (3600 * utc_offset);
 
 	// Convert the epoch timestamp into a tm structure
 	struct tm * timeinfo = localtime(&timestamp);
@@ -89,6 +97,100 @@ void clock_set_current_time(time_t timestamp)
 		// Close the device directory
 		closedir(dev_dir);
 	}
+
+	// Set the new UTC offset (needed for glibc)
+	clock_set_utc_offset(utc_offset);
+}
+
+/**
+ * @brief Returns the UTC offset.
+ */
+int clock_get_utc_offset()
+{
+	// The UTC offset
+	int utc_offset = 0;
+
+	// Open the timezone name file
+	FILE * fd = fopen("/etc/timezone", "r");
+
+	// We managed to open the timezone name file
+	if (fd != NULL)
+	{
+		// Allocate a buffer for the timezone name
+		char timezone_name[64];
+
+		// Read the timezone name
+		if (fgets(timezone_name, sizeof(timezone_name), fd) != NULL)
+		{
+			// The UTC offset marker
+			const char * utc_offset_marker = "GMT";
+
+			// Look for the UTC offset marker
+			char * utc_offset_string = strstr(timezone_name, utc_offset_marker);
+
+			// We've found a UTC offset marker
+			if (utc_offset_string != NULL)
+			{
+				// Skip the UTC offset marker
+				utc_offset_string += strlen(utc_offset_marker);
+
+				// Parse the UTC offset
+				utc_offset = atoi(utc_offset_string);
+			}
+		}
+
+		// Close the timezone name file
+		fclose(fd);
+	}
+
+	// Return the inverted UTC offset (because the RTC works with localtime relative values)
+	return utc_offset * (-1);
+}
+
+/**
+ * @brief Sets the UTC offset.
+ */
+int clock_set_utc_offset(int offset)
+{
+	// The result
+	int result = 1;
+
+	// Invert the offset (because the RTC works with localtime relative values)
+	offset *= (-1);
+
+	// Delete the "/etc/timezone" file
+	remove("/etc/timezone");
+
+	// Delete the "/etc/localtime" file
+	remove("/etc/localtime");
+
+	// Allocate a buffer for snprintf
+	char buffer[64];
+
+	// Create a symbolic link to "/usr/share/zoneinfo/Etc/GMT%+d"
+	snprintf(buffer, sizeof(buffer), "/usr/share/zoneinfo/Etc/GMT%+d", offset);
+	if (symlink(buffer, "/etc/localtime") == 0)
+	{
+		// Part of the operation failed
+		result = 0;
+	}
+
+	// Write the text "Etc/GMT%+d" to "/etc/timezone"
+	snprintf(buffer, sizeof(buffer), "Etc/GMT%+d", offset);
+	FILE * fd = fopen("/etc/timezone", "w");
+	if (fd != NULL)
+	{
+		fprintf(fd, "%s\n", buffer);
+		fclose(fd);
+	}
+	else
+	{
+		// Part of the operation failed
+		result = 0;
+	}
+
+	// Return the result
+	return result;
 }
 
 /**
