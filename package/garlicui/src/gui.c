@@ -376,43 +376,6 @@ struct gui_context * gui_create_context(int argc, char * argv[])
 		// Restore the settings
 		gui_read_configuration(context);
 
-		// Garlic has been started with arguments
-		if (argc > 1)
-		{
-			// RetroArch has asked us to cleanly shutdown the system
-			if (strcmp(argv[1], "shutdown") == 0)
-			{
-				// Set the resume flag
-				context->settings.resume = 1;
-
-				// Write the configuration to disk
-				gui_write_configuration(context);
-
-				// Shutdown the device
-				io_shutdown();
-
-				// Kill the process (should we survive this long)
-				exit(0);
-			}
-		}
-
-		// Garlic has been started without arguments
-		else
-		{
-			// We have the resume flag set
-			if (context->settings.resume)
-			{
-				// Erase the resume flag
-				context->settings.resume = 0;
-
-				// Write the configuration to disk
-				gui_write_configuration(context);
-
-				// Try resuming the last played game
-				retroarch_resume_last_game(context);
-			}
-		}
-
 		// Initialize SDL
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) != 0)
 		{
@@ -674,6 +637,43 @@ struct gui_context * gui_create_context(int argc, char * argv[])
 
 		// And activate the context
 		context->status.application.running = 1;
+	}
+
+	// Garlic has been started with arguments
+	if (argc > 1)
+	{
+		// RetroArch has asked us to cleanly shutdown the system
+		if (strcmp(argv[1], "shutdown") == 0)
+		{
+			// Set the resume flag
+			context->settings.resume = 1;
+
+			// Write the configuration to disk
+			gui_write_configuration(context);
+
+			// Shutdown the device
+			io_shutdown();
+
+			// Kill the process (should we survive this long)
+			exit(0);
+		}
+	}
+
+	// Garlic has been started without arguments
+	else
+	{
+		// We have the resume flag set
+		if (context->settings.resume)
+		{
+			// Erase the resume flag
+			context->settings.resume = 0;
+
+			// Write the configuration to disk
+			gui_write_configuration(context);
+
+			// Try resuming the last played game
+			retroarch_resume_last_game(context);
+		}
 	}
 
 	// Return the context
