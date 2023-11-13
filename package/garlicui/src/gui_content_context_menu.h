@@ -144,6 +144,26 @@ static void gui_activate_favorite_toggle(struct gui_node * this)
 			// Set the playlist item path
 			favorite_item_skeleton.path = item_menu_node_data->path;
 
+			// The favorites playlist file stat structure
+			struct stat playlist_file_stat;
+
+			// Check if the favorites playlist file exists by populating its file stat structure
+			if (stat(RETROARCH_DEFAULT_FAVORITES_PLAYLIST_FILE_PATH, &playlist_file_stat) != 0)
+			{
+				// Open the favorites playlist file
+				FILE * playlist_file = fopen(RETROARCH_DEFAULT_FAVORITES_PLAYLIST_FILE_PATH, "w");
+
+				// We managed to open the favorites playlist file for writing
+				if (playlist_file != NULL)
+				{
+					// Seed a new favorites playlist file
+					fputs("{\"version\":\"1.5\",\"default_core_path\":\"\",\"default_core_name\":\"\",\"label_display_mode\":0,\"right_thumbnail_mode\":0,\"left_thumbnail_mode\":0,\"sort_mode\":0,\"items\":[]}", playlist_file);
+
+					// Close the favorites playlist file
+					fclose(playlist_file);
+				}
+			}
+
 			// Add the item to the favorites playlist
 			retroarch_add_playlist_item(RETROARCH_DEFAULT_FAVORITES_PLAYLIST_FILE_PATH, &favorite_item_skeleton);
 		}
