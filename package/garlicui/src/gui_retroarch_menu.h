@@ -28,7 +28,7 @@ static void gui_invalidate_retroarch(struct gui_node * this)
 	if (icon != NULL)
 	{
 		// Render the paging card
-		SDL_Surface * paging_card = icon_paging_card(icon, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height(), this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, DEFAULT_PAGING_CARD_WIDTH * this->context->surfaces.scale_factor, this->context->surfaces.screen->h * FOCUSED_PAGING_CARD_HEIGHT_SCALE_FACTOR, DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, title);
+		SDL_Surface * paging_card = icon_paging_card(icon, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height() * this->context->surfaces.scale_factor, this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, DEFAULT_PAGING_CARD_WIDTH * this->context->surfaces.scale_factor, this->context->surfaces.screen->h * FOCUSED_PAGING_CARD_HEIGHT_SCALE_FACTOR, DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, title);
 
 		// We managed to render the paging card surface
 		if (paging_card != NULL)
@@ -55,7 +55,7 @@ static void gui_invalidate_retroarch(struct gui_node * this)
 	if (icon != NULL)
 	{
 		// Render the paging card
-		SDL_Surface * paging_card = icon_paging_card(icon, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height(), this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, DEFAULT_PAGING_CARD_WIDTH * this->context->surfaces.scale_factor, this->context->surfaces.screen->h * UNFOCUSED_PAGING_CARD_HEIGHT_SCALE_FACTOR, DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, title);
+		SDL_Surface * paging_card = icon_paging_card(icon, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height() * this->context->surfaces.scale_factor, this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, DEFAULT_PAGING_CARD_WIDTH * this->context->surfaces.scale_factor, this->context->surfaces.screen->h * UNFOCUSED_PAGING_CARD_HEIGHT_SCALE_FACTOR, DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, title);
 
 		// We managed to render the paging card surface
 		if (paging_card != NULL)

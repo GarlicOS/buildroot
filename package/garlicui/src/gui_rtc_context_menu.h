@@ -26,7 +26,7 @@ static SDL_Surface * gui_create_rtc_page_surface(struct gui_node * this, const c
 	if (text_surface != NULL)
 	{
 		// Render the page surface
-		page_surface = icon_paging_card(text_surface, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height(), this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, DEFAULT_PAGING_CARD_WIDTH * this->context->surfaces.scale_factor, this->context->surfaces.screen->h * (focused ? FOCUSED_PAGING_CARD_HEIGHT_SCALE_FACTOR : UNFOCUSED_PAGING_CARD_HEIGHT_SCALE_FACTOR), DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, title);
+		page_surface = icon_paging_card(text_surface, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height() * this->context->surfaces.scale_factor, this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, DEFAULT_PAGING_CARD_WIDTH * this->context->surfaces.scale_factor, this->context->surfaces.screen->h * (focused ? FOCUSED_PAGING_CARD_HEIGHT_SCALE_FACTOR : UNFOCUSED_PAGING_CARD_HEIGHT_SCALE_FACTOR), DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, title);
 
 		// We managed to render the page surface
 		if (page_surface != NULL)

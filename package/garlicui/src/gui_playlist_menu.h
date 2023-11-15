@@ -128,13 +128,13 @@ static struct gui_node * gui_playlist_create_thumbnail_node(struct gui_node * th
 						int populated = 0;
 
 						// Pre-render the normal surface
-						node->normal_surface = icon_paging_card(unfocused_screenshot, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height(), this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, unfocused_screenshot->w + (2 * SCREEN_MARGIN * this->context->surfaces.scale_factor), unfocused_screenshot->h + (2 * SCREEN_MARGIN * this->context->surfaces.scale_factor), DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, display_name);
+						node->normal_surface = icon_paging_card(unfocused_screenshot, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height() * this->context->surfaces.scale_factor, this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, unfocused_screenshot->w + (2 * SCREEN_MARGIN * this->context->surfaces.scale_factor), unfocused_screenshot->h + (2 * SCREEN_MARGIN * this->context->surfaces.scale_factor), DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, display_name);
 
 						// We managed to pre-render the normal surface
 						if (node->normal_surface != NULL)
 						{
 							// Pre-render the selected surface
-							node->selected_surface = icon_paging_card(focused_screenshot, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height(), this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, focused_screenshot->w + (2 * SCREEN_MARGIN * this->context->surfaces.scale_factor), focused_screenshot->h + (2 * SCREEN_MARGIN * this->context->surfaces.scale_factor), DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, display_name);
+							node->selected_surface = icon_paging_card(focused_screenshot, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height() * this->context->surfaces.scale_factor, this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, focused_screenshot->w + (2 * SCREEN_MARGIN * this->context->surfaces.scale_factor), focused_screenshot->h + (2 * SCREEN_MARGIN * this->context->surfaces.scale_factor), DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, display_name);
 
 							// We managed to pre-render the selected surface
 							if (node->selected_surface != NULL)
@@ -717,7 +717,7 @@ static void gui_invalidate_continue_menu(struct gui_node * this)
 	if (icon != NULL)
 	{
 		// Render the paging card
-		SDL_Surface * paging_card = icon_paging_card(icon, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height(), this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, DEFAULT_PAGING_CARD_WIDTH * this->context->surfaces.scale_factor, this->context->surfaces.screen->h * FOCUSED_PAGING_CARD_HEIGHT_SCALE_FACTOR, DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, title);
+		SDL_Surface * paging_card = icon_paging_card(icon, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height() * this->context->surfaces.scale_factor, this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, DEFAULT_PAGING_CARD_WIDTH * this->context->surfaces.scale_factor, this->context->surfaces.screen->h * FOCUSED_PAGING_CARD_HEIGHT_SCALE_FACTOR, DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, title);
 
 		// We managed to render the paging card surface
 		if (paging_card != NULL)
@@ -744,7 +744,7 @@ static void gui_invalidate_continue_menu(struct gui_node * this)
 	if (icon != NULL)
 	{
 		// Render the paging card
-		SDL_Surface * paging_card = icon_paging_card(icon, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height(), this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, DEFAULT_PAGING_CARD_WIDTH * this->context->surfaces.scale_factor, this->context->surfaces.screen->h * UNFOCUSED_PAGING_CARD_HEIGHT_SCALE_FACTOR, DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, title);
+		SDL_Surface * paging_card = icon_paging_card(icon, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height() * this->context->surfaces.scale_factor, this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, DEFAULT_PAGING_CARD_WIDTH * this->context->surfaces.scale_factor, this->context->surfaces.screen->h * UNFOCUSED_PAGING_CARD_HEIGHT_SCALE_FACTOR, DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, title);
 
 		// We managed to render the paging card surface
 		if (paging_card != NULL)
@@ -809,7 +809,7 @@ static void gui_invalidate_favorites_menu(struct gui_node * this)
 	if (icon != NULL)
 	{
 		// Render the paging card
-		SDL_Surface * paging_card = icon_paging_card(icon, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height(), this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, DEFAULT_PAGING_CARD_WIDTH * this->context->surfaces.scale_factor, this->context->surfaces.screen->h * FOCUSED_PAGING_CARD_HEIGHT_SCALE_FACTOR, DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, title);
+		SDL_Surface * paging_card = icon_paging_card(icon, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height() * this->context->surfaces.scale_factor, this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, DEFAULT_PAGING_CARD_WIDTH * this->context->surfaces.scale_factor, this->context->surfaces.screen->h * FOCUSED_PAGING_CARD_HEIGHT_SCALE_FACTOR, DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, title);
 
 		// We managed to render the paging card surface
 		if (paging_card != NULL)
@@ -836,7 +836,7 @@ static void gui_invalidate_favorites_menu(struct gui_node * this)
 	if (icon != NULL)
 	{
 		// Render the paging card
-		SDL_Surface * paging_card = icon_paging_card(icon, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height(), this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, DEFAULT_PAGING_CARD_WIDTH * this->context->surfaces.scale_factor, this->context->surfaces.screen->h * UNFOCUSED_PAGING_CARD_HEIGHT_SCALE_FACTOR, DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, title);
+		SDL_Surface * paging_card = icon_paging_card(icon, VERTICAL_ALIGNMENT_CENTER, localization_font_file_path(NULL), localization_font_height() * this->context->surfaces.scale_factor, this->context->colors.legend.foreground, this->context->colors.legend.background, SCREEN_MARGIN * this->context->surfaces.scale_factor, DEFAULT_PAGING_CARD_WIDTH * this->context->surfaces.scale_factor, this->context->surfaces.screen->h * UNFOCUSED_PAGING_CARD_HEIGHT_SCALE_FACTOR, DEFAULT_PAGING_CARD_ROUNDED_CORNER_RADIUS * this->context->surfaces.scale_factor, title);
 
 		// We managed to render the paging card surface
 		if (paging_card != NULL)
