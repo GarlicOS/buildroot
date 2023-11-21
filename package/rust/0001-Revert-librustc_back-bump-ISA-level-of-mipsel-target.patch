@@ -1,0 +1,61 @@
+From 27cdebdbe25f7d141a01b8dbf3b0965b6faae1e4 Mon Sep 17 00:00:00 2001
+From: turtleletortue <46635000+turtleletortue@users.noreply.github.com>
+Date: Tue, 21 Nov 2023 13:57:37 -0500
+Subject: [PATCH] Revert "librustc_back: bump ISA level of mipsel targets to
+ mips32r2"
+
+This reverts commit f53f2fa2e894c4709d7b09995331f30c596d0724.
+---
+ compiler/rustc_target/src/spec/mipsel_unknown_linux_gnu.rs    | 4 ++--
+ compiler/rustc_target/src/spec/mipsel_unknown_linux_musl.rs   | 4 ++--
+ compiler/rustc_target/src/spec/mipsel_unknown_linux_uclibc.rs | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/compiler/rustc_target/src/spec/mipsel_unknown_linux_gnu.rs b/compiler/rustc_target/src/spec/mipsel_unknown_linux_gnu.rs
+index 01346e71a92..44c5914f8ba 100644
+--- a/compiler/rustc_target/src/spec/mipsel_unknown_linux_gnu.rs
++++ b/compiler/rustc_target/src/spec/mipsel_unknown_linux_gnu.rs
+@@ -8,8 +8,8 @@ pub fn target() -> Target {
+         arch: "mips".into(),
+ 
+         options: TargetOptions {
+-            cpu: "mips32r2".into(),
+-            features: "+mips32r2,+fpxx,+nooddspreg".into(),
++            cpu: "mips32".into(),
++            features: "+mips32".into(),
+             max_atomic_width: Some(32),
+             mcount: "_mcount".into(),
+ 
+diff --git a/compiler/rustc_target/src/spec/mipsel_unknown_linux_musl.rs b/compiler/rustc_target/src/spec/mipsel_unknown_linux_musl.rs
+index 0e8f1a2c8e0..f3dc13acf0c 100644
+--- a/compiler/rustc_target/src/spec/mipsel_unknown_linux_musl.rs
++++ b/compiler/rustc_target/src/spec/mipsel_unknown_linux_musl.rs
+@@ -2,8 +2,8 @@
+ 
+ pub fn target() -> Target {
+     let mut base = super::linux_musl_base::opts();
+-    base.cpu = "mips32r2".into();
+-    base.features = "+mips32r2,+soft-float".into();
++    base.cpu = "mips32".into();
++    base.features = "+mips32,+soft-float".into();
+     base.max_atomic_width = Some(32);
+     base.crt_static_default = false;
+     Target {
+diff --git a/compiler/rustc_target/src/spec/mipsel_unknown_linux_uclibc.rs b/compiler/rustc_target/src/spec/mipsel_unknown_linux_uclibc.rs
+index 8342074586b..7d70eaa6b56 100644
+--- a/compiler/rustc_target/src/spec/mipsel_unknown_linux_uclibc.rs
++++ b/compiler/rustc_target/src/spec/mipsel_unknown_linux_uclibc.rs
+@@ -8,8 +8,8 @@ pub fn target() -> Target {
+         arch: "mips".into(),
+ 
+         options: TargetOptions {
+-            cpu: "mips32r2".into(),
+-            features: "+mips32r2,+soft-float".into(),
++            cpu: "mips32".into(),
++            features: "+mips32,+soft-float".into(),
+             max_atomic_width: Some(32),
+             mcount: "_mcount".into(),
+ 
+-- 
+2.34.1
+
