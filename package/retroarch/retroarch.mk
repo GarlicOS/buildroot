@@ -91,7 +91,7 @@ endif
 
 ifeq ($(BR2_PACKAGE_RETROARCH_EGL),y)
 RETROARCH_CONFIG_OPTS += --enable-egl
-RETROARCH_DEPENDENCIES += mesa3d xlib_libXxf86vm
+RETROARCH_DEPENDENCIES += mesa3d 
 else
 RETROARCH_CONFIG_OPTS += --disable-egl
 endif
