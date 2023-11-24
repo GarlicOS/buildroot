@@ -1,0 +1,124 @@
+From a5e499d7732ff7711e0c9b82c2f4cdbff0225973 Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Mon, 3 Jul 2023 18:50:42 +0200
+Subject: [PATCH 4/7] Add garlicui_run hooks
+
+---
+ retroarch.c | 80 +++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 78 insertions(+), 2 deletions(-)
+
+diff --git a/retroarch.c b/retroarch.c
+index 006c932..d6f10fc 100644
+--- a/retroarch.c
++++ b/retroarch.c
+@@ -2085,6 +2085,81 @@ bool is_accessibility_enabled(bool accessibility_enable, bool accessibility_enab
+ }
+ #endif
+ 
++/**
++ * @brief Swaps over to GarlicUI and executes the given action.
++ */
++void garlicui_run(const char * action, ...)
++{
++   // The argument list
++   const char *args[256] = { "garlicui", NULL };
++
++   // Set the first argument
++   args[1] = action;
++
++   // Initialize variadic arguments
++   va_list arg_list;
++   va_start(arg_list, action);
++
++   // Populate the argument list
++   int i = 2;
++   const char *arg = va_arg(arg_list, const char *);
++   while (arg != NULL && i < 255)
++   {
++      args[i++] = arg;
++      arg = va_arg(arg_list, const char *);
++   }
++
++   // Clean up variadic arguments
++   va_end(arg_list);
++
++   // Wait for pending save state tasks to finish
++   content_wait_for_save_state_task();
++
++   // Shut down the audio driver before swapping the process image (required for Spreadtrum devices)
++   audio_driver_deinit();
++
++   // Quit SDL (to ensure the /dev/fb* descriptor gets closed)
++   SDL_Quit();
++
++   // Open the command file
++   FILE * command_file = fopen("/tmp/command", "w");
++
++   // We managed to open the command file
++   if (command_file != NULL)
++   {
++      // Iterate all arguments
++      for (int i = 0; args[i] != NULL; i++)
++      {
++         // The argument contains whitespaces
++         if (strchr(args[i], ' ') != NULL)
++         {
++            // Write the argument to the file
++            fprintf(command_file, "\"%s\"", args[i]);
++         }
++
++         // The argument doesn't contain whitespaces
++         else
++         {
++            // Write the argument to the file
++            fprintf(command_file, "%s", args[i]);
++         }
++
++         // We haven't reached the last argument yet
++         if (args[i + 1] != NULL)
++         {
++            // Which means we need a space separator
++            fprintf(command_file, " ");
++         }
++      }
++
++      // Close the command file
++      fclose(command_file);
++
++      // Exit the application
++      exit(0);
++   }
++}
++
+ /**
+  * command_event:
+  * @cmd                  : Event command index.
+@@ -2768,6 +2843,7 @@ bool command_event(enum event_command cmd, void *data)
+       case CMD_EVENT_QUIT:
+          if (!retroarch_main_quit())
+             return false;
++         garlicui_run((const char *)data);
+          break;
+       case CMD_EVENT_CHEEVOS_HARDCORE_MODE_TOGGLE:
+ #ifdef HAVE_CHEEVOS
+@@ -3281,7 +3357,7 @@ bool command_event(enum event_command cmd, void *data)
+ #ifdef HAVE_LAKKA
+          system("(sleep 1 && shutdown -P now) & disown");
+ #else
+-         command_event(CMD_EVENT_QUIT, NULL);
++         command_event(CMD_EVENT_QUIT, "shutdown");
+          system("shutdown -P now");
+ #endif /* HAVE_LAKKA */
+ #endif
+@@ -3296,7 +3372,7 @@ bool command_event(enum event_command cmd, void *data)
+ #ifdef HAVE_LAKKA
+          system("(sleep 1 && shutdown -r now) & disown");
+ #else
+-         command_event(CMD_EVENT_QUIT, NULL);
++         command_event(CMD_EVENT_QUIT, "reboot");
+          system("shutdown -r now");
+ #endif /* HAVE_LAKKA */
+ #endif
+-- 
+2.25.1
+

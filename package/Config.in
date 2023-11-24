@@ -23,6 +23,7 @@ endmenu
 
 menu "Emulators"
 	source "package/retroarch/Config.in"
+	source "package/retroarch-sdl2/Config.in"
 	menu "Cores"
 		source "package/81/Config.in"
 		source "package/a5200/Config.in"

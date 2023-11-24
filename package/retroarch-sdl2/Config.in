@@ -1,5 +1,5 @@
-menuconfig BR2_PACKAGE_RETROARCH
-	bool "retroarch"
+menuconfig BR2_PACKAGE_RETROARCH_SDL2
+	bool "retroarch-sdl2"
 	help
 	  RetroArch is the reference frontend for the libretro API.
 	  Popular examples of implementations for this API includes
@@ -10,10 +10,10 @@ menuconfig BR2_PACKAGE_RETROARCH
 
 	  https://github.com/libretro/RetroArch
 
-if BR2_PACKAGE_RETROARCH
+if BR2_PACKAGE_RETROARCH_SDL2
 comment "features"
 
-config BR2_PACKAGE_RETROARCH_FFMPEG
+config BR2_PACKAGE_RETROARCH_SDL2_FFMPEG
 	bool "FFMPEG support"
 	depends on BR2_PACKAGE_FFMPEG_ARCH_SUPPORTS
 	select BR2_PACKAGE_FFMPEG
@@ -22,7 +22,7 @@ config BR2_PACKAGE_RETROARCH_FFMPEG
 	help
 	  Video/music player implemented in libretro.
 
-config BR2_PACKAGE_RETROARCH_EGL
+config BR2_PACKAGE_RETROARCH_SDL2_EGL
 	bool "EGL support"
 	depends on BR2_TOOLCHAIN_HAS_THREADS # libdrm
 	depends on BR2_PACKAGE_MESA3D_OPENGL_EGL
@@ -35,7 +35,7 @@ config BR2_PACKAGE_RETROARCH_EGL
 comment "EGL support needs an OpenGL EGL backend provided by mesa3d"
 	depends on !BR2_PACKAGE_MESA3D_OPENGL_EGL
 
-config BR2_PACKAGE_RETROARCH_GLES
+config BR2_PACKAGE_RETROARCH_SDL2_GLES
 	bool "GLES support"
 	depends on BR2_TOOLCHAIN_HAS_THREADS # libdrm
 	depends on BR2_PACKAGE_MESA3D_OPENGL_ES
@@ -48,35 +48,7 @@ config BR2_PACKAGE_RETROARCH_GLES
 comment "GLES support needs an OpenGLES backend provided by mesa3d"
 	depends on !BR2_PACKAGE_MESA3D_OPENGL_ES
 
-config BR2_PACKAGE_RETROARCH_KMS
-	bool "KMS support"
-	depends on BR2_TOOLCHAIN_HAS_THREADS # libdrm
-	select BR2_PACKAGE_LIBDRM
-	help
-	  KMS (Kernel Mode Setting) mode is a feature where RetroArch
-	  can use the OpenGL driver outside Xorg, running straight in
-	  the virtual terminal. It is a fairly obscure feature, but
-	  very powerful in a console scenario.
-
-comment "KMS support needs an OpenGL EGL backend provided by mesa3d"
-	depends on !BR2_PACKAGE_MESA3D_OPENGL_EGL
-
-config BR2_PACKAGE_RETROARCH_QT5
-	bool "Qt5 support"
-	depends on BR2_PACKAGE_QT5
-	select BR2_PACKAGE_QT5BASE
-	select BR2_PACKAGE_QT5BASE_GUI
-	select BR2_PACKAGE_QT5BASE_WIDGETS
-	select BR2_PACKAGE_QT5BASE_CONCURRENT
-	select BR2_PACKAGE_OPENSSL # Uses QSslError
-
-config BR2_PACKAGE_RETROARCH_SDL
-	bool "SDL support"
-	select BR2_PACKAGE_SDL
-	help
-	  SDL input/audio/video drivers
-
-config BR2_PACKAGE_RETROARCH_V4L2
+config BR2_PACKAGE_RETROARCH_SDL2_V4L2
 	bool "V4L2 support"
 	depends on BR2_TOOLCHAIN_HAS_THREADS
 	depends on BR2_INSTALL_LIBSTDCPP
@@ -92,7 +64,7 @@ comment "V4l2 support needs a toolchain w/ threads, C++ and headers >= 3.0"
 	depends on !BR2_TOOLCHAIN_HAS_THREADS \
 		|| !BR2_INSTALL_LIBSTDCPP || !BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_0
 
-config BR2_PACKAGE_RETROARCH_WAYLAND
+config BR2_PACKAGE_RETROARCH_SDL2_WAYLAND
 	bool "Wayland support"
 	depends on BR2_PACKAGE_HAS_LIBEGL_WAYLAND
 	depends on BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_17
@@ -106,7 +78,7 @@ comment "Wayland support needs an OpenGL EGL backend provided by mesa3d w/ heade
 	depends on !BR2_PACKAGE_MESA3D_OPENGL_EGL || \
 		!BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_17
 
-config BR2_PACKAGE_RETROARCH_XVIDEO
+config BR2_PACKAGE_RETROARCH_SDL2_XVIDEO
 	bool "Xvideo support"
 	depends on BR2_PACKAGE_XORG7
 	select BR2_PACKAGE_XLIB_LIBXV
@@ -115,16 +87,16 @@ config BR2_PACKAGE_RETROARCH_XVIDEO
 
 comment "Menus"
 
-config BR2_PACKAGE_RETROARCH_RGUI_MENU
+config BR2_PACKAGE_RETROARCH_SDL2_RGUI_MENU
 	bool "RGUI"
 
-config BR2_PACKAGE_RETROARCH_MATERIAUI_MENU
+config BR2_PACKAGE_RETROARCH_SDL2_MATERIAUI_MENU
 	bool "MateriaUI"
 
-config BR2_PACKAGE_RETROARCH_XMB_MENU
+config BR2_PACKAGE_RETROARCH_SDL2_XMB_MENU
 	bool "XMB"
 
-config BR2_PACKAGE_RETROARCH_OZONE_MENU
+config BR2_PACKAGE_RETROARCH_SDL2_OZONE_MENU
 	bool "Ozone"
 
 endif
@@ -132,3 +104,4 @@ endif
 comment "retroarch needs a toolchain w/ dynamic library, threads, wchar"
 	depends on BR2_USE_MMU
 	depends on BR2_STATIC_LIBS || !BR2_TOOLCHAIN_HAS_THREADS || !BR2_USE_WCHAR
+	depends on BR2_PACKAGE_RETROARCH

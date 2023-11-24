@@ -27,6 +27,9 @@ RETROARCH_CONFIG_OPTS = \
 	--disable-opengl1 \
 	--enable-rpng
 
+# Disable SDL2 backend by default (it is in another binary)
+RETROARCH_CONFIG_OPTS += --disable-sdl2
+
 ifeq ($(BR2_PACKAGE_ALSA_LIB),y)
 RETROARCH_DEPENDENCIES += alsa-lib
 RETROARCH_CONFIG_OPTS += --enable-alsa
@@ -136,13 +139,6 @@ RETROARCH_CONFIG_OPTS += --enable-sdl
 RETROARCH_DEPENDENCIES += sdl
 else
 RETROARCH_CONFIG_OPTS += --disable-sdl
-endif
-
-ifeq ($(BR2_PACKAGE_RETROARCH_SDL2),y)
-RETROARCH_CONFIG_OPTS += --enable-sdl2
-RETROARCH_DEPENDENCIES += sdl2
-else
-RETROARCH_CONFIG_OPTS += --disable-sdl2
 endif
 
 ifeq ($(BR2_PACKAGE_RETROARCH_WAYLAND),y)

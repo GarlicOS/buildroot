@@ -1,0 +1,255 @@
+From 567b22f01234a1ec4995a6b358c773e948d471aa Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Wed, 12 Jul 2023 18:08:40 +0200
+Subject: [PATCH 3/7] Add shutdown hotkey
+
+---
+ command.h                    |  1 +
+ config.def.keybinds.h        | 21 ++++++++++++
+ configuration.c              |  1 +
+ input/input_defines.h        |  1 +
+ input/input_driver.c         | 25 ++++++++++++++
+ menu/cbs/menu_cbs_sublabel.c |  4 +++
+ runloop.c                    | 66 +++++++++++++++++++++++++++++++++++-
+ runloop.h                    |  1 +
+ 8 files changed, 119 insertions(+), 1 deletion(-)
+
+diff --git a/command.h b/command.h
+index ad3ac3e..d7f93dd 100644
+--- a/command.h
++++ b/command.h
+@@ -448,6 +448,7 @@ static const struct cmd_action_map action_map[] = {
+ static const struct cmd_map map[] = {
+    { "MENU_TOGGLE",            RARCH_MENU_TOGGLE },
+    { "QUIT",                   RARCH_QUIT_KEY },
++   { "SHUTDOWN",               RARCH_SHUTDOWN_KEY },
+    { "CLOSE_CONTENT",          RARCH_CLOSE_CONTENT_KEY },
+    { "RESET",                  RARCH_RESET },
+ 
+diff --git a/config.def.keybinds.h b/config.def.keybinds.h
+index 4ccf902..6067fcd 100644
+--- a/config.def.keybinds.h
++++ b/config.def.keybinds.h
+@@ -298,6 +298,13 @@ static const struct retro_keybind retro_keybinds_1[] = {
+       RARCH_QUIT_KEY, NO_BTN, NO_BTN, 0,
+       true
+    },
++   {
++      NULL, NULL,
++      AXIS_NONE, AXIS_NONE, AXIS_NONE,
++      MENU_ENUM_LABEL_VALUE_SHUTDOWN, RETROK_UNKNOWN,
++      RARCH_SHUTDOWN_KEY, NO_BTN, NO_BTN, 0,
++      true
++   },
+    {
+       NULL, NULL,
+       AXIS_NONE, AXIS_NONE, AXIS_NONE,
+@@ -933,6 +940,13 @@ static const struct retro_keybind retro_keybinds_1[] = {
+       RARCH_QUIT_KEY, NO_BTN, NO_BTN, 0,
+       true
+    },
++   {
++      NULL, NULL,
++      AXIS_NONE, AXIS_NONE, AXIS_NONE,
++      MENU_ENUM_LABEL_VALUE_SHUTDOWN, RETROK_UNKNOWN,
++      RARCH_SHUTDOWN_KEY, NO_BTN, NO_BTN, 0,
++      true
++   },
+    {
+       NULL, NULL,
+       AXIS_NONE, AXIS_NONE, AXIS_NONE,
+@@ -1578,6 +1592,13 @@ static const struct retro_keybind retro_keybinds_1[] = {
+       true
+    },
+ #endif
++   {
++      NULL, NULL,
++      AXIS_NONE, AXIS_NONE, AXIS_NONE,
++      MENU_ENUM_LABEL_VALUE_SHUTDOWN, RETROK_UNKNOWN,
++      RARCH_SHUTDOWN_KEY, NO_BTN, NO_BTN, 0,
++      true
++   },
+    {
+       NULL, NULL,
+       AXIS_NONE, AXIS_NONE, AXIS_NONE,
+diff --git a/configuration.c b/configuration.c
+index c9e4e3c..51248e6 100644
+--- a/configuration.c
++++ b/configuration.c
+@@ -314,6 +314,7 @@ const struct input_bind_map input_config_bind_map[RARCH_BIND_LIST_END_NULL] = {
+ #else
+    DECLARE_META_BIND(2, exit_emulator,         RARCH_QUIT_KEY,               MENU_ENUM_LABEL_VALUE_INPUT_META_QUIT_KEY),
+ #endif
++   DECLARE_META_BIND(2, shutdown,              RARCH_SHUTDOWN_KEY,           MENU_ENUM_LABEL_VALUE_SHUTDOWN),
+    DECLARE_META_BIND(2, close_content,         RARCH_CLOSE_CONTENT_KEY,      MENU_ENUM_LABEL_VALUE_INPUT_META_CLOSE_CONTENT_KEY),
+    DECLARE_META_BIND(2, reset,                 RARCH_RESET,                  MENU_ENUM_LABEL_VALUE_INPUT_META_RESET),
+    DECLARE_META_BIND(1, toggle_fast_forward,   RARCH_FAST_FORWARD_KEY,       MENU_ENUM_LABEL_VALUE_INPUT_META_FAST_FORWARD_KEY),
+diff --git a/input/input_defines.h b/input/input_defines.h
+index b428b68..2aa8a80 100644
+--- a/input/input_defines.h
++++ b/input/input_defines.h
+@@ -77,6 +77,7 @@ enum
+    RARCH_ENABLE_HOTKEY = RARCH_FIRST_META_KEY,
+    RARCH_MENU_TOGGLE,
+    RARCH_QUIT_KEY,
++   RARCH_SHUTDOWN_KEY,
+    RARCH_CLOSE_CONTENT_KEY,
+    RARCH_RESET,
+    RARCH_FAST_FORWARD_KEY,
+diff --git a/input/input_driver.c b/input/input_driver.c
+index 46194cc..34244a5 100644
+--- a/input/input_driver.c
++++ b/input/input_driver.c
+@@ -4154,6 +4154,31 @@ static void input_keys_pressed(
+       }
+    }
+ 
++   if (binds[port][RARCH_SHUTDOWN_KEY].valid)
++   {
++      const struct retro_keybind *shutdown_binds_auto =
++            &input_autoconf_binds[port][RARCH_SHUTDOWN_KEY];
++      const struct retro_keybind *shutdown_normal     =
++            &binds[port][RARCH_SHUTDOWN_KEY];
++
++      /* Allows Shutdown toggle hotkey to still work
++       * even though every hotkey is blocked */
++      if (CHECK_INPUT_DRIVER_BLOCK_HOTKEY(shutdown_normal, shutdown_binds_auto))
++      {
++         if (input_state_wrap(
++               input_st->current_driver,
++               input_st->current_data,
++               input_st->primary_joypad,
++               sec_joypad,
++               joypad_info,
++               &binds[port],
++               input_st->flags & INP_FLAG_KB_MAPPING_BLOCKED,
++               port, RETRO_DEVICE_JOYPAD, 0,
++               RARCH_SHUTDOWN_KEY))
++            input_st->flags &= ~INP_FLAG_BLOCK_HOTKEY;
++      }
++   }
++
+    if (!is_menu && binds[port][RARCH_GAME_FOCUS_TOGGLE].valid)
+    {
+       const struct retro_keybind *focus_binds_auto =
+diff --git a/menu/cbs/menu_cbs_sublabel.c b/menu/cbs/menu_cbs_sublabel.c
+index d8090df..54b54e4 100644
+--- a/menu/cbs/menu_cbs_sublabel.c
++++ b/menu/cbs/menu_cbs_sublabel.c
+@@ -392,6 +392,7 @@ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_input_meta_restart_key,           ME
+ #else
+ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_input_meta_quit_key,              MENU_ENUM_SUBLABEL_INPUT_META_QUIT_KEY)
+ #endif
++DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_input_meta_shutdown_key,          MENU_ENUM_SUBLABEL_INPUT_META_QUIT_KEY)
+ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_input_meta_close_content_key,     MENU_ENUM_SUBLABEL_INPUT_META_CLOSE_CONTENT_KEY)
+ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_input_meta_reset,                 MENU_ENUM_SUBLABEL_INPUT_META_RESET)
+ 
+@@ -2147,6 +2148,9 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
+                BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_input_meta_quit_key);
+ #endif
+                return 0;
++            case RARCH_SHUTDOWN_KEY:
++               BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_input_meta_shutdown_key);
++               return 0;
+             case RARCH_CLOSE_CONTENT_KEY:
+                BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_input_meta_close_content_key);
+                return 0;
+diff --git a/runloop.c b/runloop.c
+index 10fb8c2..507065b 100644
+--- a/runloop.c
++++ b/runloop.c
+@@ -5598,6 +5598,70 @@ static enum runloop_state_enum runloop_check_state(
+       }
+    }
+ 
++   /* Check shutdown hotkey */
++   {
++      bool trig_shutdown_key;
++      static bool shutdown_key = false;
++      static bool old_shutdown_key = false;
++      static bool runloop_exec = false;
++      shutdown_key = BIT256_GET(current_bits, RARCH_SHUTDOWN_KEY);
++      trig_shutdown_key = shutdown_key && !old_shutdown_key;
++      old_shutdown_key = shutdown_key;
++
++      if (RUNLOOP_TIME_TO_EXIT(trig_shutdown_key))
++      {
++#ifdef HAVE_SCREENSHOTS
++         unsigned runloop_max_frames = runloop_st->max_frames;
++
++         if ((runloop_max_frames != 0) && (frame_count >= runloop_max_frames) && (runloop_st->flags & RUNLOOP_FLAG_MAX_FRAMES_SCREENSHOT))
++         {
++            const char *screenshot_path = NULL;
++            bool fullpath = false;
++
++            if (string_is_empty(runloop_st->max_frames_screenshot_path))
++               screenshot_path = path_get(RARCH_PATH_BASENAME);
++            else
++            {
++               fullpath = true;
++               screenshot_path = runloop_st->max_frames_screenshot_path;
++            }
++
++            RARCH_LOG("Taking a screenshot before exiting...\n");
++
++            /* Take a screenshot before we exit. */
++            if (!take_screenshot(settings->paths.directory_screenshot, screenshot_path, false, video_driver_cached_frame_has_valid_framebuffer(), fullpath, false))
++            {
++               RARCH_ERR("Could not take a screenshot before exiting.\n");
++            }
++         }
++#endif
++
++         if (runloop_exec)
++            runloop_exec = false;
++
++         if (runloop_st->flags & RUNLOOP_FLAG_CORE_SHUTDOWN_INITIATED)
++         {
++            bool load_dummy_core = false;
++
++            runloop_st->flags &= ~RUNLOOP_FLAG_CORE_SHUTDOWN_INITIATED;
++
++            /* Unload current core */
++            if (!command_event(CMD_EVENT_UNLOAD_CORE, &load_dummy_core))
++            {
++               runloop_st->flags |= RUNLOOP_FLAG_SHUTDOWN_INITIATED;
++            }
++         }
++
++         runloop_st->flags &= ~RUNLOOP_FLAG_CORE_RUNNING;
++
++         old_shutdown_key = shutdown_key;
++
++         runloop_st->shutdown = true;
++
++         return RUNLOOP_STATE_QUIT;
++      }
++   }
++
+ #if defined(HAVE_MENU) || defined(HAVE_GFX_WIDGETS)
+    gfx_animation_update(
+          current_time,
+@@ -6745,7 +6809,7 @@ int runloop_iterate(void)
+       case RUNLOOP_STATE_QUIT:
+          runloop_st->frame_limit_last_time = 0.0;
+          runloop_st->flags                &= ~RUNLOOP_FLAG_CORE_RUNNING;
+-         command_event(CMD_EVENT_QUIT, NULL);
++         command_event(runloop_st->shutdown ? CMD_EVENT_SHUTDOWN : CMD_EVENT_QUIT, NULL);
+          return -1;
+       case RUNLOOP_STATE_POLLED_AND_SLEEP:
+ #ifdef HAVE_NETWORKING
+diff --git a/runloop.h b/runloop.h
+index 3ba255f..dec2d3f 100644
+--- a/runloop.h
++++ b/runloop.h
+@@ -267,6 +267,7 @@ struct runloop
+ #endif
+ 
+    uint32_t flags;
++   bool shutdown;
+    int8_t run_frames_and_pause;
+ 
+    char runtime_content_path_basename[8192];
+-- 
+2.25.1
+
