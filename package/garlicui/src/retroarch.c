@@ -13,8 +13,22 @@
  */
 int retroarch_run(struct gui_context * context, const char * core, const char * game)
 {
+	// Check which RetroArch executable to use
+	char * retroarch_executable = getenv("RETROARCH_EXECUTABLE");
+
 	// Puzzle together the process arguments
-	const char * args[] = { "retroarch", "-L", core, game, NULL };
+	const char * args[] = { retroarch_executable, "-L", core, game, NULL };
+
+	// Check if retroarch_executable is set to a valid value
+	if (retroarch_executable == NULL){
+		// Use default retroarch binary, since retroarch_executable is not set
+		args[0] = "retroarch";
+	}
+	else if ((strcmp(retroarch_executable, "retroarch") != 0) && (strcmp(retroarch_executable, "retroarch-sdl2") != 0) && (strcmp(retroarch_executable, "retroarch-dingux") != 0))
+	{
+		// Use default retroarch binary, since retroarch_executable is not set to a valid option
+		args[0] = "retroarch";
+	}
 
 	// We haven't selected a core
 	if (core == NULL)
