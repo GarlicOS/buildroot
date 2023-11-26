@@ -8,6 +8,11 @@
 #include <SDL/SDL_gfxPrimitives.h>
 #include <librsvg/rsvg.h>
 
+// https://github.com/OpenDingux/SDL/blob/dd7260f1d7f79a58aba95a03fd6532729181eadb/include/SDL_main.h#L54
+#if defined(main)
+#undef main
+#endif
+
 /**
  * @brief Fills the given SDL surface with a solid color.
  *

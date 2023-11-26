@@ -1,3 +1,5 @@
+#include <unicode/ustring.h>
+
 #include "icon.h"
 #include "localization.h"
 
@@ -32,7 +34,11 @@ const char * localization_font_file_path(const char * locale)
 	if (strcmp(localized_font_file_path, font_file_path_msgid) == 0)
 	{
 		// Fall back to a semi-safe latin default font (better than nothing)
+#ifdef __MACOSX__
+		localized_font_file_path = "/System/Library/Fonts/Monaco.ttf";
+#else
 		localized_font_file_path = "/usr/share/fonts/oswald/Oswald-Regular.ttf";
+#endif
 	}
 
 	// Copy the localized font file path into the static buffer

@@ -1,6 +1,8 @@
 #include <sys/time.h>
 #include <sys/ioctl.h>
+#ifdef __linux__
 #include <linux/rtc.h>
+#endif
 #include <fcntl.h>
 
 #include "clock.h"
@@ -66,6 +68,7 @@ void clock_set_current_time(time_t timestamp, int utc_offset)
 					// Open the device for read/write access
 					int dev_fd = open(dev_path, O_RDWR);
 
+#ifdef __linux__
 					// We managed to open the device for read/write access
 					if (dev_fd >= 0)
 					{
@@ -87,6 +90,7 @@ void clock_set_current_time(time_t timestamp, int utc_offset)
 						// Close the device
 						close(dev_fd);
 					}
+#endif
 
 					// Free the device path buffer
 					free(dev_path);
