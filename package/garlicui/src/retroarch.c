@@ -20,7 +20,8 @@ int retroarch_run(struct gui_context * context, const char * core, const char * 
 	const char * args[] = { retroarch_executable, "-L", core, game, NULL };
 
 	// Check if retroarch_executable is set to a valid value
-	if (retroarch_executable == NULL){
+	if (retroarch_executable == NULL)
+	{
 		// Use default retroarch binary, since retroarch_executable is not set
 		args[0] = "retroarch";
 	}

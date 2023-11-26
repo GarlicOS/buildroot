@@ -1,7 +1,7 @@
-From daf3c8177244203d1412231e1e5d3c342c60f775 Mon Sep 17 00:00:00 2001
+From af9a3ec691cd327612aa8cb08b10b0d4a4635537 Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Sun, 9 Jul 2023 01:44:19 +0200
-Subject: [PATCH 5/7] Implement Scaling Options
+Subject: [PATCH 06/10] Implement Scaling Options
 
 ---
  gfx/drivers/sdl_gfx.c                     | 169 ++++++++++++++++++++--
@@ -9,7 +9,7 @@ Subject: [PATCH 5/7] Implement Scaling Options
  2 files changed, 167 insertions(+), 13 deletions(-)
 
 diff --git a/gfx/drivers/sdl_gfx.c b/gfx/drivers/sdl_gfx.c
-index d015987..e93265b 100644
+index d015987375..e93265bada 100644
 --- a/gfx/drivers/sdl_gfx.c
 +++ b/gfx/drivers/sdl_gfx.c
 @@ -60,6 +60,14 @@ typedef struct sdl_video
@@ -217,7 +217,7 @@ index d015987..e93265b 100644
           sdl_render_msg(vid, vid->screen,
           msg, vid->screen->w, vid->screen->h, vid->screen->format,
 diff --git a/libretro-common/include/gfx/video_frame.h b/libretro-common/include/gfx/video_frame.h
-index 05ba3f7..cc359f0 100644
+index 05ba3f7b49..cc359f0897 100644
 --- a/libretro-common/include/gfx/video_frame.h
 +++ b/libretro-common/include/gfx/video_frame.h
 @@ -82,10 +82,13 @@ static INLINE void video_frame_scale(
@@ -239,5 +239,5 @@ index 05ba3f7..cc359f0 100644
     {
        scaler->in_fmt    = format;
 -- 
-2.25.1
+2.34.1
 

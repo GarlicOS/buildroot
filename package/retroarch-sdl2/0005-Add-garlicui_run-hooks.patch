@@ -1,14 +1,14 @@
-From a5e499d7732ff7711e0c9b82c2f4cdbff0225973 Mon Sep 17 00:00:00 2001
+From d45a60253e1a44cd3c9a135b83faf5b7af85b72b Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Mon, 3 Jul 2023 18:50:42 +0200
-Subject: [PATCH 4/7] Add garlicui_run hooks
+Subject: [PATCH 05/10] Add garlicui_run hooks
 
 ---
  retroarch.c | 80 +++++++++++++++++++++++++++++++++++++++++++++++++++--
  1 file changed, 78 insertions(+), 2 deletions(-)
 
 diff --git a/retroarch.c b/retroarch.c
-index 006c932..d6f10fc 100644
+index 006c93244e..d6f10fc700 100644
 --- a/retroarch.c
 +++ b/retroarch.c
 @@ -2085,6 +2085,81 @@ bool is_accessibility_enabled(bool accessibility_enable, bool accessibility_enab
@@ -120,5 +120,5 @@ index 006c932..d6f10fc 100644
  #endif /* HAVE_LAKKA */
  #endif
 -- 
-2.25.1
+2.34.1
 

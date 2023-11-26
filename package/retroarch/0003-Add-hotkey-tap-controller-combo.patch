@@ -1,7 +1,7 @@
-From 73786edade819b742966150eb50b3410b44e5a25 Mon Sep 17 00:00:00 2001
+From 7f63d775d3cdd4f1b6dee672957a18e305343afd Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Thu, 8 Jun 2023 15:54:19 +0200
-Subject: [PATCH 2/7] Add hotkey tap controller combo
+Subject: [PATCH 03/10] Add hotkey tap controller combo
 
 ---
  input/input_defines.h |  1 +
@@ -13,7 +13,7 @@ Subject: [PATCH 2/7] Add hotkey tap controller combo
  6 files changed, 68 insertions(+)
 
 diff --git a/input/input_defines.h b/input/input_defines.h
-index 75e6768..b428b68 100644
+index 75e6768215..b428b68cda 100644
 --- a/input/input_defines.h
 +++ b/input/input_defines.h
 @@ -168,6 +168,7 @@ enum input_combo_type
@@ -25,7 +25,7 @@ index 75e6768..b428b68 100644
     INPUT_COMBO_L2_R2,
     INPUT_COMBO_LAST
 diff --git a/input/input_driver.c b/input/input_driver.c
-index 4d76862..46194cc 100644
+index 4d768626c2..46194cc37e 100644
 --- a/input/input_driver.c
 +++ b/input/input_driver.c
 @@ -562,6 +562,8 @@ bool input_driver_button_combo(
@@ -92,7 +92,7 @@ index 4d76862..46194cc 100644
        case INPUT_COMBO_NONE:
           break;
 diff --git a/intl/msg_hash_us.h b/intl/msg_hash_us.h
-index bcb0844..3a73e84 100644
+index bcb0844ef7..3a73e84a42 100644
 --- a/intl/msg_hash_us.h
 +++ b/intl/msg_hash_us.h
 @@ -9937,6 +9937,10 @@ MSG_HASH(
@@ -107,7 +107,7 @@ index bcb0844..3a73e84 100644
     MENU_ENUM_LABEL_VALUE_DOWN_SELECT,
     "Down + Select"
 diff --git a/menu/menu_setting.c b/menu/menu_setting.c
-index 402630e..1f03cf8 100644
+index 402630e56d..1f03cf8e2a 100644
 --- a/menu/menu_setting.c
 +++ b/menu/menu_setting.c
 @@ -6560,6 +6560,9 @@ static void setting_get_string_representation_gamepad_combo(
@@ -121,7 +121,7 @@ index 402630e..1f03cf8 100644
           strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_DOWN_SELECT), len);
           break;
 diff --git a/msg_hash.h b/msg_hash.h
-index 2aeb7d6..6ee3ad8 100644
+index 2aeb7d6120..6ee3ad81ed 100644
 --- a/msg_hash.h
 +++ b/msg_hash.h
 @@ -3857,6 +3857,7 @@ enum msg_hash_enums
@@ -133,7 +133,7 @@ index 2aeb7d6..6ee3ad8 100644
     MENU_ENUM_LABEL_VALUE_L2_R2,
  
 diff --git a/retroarch.c b/retroarch.c
-index 44ec096..006c932 100644
+index 44ec096c11..006c93244e 100644
 --- a/retroarch.c
 +++ b/retroarch.c
 @@ -2108,6 +2108,8 @@ bool command_event(enum event_command cmd, void *data)
@@ -161,5 +161,5 @@ index 44ec096..006c932 100644
  
     return true;
 -- 
-2.25.1
+2.34.1
 

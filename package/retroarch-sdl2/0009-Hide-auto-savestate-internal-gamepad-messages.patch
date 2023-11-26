@@ -1,7 +1,7 @@
-From 600679306d5c6e8c5ca3c16f2561bb552843c3fb Mon Sep 17 00:00:00 2001
+From 5b284c87a8525e18a61e6bfa0ae72f82e82619cc Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Mon, 13 Nov 2023 16:38:41 +0100
-Subject: [PATCH] Hide auto-savestate & internal gamepad messages
+Subject: [PATCH 09/10] Hide auto-savestate & internal gamepad messages
 
 ---
  tasks/task_autodetect.c | 2 +-
@@ -9,7 +9,7 @@ Subject: [PATCH] Hide auto-savestate & internal gamepad messages
  2 files changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/tasks/task_autodetect.c b/tasks/task_autodetect.c
-index 3c83841..c1acbc8 100644
+index 3c83841153..c1acbc8847 100644
 --- a/tasks/task_autodetect.c
 +++ b/tasks/task_autodetect.c
 @@ -534,7 +534,7 @@ static void input_autoconfigure_connect_handler(retro_task_t *task)
@@ -22,7 +22,7 @@ index 3c83841..c1acbc8 100644
                    msg_hash_to_str(MSG_DEVICE_CONFIGURED_IN_PORT_NR),
                    device_display_name,
 diff --git a/tasks/task_save.c b/tasks/task_save.c
-index 636feeb..7d69082 100644
+index 636feebd6f..7d69082df3 100644
 --- a/tasks/task_save.c
 +++ b/tasks/task_save.c
 @@ -1061,6 +1061,7 @@ static void task_load_handler(retro_task_t *task)
@@ -34,5 +34,5 @@ index 636feeb..7d69082 100644
           else
           {
 -- 
-2.25.1
+2.34.1
 

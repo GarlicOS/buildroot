@@ -1,7 +1,7 @@
-From 567b22f01234a1ec4995a6b358c773e948d471aa Mon Sep 17 00:00:00 2001
+From bfb30d63f19a00e4c8265688d8349b2f178e0cf4 Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Wed, 12 Jul 2023 18:08:40 +0200
-Subject: [PATCH 3/7] Add shutdown hotkey
+Subject: [PATCH 04/10] Add shutdown hotkey
 
 ---
  command.h                    |  1 +
@@ -15,7 +15,7 @@ Subject: [PATCH 3/7] Add shutdown hotkey
  8 files changed, 119 insertions(+), 1 deletion(-)
 
 diff --git a/command.h b/command.h
-index ad3ac3e..d7f93dd 100644
+index ad3ac3e12e..d7f93dda20 100644
 --- a/command.h
 +++ b/command.h
 @@ -448,6 +448,7 @@ static const struct cmd_action_map action_map[] = {
@@ -27,7 +27,7 @@ index ad3ac3e..d7f93dd 100644
     { "RESET",                  RARCH_RESET },
  
 diff --git a/config.def.keybinds.h b/config.def.keybinds.h
-index 4ccf902..6067fcd 100644
+index 4ccf9029cb..6067fcd858 100644
 --- a/config.def.keybinds.h
 +++ b/config.def.keybinds.h
 @@ -298,6 +298,13 @@ static const struct retro_keybind retro_keybinds_1[] = {
@@ -73,7 +73,7 @@ index 4ccf902..6067fcd 100644
        NULL, NULL,
        AXIS_NONE, AXIS_NONE, AXIS_NONE,
 diff --git a/configuration.c b/configuration.c
-index c9e4e3c..51248e6 100644
+index c9e4e3cb2e..51248e6e08 100644
 --- a/configuration.c
 +++ b/configuration.c
 @@ -314,6 +314,7 @@ const struct input_bind_map input_config_bind_map[RARCH_BIND_LIST_END_NULL] = {
@@ -85,7 +85,7 @@ index c9e4e3c..51248e6 100644
     DECLARE_META_BIND(2, reset,                 RARCH_RESET,                  MENU_ENUM_LABEL_VALUE_INPUT_META_RESET),
     DECLARE_META_BIND(1, toggle_fast_forward,   RARCH_FAST_FORWARD_KEY,       MENU_ENUM_LABEL_VALUE_INPUT_META_FAST_FORWARD_KEY),
 diff --git a/input/input_defines.h b/input/input_defines.h
-index b428b68..2aa8a80 100644
+index b428b68cda..2aa8a806b7 100644
 --- a/input/input_defines.h
 +++ b/input/input_defines.h
 @@ -77,6 +77,7 @@ enum
@@ -97,7 +97,7 @@ index b428b68..2aa8a80 100644
     RARCH_RESET,
     RARCH_FAST_FORWARD_KEY,
 diff --git a/input/input_driver.c b/input/input_driver.c
-index 46194cc..34244a5 100644
+index 46194cc37e..34244a51d8 100644
 --- a/input/input_driver.c
 +++ b/input/input_driver.c
 @@ -4154,6 +4154,31 @@ static void input_keys_pressed(
@@ -133,7 +133,7 @@ index 46194cc..34244a5 100644
     {
        const struct retro_keybind *focus_binds_auto =
 diff --git a/menu/cbs/menu_cbs_sublabel.c b/menu/cbs/menu_cbs_sublabel.c
-index d8090df..54b54e4 100644
+index d8090df6e8..54b54e4592 100644
 --- a/menu/cbs/menu_cbs_sublabel.c
 +++ b/menu/cbs/menu_cbs_sublabel.c
 @@ -392,6 +392,7 @@ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_input_meta_restart_key,           ME
@@ -155,7 +155,7 @@ index d8090df..54b54e4 100644
                 BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_input_meta_close_content_key);
                 return 0;
 diff --git a/runloop.c b/runloop.c
-index 10fb8c2..507065b 100644
+index 10fb8c2d14..507065b368 100644
 --- a/runloop.c
 +++ b/runloop.c
 @@ -5598,6 +5598,70 @@ static enum runloop_state_enum runloop_check_state(
@@ -239,7 +239,7 @@ index 10fb8c2..507065b 100644
        case RUNLOOP_STATE_POLLED_AND_SLEEP:
  #ifdef HAVE_NETWORKING
 diff --git a/runloop.h b/runloop.h
-index 3ba255f..dec2d3f 100644
+index 3ba255f7ba..dec2d3f001 100644
 --- a/runloop.h
 +++ b/runloop.h
 @@ -267,6 +267,7 @@ struct runloop
@@ -251,5 +251,5 @@ index 3ba255f..dec2d3f 100644
  
     char runtime_content_path_basename[8192];
 -- 
-2.25.1
+2.34.1
 

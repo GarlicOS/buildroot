@@ -1,14 +1,14 @@
-From eda5eb7f7a1aba3602f4a186462ec28bcb8e632e Mon Sep 17 00:00:00 2001
+From df1727816859b0fc6897c5dc7ef05255eb5266c7 Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Fri, 21 Jul 2023 19:27:10 +0200
-Subject: [PATCH 7/7] Write auto savestate thumbnails synchronously
+Subject: [PATCH 08/10] Write auto savestate thumbnails synchronously
 
 ---
  tasks/task_screenshot.c | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/tasks/task_screenshot.c b/tasks/task_screenshot.c
-index 2cd3bab..acf6364 100644
+index 2cd3babbfa..acf6364ca5 100644
 --- a/tasks/task_screenshot.c
 +++ b/tasks/task_screenshot.c
 @@ -365,7 +365,10 @@ static bool screenshot_dump(
@@ -24,5 +24,5 @@ index 2cd3bab..acf6364 100644
        retro_task_t *task = task_init();
  
 -- 
-2.25.1
+2.34.1
 

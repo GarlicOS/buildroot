@@ -1,0 +1,39 @@
+From 4f0bee1b09ca53bf5ec47f30a70686d559af91a1 Mon Sep 17 00:00:00 2001
+From: turtleletortue <46635000+turtleletortue@users.noreply.github.com>
+Date: Sun, 26 Nov 2023 09:46:46 -0500
+Subject: [PATCH 10/10] Add video and input backend override quirks
+
+---
+ retroarch.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/retroarch.c b/retroarch.c
+index d6f10fc700..f918dfdb5f 100644
+--- a/retroarch.c
++++ b/retroarch.c
+@@ -6314,6 +6314,22 @@ bool retroarch_main_init(int argc, char *argv[])
+       }
+    }
+ 
++   // Set drivers to quirk values
++   char * video_backend = getenv("RETROARCH_DEFAULT_VIDEO_BACKEND");
++   char * input_backend = getenv("RETROARCH_DEFAULT_INPUT_BACKEND");
++   // Check if quirks are set to real values
++   if (video_backend != NULL)
++   {
++      // Override video driver
++      configuration_set_string(settings, settings->arrays.video_driver, video_backend);
++   }
++
++   if (input_backend != NULL)
++   {
++      // Override input driver
++      configuration_set_string(settings, settings->arrays.input_driver, input_backend);
++   }
++
+    /* Pre-initialize all drivers
+     * Attempts to find a default driver for
+     * all driver types.
+-- 
+2.34.1
+
