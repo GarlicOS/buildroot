@@ -66,3 +66,15 @@ msgstr "Shintsha IsiZulu"
 
 msgid "No games found!"
 msgstr "Awunazwe imidlalo!"
+
+msgid "Change Network"
+msgstr "Hamba i-Network"
+
+msgid "Manual Configuration"
+msgstr "Konfigurasha Yedwala"
+
+msgid "Security"
+msgstr "Isiqinisekiso"
+
+msgid "Password"
+msgstr "Iphasiwedi"

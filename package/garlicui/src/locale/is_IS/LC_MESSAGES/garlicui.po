@@ -66,3 +66,15 @@ msgstr "Breyta tungumáli"
 
 msgid "No games found!"
 msgstr "Engar leiki fundust!"
+
+msgid "Change Network"
+msgstr "Breyta neti"
+
+msgid "Manual Configuration"
+msgstr "Handstilltu uppsetning"
+
+msgid "Security"
+msgstr "Öryggi"
+
+msgid "Password"
+msgstr "Lykilorð"

@@ -66,3 +66,15 @@ msgstr "Baguhin ang Wika"
 
 msgid "No games found!"
 msgstr "Walang mga laro na natagpuan!"
+
+msgid "Change Network"
+msgstr "Baguhin ang Network"
+
+msgid "Manual Configuration"
+msgstr "Manual na Konfigurasyon"
+
+msgid "Security"
+msgstr "Seguridad"
+
+msgid "Password"
+msgstr "Password"

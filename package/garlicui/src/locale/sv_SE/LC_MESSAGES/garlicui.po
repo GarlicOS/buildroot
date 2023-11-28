@@ -66,3 +66,15 @@ msgstr "Byt språk"
 
 msgid "No games found!"
 msgstr "Inga spel hittades!"
+
+msgid "Change Network"
+msgstr "Ändra nätverk"
+
+msgid "Manual Configuration"
+msgstr "Manuell konfiguration"
+
+msgid "Security"
+msgstr "Säkerhet"
+
+msgid "Password"
+msgstr "Lösenord"

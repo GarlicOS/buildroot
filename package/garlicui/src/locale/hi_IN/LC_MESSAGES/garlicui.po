@@ -66,3 +66,15 @@ msgstr "भाषा बदलें"
 
 msgid "No games found!"
 msgstr "कोई खेल नहीं मिला!"
+
+msgid "Change Network"
+msgstr "नेटवर्क बदलें"
+
+msgid "Manual Configuration"
+msgstr "मैनुअल कॉन्फ़िगरेशन"
+
+msgid "Security"
+msgstr "सुरक्षा"
+
+msgid "Password"
+msgstr "पासवर्ड"

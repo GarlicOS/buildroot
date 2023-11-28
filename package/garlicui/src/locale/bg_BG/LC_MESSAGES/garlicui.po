@@ -66,3 +66,15 @@ msgstr "Промяна на езика"
 
 msgid "No games found!"
 msgstr "Няма намерени игри!"
+
+msgid "Change Network"
+msgstr "Промяна на мрежата"
+
+msgid "Manual Configuration"
+msgstr "Ръчна конфигурация"
+
+msgid "Security"
+msgstr "Сигурност"
+
+msgid "Password"
+msgstr "Парола"

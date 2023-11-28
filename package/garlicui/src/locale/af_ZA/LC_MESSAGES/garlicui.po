@@ -66,3 +66,15 @@ msgstr "Verander Taal"
 
 msgid "No games found!"
 msgstr "Geen speletjies gevind nie!"
+
+msgid "Change Network"
+msgstr "Verander Netwerk"
+
+msgid "Manual Configuration"
+msgstr "Handleidingkonfigurasie"
+
+msgid "Security"
+msgstr "Sekuriteit"
+
+msgid "Password"
+msgstr "Wagwoord"

@@ -412,7 +412,11 @@ struct gui_context * gui_create_context(int argc, char * argv[])
 		}
 
 		// Create a 32bpp double-buffered screen surface
+#ifdef __MACOSX__
+		context->surfaces.screen = SDL_SetVideoMode(SCALING_REFERENCE_WIDTH, SCALING_REFERENCE_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+#else
 		context->surfaces.screen = SDL_SetVideoMode(info->current_w, info->current_h, 32, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN);
+#endif
 
 		// If 32bpp isn't available...
 		if (context->surfaces.screen == NULL)
@@ -553,6 +557,13 @@ struct gui_context * gui_create_context(int argc, char * argv[])
 		if (context->surfaces.overlays.notch.surface == NULL)
 		{
 			// No use continuing if we're missing overlays
+			goto free_menu_action_surface;
+		}
+
+		// Initialize the on-screen keyboard menu
+		if (osk_initialize_menu(context) != 0)
+		{
+			// No use continuing if we're missing on-screen keyboard
 			goto free_menu_action_surface;
 		}
 
@@ -1116,6 +1127,26 @@ void gui_update(struct gui_context * context)
 					{
 						// Update
 						context->inputs.internal.current.west = pressed;
+
+						// Break
+						break;
+					}
+
+					// The left bumper button (L1)
+					case SDLK_b:
+					{
+						// Update the internal button state
+						context->inputs.internal.current.left_bumper = pressed;
+
+						// Break
+						break;
+					}
+
+					// The right bumper button (R1)
+					case SDLK_n:
+					{
+						// Update the internal button state
+						context->inputs.internal.current.right_bumper = pressed;
 
 						// Break
 						break;
@@ -1799,25 +1830,29 @@ void gui_render(struct gui_context * context)
 		SDL_BlitSurface(context->surfaces.bars.top.battery.surface, NULL, context->surfaces.screen, &context->surfaces.bars.top.battery.position);
 	}
 
-	// We need to render the east button icon
-	if (context->surfaces.bars.bottom.actions.select.surface != NULL)
+	// We need to render the bottom bar
+	if (context->menu.active == NULL || context->menu.active->type != NODE_TYPE_CONTEXT_MENU_OSK_MENU)
 	{
-		// Render the east button icon
-		SDL_BlitSurface(context->surfaces.bars.bottom.actions.select.surface, NULL, context->surfaces.screen, &context->surfaces.bars.bottom.actions.select.position);
-	}
+		// We need to render the east button icon
+		if (context->surfaces.bars.bottom.actions.select.surface != NULL)
+		{
+			// Render the east button icon
+			SDL_BlitSurface(context->surfaces.bars.bottom.actions.select.surface, NULL, context->surfaces.screen, &context->surfaces.bars.bottom.actions.select.position);
+		}
 
-	// We need to render the south button icon
-	if (context->surfaces.bars.bottom.actions.back.surface != NULL)
-	{
-		// Render the south button icon
-		SDL_BlitSurface(context->surfaces.bars.bottom.actions.back.surface, NULL, context->surfaces.screen, &context->surfaces.bars.bottom.actions.back.position);
-	}
+		// We need to render the south button icon
+		if (context->surfaces.bars.bottom.actions.back.surface != NULL)
+		{
+			// Render the south button icon
+			SDL_BlitSurface(context->surfaces.bars.bottom.actions.back.surface, NULL, context->surfaces.screen, &context->surfaces.bars.bottom.actions.back.position);
+		}
 
-	// We need to render the start button icon
-	if (context->surfaces.bars.bottom.actions.menu.surface != NULL)
-	{
-		// Render the start button icon
-		SDL_BlitSurface(context->surfaces.bars.bottom.actions.menu.surface, NULL, context->surfaces.screen, &context->surfaces.bars.bottom.actions.menu.position);
+		// We need to render the start button icon
+		if (context->surfaces.bars.bottom.actions.menu.surface != NULL)
+		{
+			// Render the start button icon
+			SDL_BlitSurface(context->surfaces.bars.bottom.actions.menu.surface, NULL, context->surfaces.screen, &context->surfaces.bars.bottom.actions.menu.position);
+		}
 	}
 
 	// Flip the front and back buffer
@@ -1844,6 +1879,9 @@ void gui_read_configuration(struct gui_context * context)
 	context->colors.icon.foreground = 0x000000;
 	context->colors.notch.background = 0x000000;
 	context->colors.notch.foreground = 0xffffff;
+
+	// Configures the on-screen keyboard menu
+	osk_configure_menu(context, document);
 
 	// We managed to load the XML document
 	if (document != NULL)
@@ -2026,6 +2064,8 @@ void gui_write_configuration(struct gui_context * context)
 							// Free the UI state
 							free(ui_state);
 						}
+
+						// TODO persist network settings
 
 						// Save the document to a file
 						io_write_folder_configuration(document, FOLDER_CONFIGURATION_BOOT_FOLDER);

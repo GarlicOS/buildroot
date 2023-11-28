@@ -66,3 +66,15 @@ msgstr "Spremeni jezik"
 
 msgid "No games found!"
 msgstr "Ni najdenih iger!"
+
+msgid "Change Network"
+msgstr "Spremeni omrežje"
+
+msgid "Manual Configuration"
+msgstr "Ročna konfiguracija"
+
+msgid "Security"
+msgstr "Varnost"
+
+msgid "Password"
+msgstr "Geslo"

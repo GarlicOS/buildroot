@@ -66,3 +66,15 @@ msgstr "שינוי שפה"
 
 msgid "No games found!"
 msgstr "לא נמצאו משחקים!"
+
+msgid "Change Network"
+msgstr "שנה רשת"
+
+msgid "Manual Configuration"
+msgstr "הגדרה ידנית"
+
+msgid "Security"
+msgstr "ביטחון"
+
+msgid "Password"
+msgstr "סיסמה"

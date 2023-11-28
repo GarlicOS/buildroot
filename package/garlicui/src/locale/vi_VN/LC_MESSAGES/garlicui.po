@@ -66,3 +66,15 @@ msgstr "Thay đổi ngôn ngữ"
 
 msgid "No games found!"
 msgstr "Không tìm thấy trò chơi!"
+
+msgid "Change Network"
+msgstr "Thay Đổi Mạng"
+
+msgid "Manual Configuration"
+msgstr "Cấu Hình Thủ Công"
+
+msgid "Security"
+msgstr "Bảo mật"
+
+msgid "Password"
+msgstr "Mật khẩu"
