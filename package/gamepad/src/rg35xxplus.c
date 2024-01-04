@@ -14,6 +14,38 @@
 
 static struct input_event last_volume_event;
 
+static int32_t get_rg35xxplus_axis_min_value(int axis)
+{
+	switch (axis)
+	{
+		case RG35XXPLUS_AXIS_LEFT_ANALOG_HORIZONTAL:
+		case RG35XXPLUS_AXIS_LEFT_ANALOG_VERTICAL:
+		case RG35XXPLUS_AXIS_RIGHT_ANALOG_HORIZONTAL:
+		case RG35XXPLUS_AXIS_RIGHT_ANALOG_VERTICAL:
+			return RG35XXPLUS_ANALOG_VALUE_MIN;
+		default:
+			break;
+	}
+
+	return -1;
+}
+
+static int32_t get_rg35xxplus_axis_max_value(int axis)
+{
+	switch (axis)
+	{
+		case RG35XXPLUS_AXIS_LEFT_ANALOG_HORIZONTAL:
+		case RG35XXPLUS_AXIS_LEFT_ANALOG_VERTICAL:
+		case RG35XXPLUS_AXIS_RIGHT_ANALOG_HORIZONTAL:
+		case RG35XXPLUS_AXIS_RIGHT_ANALOG_VERTICAL:
+			return RG35XXPLUS_ANALOG_VALUE_MAX;
+		default:
+			break;
+	}
+
+	return 1;
+}
+
 static int translate_scancode(int scancode)
 {
 	switch (scancode)
@@ -36,6 +68,10 @@ static int translate_scancode(int scancode)
 			return MERGED_SCANCODE_SELECT;
 		case RG35XXPLUS_SCANCODE_START:
 			return MERGED_SCANCODE_START;
+		case RG35XXPLUS_SCANCODE_L3:
+			return MERGED_SCANCODE_L3;
+		case RG35XXPLUS_SCANCODE_R3:
+			return MERGED_SCANCODE_R3;
 		case RG35XXPLUS_SCANCODE_VOLUME_MINUS:
 			return MERGED_SCANCODE_VOLUME_MINUS;
 		case RG35XXPLUS_SCANCODE_VOLUME_PLUS:
@@ -47,6 +83,65 @@ static int translate_scancode(int scancode)
 	}
 
 	return scancode;
+}
+
+static int translate_axiscode(int axis)
+{
+	switch (axis)
+	{
+		case RG35XXPLUS_AXIS_LEFT_ANALOG_HORIZONTAL:
+			return MERGED_AXIS_LEFT_ANALOG_HORIZONTAL;
+		case RG35XXPLUS_AXIS_LEFT_ANALOG_VERTICAL:
+			return MERGED_AXIS_LEFT_ANALOG_VERTICAL;
+		case RG35XXPLUS_AXIS_RIGHT_ANALOG_HORIZONTAL:
+			return MERGED_AXIS_RIGHT_ANALOG_HORIZONTAL;
+		case RG35XXPLUS_AXIS_RIGHT_ANALOG_VERTICAL:
+			return MERGED_AXIS_RIGHT_ANALOG_VERTICAL;
+		default:
+			break;
+	}
+
+	return axis;
+}
+
+static int32_t scale_axis_value(int32_t value, int32_t input_min_value, int32_t input_max_value, int32_t output_min_value, int32_t output_max_value)
+{
+	// Calculate the input range and output range
+	int32_t input_range = input_max_value - input_min_value;
+	int32_t output_range = output_max_value - output_min_value;
+
+	// Scale the input value to the output range
+	int32_t scaled_value = ((value - input_min_value) * output_range / input_range) + output_min_value;
+
+	// We're undershooting the minimum output value
+	if (scaled_value < output_min_value)
+	{
+		// Force the value into the bounds
+		scaled_value = output_min_value;
+	}
+
+	// We're overshooting the maximum output value
+	else if (scaled_value > output_max_value)
+	{
+		// Force the value into the bounds
+		scaled_value = output_max_value;
+	}
+
+	// Return the scaled value
+	return scaled_value;
+}
+
+static void scale_and_translate_axis(struct input_event * ev)
+{
+	// Translate the axis code
+	uint16_t new_code = translate_axiscode(ev->code);
+
+	// Scale range
+	int32_t new_value = scale_axis_value(ev->value, get_rg35xxplus_axis_min_value(ev->code), get_rg35xxplus_axis_max_value(ev->code), get_merged_axis_min_value(new_code), get_merged_axis_max_value(new_code));
+
+	// Replace the old values
+	ev->code = new_code;
+	ev->value = new_value;
 }
 
 static int convert_to_axis_event(struct input_event * ev)
@@ -87,6 +182,13 @@ static void input_event(int fd, struct input_event * ev)
 			// Translate the key scancode where necessary
 			ev->code = translate_scancode(ev->code);
 		}
+	}
+
+	// We're handling a axis event
+	else if (ev->type == EV_ABS)
+	{
+		// Convert the axis where necessary
+		scale_and_translate_axis(ev);
 	}
 
 	// Trigger global hotkeys
