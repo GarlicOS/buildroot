@@ -11,6 +11,12 @@
  */
 typedef char * (*textformatter)(const char *);
 
+#ifdef __MACOSX__
+#define MOUNT_POINT "."
+#else
+#define MOUNT_POINT "/media"
+#endif
+
 /**
  * @brief The folder that contains the game library template.
  */
@@ -19,7 +25,7 @@ typedef char * (*textformatter)(const char *);
 /**
  * @brief The folder that contains the game library.
  */
-#define LIBRARY_FOLDER_PATH "/media/Library"
+#define LIBRARY_FOLDER_PATH MOUNT_POINT "/Library"
 
 /**
  * @brief The folder that contains the icons.
@@ -27,16 +33,20 @@ typedef char * (*textformatter)(const char *);
 #define ICON_FOLDER_TEMPLATE_PATH "/usr/share/icons"
 
 /**
- * @brief The folder that contains the icon overrides.
- */
-#define ICON_FOLDER_PATH "/media/boot/icons"
-
-/**
  * @brief The directory in which all boot related files are stored.
  *
  * This includes the boot script, rootfs, global configuration file, etc.
  */
-#define FOLDER_CONFIGURATION_BOOT_FOLDER "/media/boot"
+#ifdef __MACOSX__
+#define FOLDER_CONFIGURATION_BOOT_FOLDER MOUNT_POINT
+#else
+#define FOLDER_CONFIGURATION_BOOT_FOLDER MOUNT_POINT "/boot"
+#endif
+
+/**
+ * @brief The folder that contains the icon overrides.
+ */
+#define ICON_FOLDER_PATH FOLDER_CONFIGURATION_BOOT_FOLDER "/icons"
 
 /**
  * @brief The folder icon file name.

@@ -412,7 +412,11 @@ struct gui_context * gui_create_context(int argc, char * argv[])
 		}
 
 		// Create a 32bpp double-buffered screen surface
+#ifdef __MACOSX__
+		context->surfaces.screen = SDL_SetVideoMode(SCALING_REFERENCE_WIDTH, SCALING_REFERENCE_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+#else
 		context->surfaces.screen = SDL_SetVideoMode(info->current_w, info->current_h, 32, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN);
+#endif
 
 		// If 32bpp isn't available...
 		if (context->surfaces.screen == NULL)
@@ -518,7 +522,7 @@ struct gui_context * gui_create_context(int argc, char * argv[])
 
 		// Render the east face button icon
 		context->surfaces.bars.bottom.actions.select.surface = gui_render_select_legend_surface(context);
-		
+
 		// We failed to render the east face button icon
 		if (context->surfaces.bars.bottom.actions.select.surface == NULL)
 		{
@@ -556,6 +560,13 @@ struct gui_context * gui_create_context(int argc, char * argv[])
 			goto free_menu_action_surface;
 		}
 
+		// Initialize the on-screen keyboard menu
+		if (osk_initialize_menu(context) != 0)
+		{
+			// No use continuing if we're missing on-screen keyboard
+			goto free_menu_action_surface;
+		}
+
 		// Calculate the garlic icon position
 		context->surfaces.bars.top.logo.position.x = SCREEN_MARGIN * context->surfaces.scale_factor;
 		context->surfaces.bars.top.logo.position.y = SCREEN_MARGIN * context->surfaces.scale_factor;
@@ -586,6 +597,7 @@ struct gui_context * gui_create_context(int argc, char * argv[])
 		context->surfaces.overlays.notch.position.w = context->surfaces.overlays.notch.surface->w;
 		context->surfaces.overlays.notch.position.h = context->surfaces.overlays.notch.surface->h;
 
+#ifndef __MACOSX__
 		// We couldn't enumerate the joysticks
 		if (SDL_NumJoysticks() <= 0)
 		{
@@ -602,7 +614,7 @@ struct gui_context * gui_create_context(int argc, char * argv[])
 			// No use going further if we have no way of controlling the UI
 			goto free_menu_action_surface;
 		}
-
+#endif
 		// Allocate memory for the additional main menu data
 		main_menu_node_data = calloc(1, sizeof(struct gui_menu_node_data));
 
@@ -630,7 +642,9 @@ struct gui_context * gui_create_context(int argc, char * argv[])
 		context->menu.root->activate(context->menu.root);
 
 		// Enable joystick input
+#ifndef __MACOSX__
 		SDL_JoystickEventState(SDL_ENABLE);
+#endif
 
 		// Restore the previous UI state
 		gui_restore_ui_state(context, (const char *)context->settings.ui_state);
@@ -684,8 +698,10 @@ free_main_menu_node_data:
 	free(main_menu_node_data);
 
 close_internal_joystick:
+#ifndef __MACOSX__
 	// Close the internal joystick
 	SDL_JoystickClose(context->inputs.internal.joystick);
+#endif
 
 free_notch_overlay_surface:
 	// Free the notch overlay
@@ -1026,6 +1042,170 @@ void gui_update(struct gui_context * context)
 		// Differentiate input event types
 		switch (event.type)
 		{
+			// Keyboard button events
+			case SDL_KEYUP:
+			case SDL_KEYDOWN:
+			{
+				// Determine the pressed state
+				int pressed = event.type == SDL_KEYDOWN;
+
+				// Differentiate between buttons
+				switch (event.key.keysym.sym)
+				{
+					// The up button
+					case SDLK_UP:
+					{
+						// Update
+						context->inputs.internal.current.dpad_y = pressed ? -1 : 0;
+
+						// Break
+						break;
+					}
+
+					// The right button
+					case SDLK_RIGHT:
+					{
+						// Update
+						context->inputs.internal.current.dpad_x = pressed ? 1 : 0;
+
+						// Break
+						break;
+					}
+
+					// The down button
+					case SDLK_DOWN:
+					{
+						// Update
+						context->inputs.internal.current.dpad_y = pressed ? 1 : 0;
+
+						// Break
+						break;
+					}
+
+					// The left button
+					case SDLK_LEFT:
+					{
+						// Update
+						context->inputs.internal.current.dpad_x = pressed ? -1 : 0;
+
+						// Break
+						break;
+					}
+
+					// The south-facing face button (A on XBOX, B on Nintendo, Cross on PlayStation)
+					case SDLK_z:
+					{
+						// Update
+						context->inputs.internal.current.south = pressed;
+
+						// Break
+						break;
+					}
+
+					// The east-facing face button (B on XBOX, A on Nintendo, Circle on PlayStation)
+					case SDLK_x:
+					{
+						// Update
+						context->inputs.internal.current.east = pressed;
+
+						// Break
+						break;
+					}
+
+					// The north-facing face button (Y on XBOX, X on Nintendo, Triangle on PlayStation)
+					case SDLK_c:
+					{
+						// Update
+						context->inputs.internal.current.north = pressed;
+
+						// Break
+						break;
+					}
+
+					// The west-facing face button (X on XBOX, Y on Nintendo, Square on PlayStation)
+					case SDLK_v:
+					{
+						// Update
+						context->inputs.internal.current.west = pressed;
+
+						// Break
+						break;
+					}
+
+					// The left bumper button (L1)
+					case SDLK_b:
+					{
+						// Update the internal button state
+						context->inputs.internal.current.left_bumper = pressed;
+
+						// Break
+						break;
+					}
+
+					// The right bumper button (R1)
+					case SDLK_n:
+					{
+						// Update the internal button state
+						context->inputs.internal.current.right_bumper = pressed;
+
+						// Break
+						break;
+					}
+
+					// The enter button
+					case SDLK_RETURN:
+					{
+						// Update
+						context->inputs.internal.current.start = pressed;
+
+						// Break
+						break;
+					}
+
+					// The backspace button
+					case SDLK_BACKSPACE:
+					{
+						// Update
+						context->inputs.internal.current.select = pressed;
+
+						// Break
+						break;
+					}
+
+					// The space button
+					case SDLK_SPACE:
+					{
+						// Update
+						context->inputs.internal.current.mode = pressed;
+
+						// Break
+						break;
+					}
+
+					// The escape button
+					case SDLK_ESCAPE:
+					{
+						// Update
+						context->inputs.internal.current.power = pressed;
+
+						// Break
+						break;
+					}
+
+					// Other buttons
+					default:
+					{
+						// Break
+						break;
+					}
+				}
+
+				// Log the event
+				// printf("button %d state %d\n", event.jbutton.button, pressed);
+
+				// Break
+				break;
+			}
 			// Regular button events
 			case SDL_JOYBUTTONUP:
 			case SDL_JOYBUTTONDOWN:
@@ -1650,25 +1830,29 @@ void gui_render(struct gui_context * context)
 		SDL_BlitSurface(context->surfaces.bars.top.battery.surface, NULL, context->surfaces.screen, &context->surfaces.bars.top.battery.position);
 	}
 
-	// We need to render the east button icon
-	if (context->surfaces.bars.bottom.actions.select.surface != NULL)
+	// We need to render the bottom bar
+	if (context->menu.active == NULL || context->menu.active->type != NODE_TYPE_CONTEXT_MENU_OSK_MENU)
 	{
-		// Render the east button icon
-		SDL_BlitSurface(context->surfaces.bars.bottom.actions.select.surface, NULL, context->surfaces.screen, &context->surfaces.bars.bottom.actions.select.position);
-	}
+		// We need to render the east button icon
+		if (context->surfaces.bars.bottom.actions.select.surface != NULL)
+		{
+			// Render the east button icon
+			SDL_BlitSurface(context->surfaces.bars.bottom.actions.select.surface, NULL, context->surfaces.screen, &context->surfaces.bars.bottom.actions.select.position);
+		}
 
-	// We need to render the south button icon
-	if (context->surfaces.bars.bottom.actions.back.surface != NULL)
-	{
-		// Render the south button icon
-		SDL_BlitSurface(context->surfaces.bars.bottom.actions.back.surface, NULL, context->surfaces.screen, &context->surfaces.bars.bottom.actions.back.position);
-	}
+		// We need to render the south button icon
+		if (context->surfaces.bars.bottom.actions.back.surface != NULL)
+		{
+			// Render the south button icon
+			SDL_BlitSurface(context->surfaces.bars.bottom.actions.back.surface, NULL, context->surfaces.screen, &context->surfaces.bars.bottom.actions.back.position);
+		}
 
-	// We need to render the start button icon
-	if (context->surfaces.bars.bottom.actions.menu.surface != NULL)
-	{
-		// Render the start button icon
-		SDL_BlitSurface(context->surfaces.bars.bottom.actions.menu.surface, NULL, context->surfaces.screen, &context->surfaces.bars.bottom.actions.menu.position);
+		// We need to render the start button icon
+		if (context->surfaces.bars.bottom.actions.menu.surface != NULL)
+		{
+			// Render the start button icon
+			SDL_BlitSurface(context->surfaces.bars.bottom.actions.menu.surface, NULL, context->surfaces.screen, &context->surfaces.bars.bottom.actions.menu.position);
+		}
 	}
 
 	// Flip the front and back buffer
@@ -1695,6 +1879,9 @@ void gui_read_configuration(struct gui_context * context)
 	context->colors.icon.foreground = 0x000000;
 	context->colors.notch.background = 0x000000;
 	context->colors.notch.foreground = 0xffffff;
+
+	// Configures the on-screen keyboard menu
+	osk_configure_menu(context, document);
 
 	// We managed to load the XML document
 	if (document != NULL)
@@ -1877,6 +2064,8 @@ void gui_write_configuration(struct gui_context * context)
 							// Free the UI state
 							free(ui_state);
 						}
+
+						// TODO persist network settings
 
 						// Save the document to a file
 						io_write_folder_configuration(document, FOLDER_CONFIGURATION_BOOT_FOLDER);

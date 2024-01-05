@@ -77,6 +77,7 @@ static struct gui_node * gui_create_context_menu_item(struct gui_node * this, st
 #include "gui_content_context_menu.h"
 #include "gui_rtc_context_menu.h"
 #include "gui_locale_context_menu.h"
+#include "gui_network_context_menu.h"
 
 /**
  * @brief Activates the context menu.
@@ -172,6 +173,24 @@ static void gui_activate_context_menu(struct gui_node * this)
 				{
 					// Free the additional menu data
 					free(locale_menu_node_data);
+				}
+			}
+
+			// TODO ensure interface exists
+			// Allocate the additional network menu data
+			struct gui_network_menu_node_data * network_menu_node_data = calloc(1, sizeof(struct gui_network_menu_node_data));
+
+			// We managed to allocate the additional network menu data
+			if (network_menu_node_data != NULL)
+			{
+				// Create a node for the network menu
+				struct gui_node * network_menu_node = gui_create_context_menu_item(this, &first_node, &previous_node, gettext("Change Network"), gui_activate_network_menu, gui_deactivate_network_menu, gui_update_basic_menu, gui_render_vertical_scrolling_list_menu, gui_invalidate_network_menu, NODE_TYPE_CONTEXT_MENU_NETWORK_MENU, network_menu_node_data);
+
+				// We failed to create a node for the network menu
+				if (network_menu_node == NULL)
+				{
+					// Free the additional menu data
+					free(network_menu_node_data);
 				}
 			}
 		}

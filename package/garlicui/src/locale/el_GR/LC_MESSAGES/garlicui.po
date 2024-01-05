@@ -66,3 +66,15 @@ msgstr "Αλλαγή γλώσσας"
 
 msgid "No games found!"
 msgstr "Δεν βρέθηκαν παιχνίδια!"
+
+msgid "Change Network"
+msgstr "Αλλαγή δικτύου"
+
+msgid "Manual Configuration"
+msgstr "Χειροκίνητη ρύθμιση"
+
+msgid "Security"
+msgstr "Ασφάλεια"
+
+msgid "Password"
+msgstr "Κωδικός"

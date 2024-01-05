@@ -66,3 +66,15 @@ msgstr "Changer de langue"
 
 msgid "No games found!"
 msgstr "Aucun jeu trouvé !"
+
+msgid "Change Network"
+msgstr "Changer de réseau"
+
+msgid "Manual Configuration"
+msgstr "Configuration manuelle"
+
+msgid "Security"
+msgstr "Sécurité"
+
+msgid "Password"
+msgstr "Mot de passe"

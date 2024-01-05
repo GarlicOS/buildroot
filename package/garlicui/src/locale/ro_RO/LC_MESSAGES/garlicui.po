@@ -66,3 +66,15 @@ msgstr "Schimbă Limba"
 
 msgid "No games found!"
 msgstr "Nu s-au găsit jocuri!"
+
+msgid "Change Network"
+msgstr "Schimbare rețea"
+
+msgid "Manual Configuration"
+msgstr "Configurare manuală"
+
+msgid "Security"
+msgstr "Securitate"
+
+msgid "Password"
+msgstr "Parolă"

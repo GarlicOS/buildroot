@@ -66,3 +66,15 @@ msgstr "Tukar Bahasa"
 
 msgid "No games found!"
 msgstr "Tiada permaink ditemui!"
+
+msgid "Change Network"
+msgstr "Tukar Rangkaian"
+
+msgid "Manual Configuration"
+msgstr "Konfigurasi Manual"
+
+msgid "Security"
+msgstr "Keselamatan"
+
+msgid "Password"
+msgstr "Kata Laluan"

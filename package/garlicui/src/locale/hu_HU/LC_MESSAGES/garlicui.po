@@ -66,3 +66,15 @@ msgstr "Nyelv váltása"
 
 msgid "No games found!"
 msgstr "Nem található játék!"
+
+msgid "Change Network"
+msgstr "Hálózat megváltoztatása"
+
+msgid "Manual Configuration"
+msgstr "Kézi konfiguráció"
+
+msgid "Security"
+msgstr "Biztonság"
+
+msgid "Password"
+msgstr "Jelszó"

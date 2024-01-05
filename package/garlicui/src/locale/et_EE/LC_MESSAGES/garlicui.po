@@ -66,3 +66,15 @@ msgstr "Muuda keelt"
 
 msgid "No games found!"
 msgstr "Mänge ei leitud!"
+
+msgid "Change Network"
+msgstr "Muuda võrku"
+
+msgid "Manual Configuration"
+msgstr "Käsitsi seadistamine"
+
+msgid "Security"
+msgstr "Turvalisus"
+
+msgid "Password"
+msgstr "Parool"

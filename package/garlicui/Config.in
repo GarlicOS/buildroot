@@ -25,5 +25,6 @@ menuconfig BR2_PACKAGE_GARLICUI
 	select BR2_PACKAGE_LIBXML2
 	select BR2_PACKAGE_CJSON
 	select BR2_PACKAGE_ICU
+	select BR2_PACKAGE_NETWORK_MANAGER
 	help
 	  Provides the Garlic user interface

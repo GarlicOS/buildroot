@@ -66,3 +66,15 @@ msgstr "Pakeisti kalbą"
 
 msgid "No games found!"
 msgstr "Žaidimų nerasta!"
+
+msgid "Change Network"
+msgstr "Pakeisti tinklą"
+
+msgid "Manual Configuration"
+msgstr "Rankinis konfigūravimas"
+
+msgid "Security"
+msgstr "Sauga"
+
+msgid "Password"
+msgstr "Slaptažodis"

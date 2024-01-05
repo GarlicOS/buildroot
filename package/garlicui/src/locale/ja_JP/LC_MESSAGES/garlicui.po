@@ -66,3 +66,15 @@ msgstr "言語を変更"
 
 msgid "No games found!"
 msgstr "ゲームが見つかりません！"
+
+msgid "Change Network"
+msgstr "ネットワークを変更"
+
+msgid "Manual Configuration"
+msgstr "手動設定"
+
+msgid "Security"
+msgstr "セキュリティ"
+
+msgid "Password"
+msgstr "パスワード"

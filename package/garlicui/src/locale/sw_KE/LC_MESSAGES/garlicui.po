@@ -66,3 +66,15 @@ msgstr "Badilisha Lugha"
 
 msgid "No games found!"
 msgstr "Hakuna michezo iliyopatikana!"
+
+msgid "Change Network"
+msgstr "Badilisha Mtandao"
+
+msgid "Manual Configuration"
+msgstr "Usanidi wa Manuali"
+
+msgid "Security"
+msgstr "Usalama"
+
+msgid "Password"
+msgstr "Nenosiri"

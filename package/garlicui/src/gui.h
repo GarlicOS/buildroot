@@ -18,6 +18,8 @@ struct gui_context;
 #include "process.h"
 #include "retroarch.h"
 #include "localization.h"
+#include "network.h"
+#include "osk.h"
 
 /**
  * @brief The reference width used for scaling.
@@ -222,6 +224,36 @@ struct gui_context;
 #define NODE_TYPE_CONTEXT_MENU_DATE_AND_TIME_UTC_OFFSET_SETTER 21
 
 /**
+ * @brief The on-screen keyboard menu node type.
+ */
+#define NODE_TYPE_CONTEXT_MENU_OSK_MENU 22
+
+/**
+ * @brief The network menu node type.
+ */
+#define NODE_TYPE_CONTEXT_MENU_NETWORK_MENU 23
+
+/**
+ * @brief The network setup menu node type.
+ */
+#define NODE_TYPE_CONTEXT_MENU_NETWORK_SETUP_MENU 24
+
+/**
+ * @brief The network setup setter.
+ */
+#define NODE_TYPE_CONTEXT_MENU_NETWORK_SETUP_SETTER 25
+
+/**
+ * @brief The network setup security menu node type.
+ */
+#define NODE_TYPE_CONTEXT_MENU_NETWORK_SETUP_SECURITY_MENU 26
+
+/**
+ * @brief The network setup security setter.
+ */
+#define NODE_TYPE_CONTEXT_MENU_NETWORK_SETUP_SECURITY_SETTER 27
+
+/**
  * The supported buttons.
  */
 #define POWER_BUTTON 0
@@ -316,6 +348,9 @@ struct gui_context_bar_surfaces
 struct gui_context_overlay_surfaces
 {
 	struct gui_context_surface notch; /** The scroll letter notch */
+	struct gui_context_surface osk; /** The on-screen keyboard */
+	struct gui_context_surface osk_buffer; /** The on-screen keyboard buffer */
+	struct gui_context_surface osk_active_key; /** The on-screen keyboard active key */
 };
 
 /**
@@ -358,6 +393,7 @@ struct gui_context_colors
 	struct gui_context_bgfg_color legend; /** The legend colors */
 	struct gui_context_bgfg_color icon; /** The icon colors */
 	struct gui_context_bgfg_color notch; /** The notch colors */
+	struct gui_context_bgfg_color osk; /** The on-screen keyboard colors */
 };
 
 /**
@@ -452,6 +488,8 @@ struct gui_context_settings
 	char locale[16]; /** The user's current locale setting (intentionally 1 frame late so surfaces can be re-rendered) */
 	char ui_state[128 + PATH_MAX * 2]; /** The UI state of the previous GarlicUI instance (populated on load, restored post-main-menu activation) */
 	int resume; /** The auto-resume flag */
+	int network_ap_count; /** The number of user's network access points */
+	struct network_access_point ** network_aps; /** The user's network access points */
 };
 
 /**
@@ -478,6 +516,7 @@ struct gui_context
 	struct gui_context_status status; /** The context status */
 	struct gui_context_settings settings; /** The context settings */
 	struct gui_context_node_tree menu; /** The menu tree nodes */
+	struct osk_context osk; /** The on-screen keyboard context */
 };
 
 /**
@@ -534,7 +573,45 @@ struct gui_locale_menu_node_data
 };
 
 /**
- * @brief A extended version of gui_menu_node_data that can accomodate a path.
+ * @brief A data structure holding network data.
+ */
+struct gui_network_menu_node_data
+{
+	struct gui_menu_node_data base; /** The base menu data */
+	int network_ap_count; /** The number of network access points */
+	struct network_access_point ** network_aps; /** The network access points */
+};
+
+/**
+ * @brief A data structure holding network setup data.
+ */
+struct gui_network_setup_menu_node_data
+{
+	struct gui_menu_node_data base; /** The base menu data */
+	struct network_access_point * network_ap; /** The network access point */
+};
+
+/**
+ * @brief A data structure holding network setup security data.
+ */
+struct gui_network_setup_security_menu_node_data
+{
+	struct gui_menu_node_data base; /** The base menu data */
+	char * security; /** The current security setting */
+};
+
+/**
+ * @brief A data structure holding on-screen keyboard data.
+ */
+struct gui_osk_menu_node_data
+{
+	struct gui_menu_node_data base; /** The base menu data */
+	char * title; /** The on-screen keyboard title */
+	char * buffer; /** The on-screen keyboard buffer */
+};
+
+/**
+ * @brief A extended version of gui_menu_node_data that can accommodate a path.
  */
 struct gui_path_menu_node_data
 {

@@ -66,3 +66,15 @@ msgstr "Změnit jazyk"
 
 msgid "No games found!"
 msgstr "Nebyly nalezeny žádné hry!"
+
+msgid "Change Network"
+msgstr "Změnit síť"
+
+msgid "Manual Configuration"
+msgstr "Ruční konfigurace"
+
+msgid "Security"
+msgstr "Bezpečnost"
+
+msgid "Password"
+msgstr "Heslo"

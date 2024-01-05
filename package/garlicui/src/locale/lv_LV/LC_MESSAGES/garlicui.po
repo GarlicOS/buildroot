@@ -66,3 +66,15 @@ msgstr "Mainīt valodu"
 
 msgid "No games found!"
 msgstr "Nav atrastas spēles!"
+
+msgid "Change Network"
+msgstr "Mainīt tīklu"
+
+msgid "Manual Configuration"
+msgstr "Manuālā konfigurācija"
+
+msgid "Security"
+msgstr "Drošība"
+
+msgid "Password"
+msgstr "Parole"

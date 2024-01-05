@@ -66,3 +66,15 @@ msgstr "Endre språk"
 
 msgid "No games found!"
 msgstr "Ingen spill funnet!"
+
+msgid "Change Network"
+msgstr "Endre nettverk"
+
+msgid "Manual Configuration"
+msgstr "Manuell konfigurasjon"
+
+msgid "Security"
+msgstr "Sikkerhet"
+
+msgid "Password"
+msgstr "Passord"

@@ -66,3 +66,15 @@ msgstr "เปลี่ยนภาษา"
 
 msgid "No games found!"
 msgstr "ไม่พบเกม!"
+
+msgid "Change Network"
+msgstr "เปลี่ยนเครือข่าย"
+
+msgid "Manual Configuration"
+msgstr "การกำหนดค่าด้วยตนเอง"
+
+msgid "Security"
+msgstr "ความปลอดภัย"
+
+msgid "Password"
+msgstr "รหัสผ่าน"

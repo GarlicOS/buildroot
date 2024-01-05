@@ -66,3 +66,15 @@ msgstr "Taal wijzigen"
 
 msgid "No games found!"
 msgstr "Geen spellen gevonden!"
+
+msgid "Change Network"
+msgstr "Netwerk wijzigen"
+
+msgid "Manual Configuration"
+msgstr "Handmatige configuratie"
+
+msgid "Security"
+msgstr "Beveiliging"
+
+msgid "Password"
+msgstr "Wachtwoord"

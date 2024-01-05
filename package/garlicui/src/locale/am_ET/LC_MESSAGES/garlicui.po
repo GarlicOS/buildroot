@@ -66,3 +66,15 @@ msgstr "ቋንቋ ቀይር"
 
 msgid "No games found!"
 msgstr "የጨዋታ አይደለም!"
+
+msgid "Change Network"
+msgstr "የተለያዩ አድራሻ ቀይረዋል"
+
+msgid "Manual Configuration"
+msgstr "መነሻ ቅንፍ"
+
+msgid "Security"
+msgstr "ደህንነት"
+
+msgid "Password"
+msgstr "መለያ"

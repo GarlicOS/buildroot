@@ -7,11 +7,12 @@
 GARLICUI_VERSION = 2.0.1
 GARLICUI_SITE = package/garlicui/src
 GARLICUI_SITE_METHOD = local
-GARLICUI_CFLAGS = $(TARGET_CFLAGS) -I$(STAGING_DIR)/usr/include -I$(STAGING_DIR)/usr/include/librsvg-2.0 -I$(STAGING_DIR)/usr/include/glib-2.0 -I$(STAGING_DIR)/usr/lib/glib-2.0/include -I$(STAGING_DIR)/usr/include/cairo -I$(STAGING_DIR)/usr/include/gdk-pixbuf-2.0 -I$(STAGING_DIR)/usr/include/libxml2 -I$(STAGING_DIR)/usr/include/cjson
-GARLICUI_DEPENDENCIES = librsvg sdl sdl_gfx sdl_image sdl_ttf libxml2 cjson icu
+GARLICUI_CFLAGS = $(TARGET_CFLAGS) -I$(STAGING_DIR)/usr/include -I$(STAGING_DIR)/usr/include/librsvg-2.0 -I$(STAGING_DIR)/usr/include/glib-2.0 -I$(STAGING_DIR)/usr/lib/glib-2.0/include -I$(STAGING_DIR)/usr/include/cairo -I$(STAGING_DIR)/usr/include/gdk-pixbuf-2.0 -I$(STAGING_DIR)/usr/include/libxml2 -I$(STAGING_DIR)/usr/include/cjson -I$(STAGING_DIR)/usr/include/libnm -I$(STAGING_DIR)/usr/include/libmount -I$(STAGING_DIR)/usr/include/blkid
+GARLICUI_LDFLAGS = -lSDL -lSDL_image -lSDL_ttf -lSDL_gfx -lrsvg-2 -lcairo -lgobject-2.0 -lglib-2.0 -lxml2 -lcjson -licuuc -lm -pthread -lnm -lgio-2.0
+GARLICUI_DEPENDENCIES = librsvg sdl sdl_gfx sdl_image sdl_ttf libxml2 cjson icu network-manager
 
 define GARLICUI_BUILD_CMDS
-	$(MAKE) CFLAGS="$(GARLICUI_CFLAGS)" CC="$(TARGET_CC)" LD="$(TARGET_LD)" VERSION=$(GARLICUI_VERSION) -C $(@D)
+	$(MAKE) CFLAGS="$(GARLICUI_CFLAGS)" LDFLAGS="$(GARLICUI_LDFLAGS)" CC="$(TARGET_CC)" LD="$(TARGET_LD)" VERSION=$(GARLICUI_VERSION) -C $(@D)
 endef
 
 define GARLICUI_INSTALL_TARGET_CMDS
