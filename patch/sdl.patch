@@ -1,0 +1,498 @@
+diff --git a/package/sdl/sdl/0001-Make-encoder-id-check-optional.patch b/package/sdl/sdl/0001-Make-encoder-id-check-optional.patch
+new file mode 100644
+index 0000000000..d04fcba6fc
+--- /dev/null
++++ b/package/sdl/sdl/0001-Make-encoder-id-check-optional.patch
+@@ -0,0 +1,34 @@
++From de60f82802cd5a16929d5dc39717c7a3d5f96827 Mon Sep 17 00:00:00 2001
++From: Black-Seraph <admin@black-seraph.com>
++Date: Thu, 4 May 2023 10:39:41 +0200
++Subject: [PATCH 1/2] Make encoder id check optional
++
++---
++ src/video/kmsdrm/SDL_kmsdrmvideo.c | 4 +++-
++ 1 file changed, 3 insertions(+), 1 deletion(-)
++
++diff --git a/src/video/kmsdrm/SDL_kmsdrmvideo.c b/src/video/kmsdrm/SDL_kmsdrmvideo.c
++index db6d624..31dcea6 100644
++--- a/src/video/kmsdrm/SDL_kmsdrmvideo.c
+++++ b/src/video/kmsdrm/SDL_kmsdrmvideo.c
++@@ -109,6 +109,8 @@ static int KMSDRM_Available(void)
++
++ int KMSDRM_VideoInit(_THIS, SDL_PixelFormat *vformat)
++ {
+++	char * skip_encoder_id_check = getenv("SDL_SKIP_ENCODER_ID_CHECK");
+++
++ 	if ( (drm_fd = KMSDRM_OpenDevice()) < 0 ) {
++ 		SDL_SetError("Could not find any (capable) DRM device.\n");
++ 		goto vidinit_fail;
++@@ -170,7 +172,7 @@ int KMSDRM_VideoInit(_THIS, SDL_PixelFormat *vformat)
++ 			if ( crtc && enc && conn &&
++ 			     (plane->possible_crtcs & (1 << crtc_idx)) &&
++ 			     (enc->possible_crtcs & (1 << crtc_idx)) &&
++-			     conn->encoder_id == enc->encoder_id &&
+++			     (conn->encoder_id == enc->encoder_id || skip_encoder_id_check) &&
++ 			     conn->connection == DRM_MODE_CONNECTED &&
++ 			     conn->count_modes > 0 ) {
++ 				// This is a complete, suitable pathway. save it.
++--
++2.25.1
++
+diff --git a/package/sdl/sdl/0002-Add-screen-rotation-support.patch b/package/sdl/sdl/0002-Add-screen-rotation-support.patch
+new file mode 100644
+index 0000000000..60b8444162
+--- /dev/null
++++ b/package/sdl/sdl/0002-Add-screen-rotation-support.patch
+@@ -0,0 +1,222 @@
++From 93a18eeebe54d4a7089459b41d5849d9fa253054 Mon Sep 17 00:00:00 2001
++From: Black-Seraph <admin@black-seraph.com>
++Date: Thu, 4 May 2023 10:39:17 +0200
++Subject: [PATCH 2/2] Add screen rotation support
++
++---
++ src/video/kmsdrm/SDL_kmsdrmmisc.c  | 18 +++++++
++ src/video/kmsdrm/SDL_kmsdrmvideo.c | 83 ++++++++++++++++++++++++++++--
++ src/video/kmsdrm/SDL_kmsdrmvideo.h |  4 +-
++ 3 files changed, 100 insertions(+), 5 deletions(-)
++
++diff --git a/src/video/kmsdrm/SDL_kmsdrmmisc.c b/src/video/kmsdrm/SDL_kmsdrmmisc.c
++index 96ea0a2..ddd4331 100644
++--- a/src/video/kmsdrm/SDL_kmsdrmmisc.c
+++++ b/src/video/kmsdrm/SDL_kmsdrmmisc.c
++@@ -67,8 +67,26 @@ int KMSDRM_LookupVidMode(_THIS, int width, int height)
++ 	return -1;
++ }
++
+++int KMSDRM_GetRotation(_THIS)
+++{
+++	char * rotation = getenv("SDL_SCREEN_ROTATION");
+++
+++	if (rotation == NULL) {
+++		return 0;
+++	}
+++
+++	return atoi(rotation) % 4;
+++}
+++
++ void KMSDRM_RegisterVidMode(_THIS, int width, int height)
++ {
+++	if (KMSDRM_GetRotation(this) % 2)
+++	{
+++		int tmp = width;
+++		width = height;
+++		height = tmp;
+++	}
+++
++ 	if (KMSDRM_LookupVidMode(this, width, height) >= 0) {
++ 		return;
++ 	}
++diff --git a/src/video/kmsdrm/SDL_kmsdrmvideo.c b/src/video/kmsdrm/SDL_kmsdrmvideo.c
++index 31dcea6..a003d35 100644
++--- a/src/video/kmsdrm/SDL_kmsdrmvideo.c
+++++ b/src/video/kmsdrm/SDL_kmsdrmvideo.c
++@@ -31,6 +31,8 @@
++
++ #define KMSDRM_DRIVER_NAME "kmsdrm"
++
+++extern int KMSDRM_GetRotation(_THIS);
+++
++ static int KMSDRM_TripleBufferingThread(void *d);
++ static void KMSDRM_TripleBufferInit(_THIS);
++ static void KMSDRM_TripleBufferStop(_THIS);
++@@ -157,6 +159,8 @@ int KMSDRM_VideoInit(_THIS, SDL_PixelFormat *vformat)
++ 	drm_vid_modes = SDL_realloc(drm_vid_modes, sizeof(*drm_vid_modes) * (drm_vid_mode_count+1));
++ 	drm_vid_modes[0] = NULL;
++
+++	uint32_t maxWidth = 0;
+++	uint32_t maxHeight = 0;
++ 	for (int plane_idx = 0; plane_idx < pres->count_planes; plane_idx++) {
++ 		drmModePlane *plane = drmModeGetPlane(drm_fd, pres->planes[plane_idx]);
++ 		if ( !plane ) {
++@@ -176,6 +180,12 @@ int KMSDRM_VideoInit(_THIS, SDL_PixelFormat *vformat)
++ 			     conn->connection == DRM_MODE_CONNECTED &&
++ 			     conn->count_modes > 0 ) {
++ 				// This is a complete, suitable pathway. save it.
+++				if (maxWidth < crtc->width) {
+++					maxWidth = crtc->width;
+++				}
+++				if (maxHeight < crtc->height) {
+++					maxHeight = crtc->height;
+++				}
++ 				save_drm_pipe(this, plane->plane_id, crtc->crtc_id,
++ 					      enc->encoder_id, conn);
++ 			}
++@@ -324,12 +334,17 @@ static void KMSDRM_ClearFramebuffers(_THIS)
++
++ static void KMSDRM_ClearShadowbuffer(_THIS)
++ {
++-	if ( drm_shadow_buffer ) {
+++	if (drm_shadow_buffer) {
++ 		free(drm_shadow_buffer);
++ 		free(drm_yuv_palette);
++ 		drm_shadow_buffer = NULL;
++ 		drm_yuv_palette = NULL;
++ 	}
+++
+++	if (drm_rotate_buffer) {
+++		free(drm_rotate_buffer);
+++		drm_rotate_buffer = NULL;
+++	}
++ }
++
++ static int KMSDRM_VideoModeOK(_THIS, int width, int height, int bpp, Uint32 flags)
++@@ -420,6 +435,12 @@ static SDL_Surface *KMSDRM_SetVideoMode2(_THIS, SDL_Surface *current,
++ 	SDL_Surface *new_surface;
++ 	drmModeModeInfo *closest_mode;
++
+++	if (KMSDRM_GetRotation(this) % 2) {
+++		int tmp = width;
+++		width = height;
+++		height = tmp;
+++	}
+++
++ 	// Lock the event thread, in multi-threading environments
++ 	SDL_Lock_EventThread();
++
++@@ -462,6 +483,12 @@ static SDL_Surface *KMSDRM_SetVideoMode2(_THIS, SDL_Surface *current,
++ 		drm_yuv_palette = calloc(1 << bpp, sizeof(*drm_yuv_palette));
++ 	}
++
+++	if (KMSDRM_GetRotation(this) != 0) {
+++		drm_rotate_buffer = calloc(width * height, bpp / 8);
+++	} else {
+++		drm_rotate_buffer = NULL;
+++	}
+++
++ 	// Get rounded bpp number for drm_mode_create_dumb.
++ 	const drm_color_def *color_def = get_drm_color_def(bpp, flags);
++ 	if ( !color_def ) {
++@@ -584,9 +611,15 @@ static SDL_Surface *KMSDRM_SetVideoMode2(_THIS, SDL_Surface *current,
++ 		current->pixels = drm_shadow_buffer;
++ 	}
++
++-	current->w = width;
++-	current->h = height;
++-	current->pitch = drm_buffers[0].req_create.pitch;
+++	if (KMSDRM_GetRotation(this) % 2) {
+++		current->w = height;
+++		current->h = width;
+++		current->pitch = height * current->format->BytesPerPixel;
+++	} else {
+++		current->w = width;
+++		current->h = height;
+++		current->pitch = drm_buffers[0].req_create.pitch;
+++	}
++
++ 	this->hidden->has_damage_clips = find_property(this, drm_active_pipe->plane,
++ 						       "FB_DAMAGE_CLIPS");
++@@ -795,6 +828,45 @@ static void KMSDRM_BlitSWBuffer(_THIS, drm_buffer *buf)
++ 			  this->hidden->w * this->hidden->h);
++ }
++
+++static void KMSDRM_RotateSurface(_THIS, SDL_Surface *surface)
+++{
+++	int rotation = KMSDRM_GetRotation(this);
+++	if (rotation == 0) {
+++		return;
+++	}
+++	if (SDL_MUSTLOCK(surface)) {
+++		SDL_LockSurface(surface);
+++	}
+++	int w = surface->w;
+++	int h = surface->h;
+++	int p = surface->pitch;
+++	uint32_t* pixels = (uint32_t*)surface->pixels;
+++	uint32_t* mirror = (uint32_t*)drm_rotate_buffer;
+++	memcpy(mirror, pixels, p * h);
+++	if (rotation == 1) {
+++		for (int i = 0; i < h; i++) {
+++			for (int j = 0; j < w; j++) {
+++				pixels[j * h + (h - i - 1)] = mirror[i * w + j];
+++			}
+++		}
+++	} else if (rotation == 2) {
+++		for (int i = 0; i < h; i++) {
+++			for (int j = 0; j < w; j++) {
+++				pixels[(w - j - 1) * h + (h - i - 1)] = mirror[i * w + j];
+++			}
+++		}
+++	} else if (rotation == 3) {
+++		for (int i = 0; i < h; i++) {
+++			for (int j = 0; j < w; j++) {
+++				pixels[(w - j - 1) * h + i] = mirror[i * w + j];
+++			}
+++		}
+++	}
+++	if (SDL_MUSTLOCK(surface)) {
+++		SDL_UnlockSurface(surface);
+++	}
+++}
+++
++ static int KMSDRM_FlipHWSurface(_THIS, SDL_Surface *surface)
++ {
++ 	if ( !drm_active_pipe )
++@@ -805,6 +877,9 @@ static int KMSDRM_FlipHWSurface(_THIS, SDL_Surface *surface)
++ 		KMSDRM_BlitSWBuffer(this, &drm_buffers[drm_back_buffer]);
++ 	}
++
+++	// Rotate the surface
+++	KMSDRM_RotateSurface(this, surface);
+++
++ 	// Either wait for VSync or for buffer acquire
++ 	if ( (surface->flags & SDL_TRIPLEBUF) == SDL_DOUBLEBUF ) {
++ 		drmModeAtomicReqPtr req = drmModeAtomicDuplicate(this->hidden->drm_req);
++diff --git a/src/video/kmsdrm/SDL_kmsdrmvideo.h b/src/video/kmsdrm/SDL_kmsdrmvideo.h
++index 3ab858e..744040b 100644
++--- a/src/video/kmsdrm/SDL_kmsdrmvideo.h
+++++ b/src/video/kmsdrm/SDL_kmsdrmvideo.h
++@@ -110,7 +110,8 @@ struct SDL_PrivateVideoData {
++ 	Uint32 size;
++ 	Uint32 handle;
++ 	void *map;
++-    Uint8 *shadow_buffer;
+++	Uint8 *shadow_buffer;
+++	Uint8 *rotate_buffer;
++
++     drm_pipe *first_pipe;
++     drm_pipe *active_pipe;
++@@ -145,6 +146,7 @@ struct SDL_PrivateVideoData {
++ #define drm_handle           (this->hidden->handle)
++ #define drm_map              (this->hidden->map)
++ #define drm_shadow_buffer    (this->hidden->shadow_buffer)
+++#define drm_rotate_buffer    (this->hidden->rotate_buffer)
++ #define drm_first_pipe       (this->hidden->first_pipe)
++ #define drm_first_prop_store (this->hidden->first_prop_store)
++ #define drm_buffers          (this->hidden->buffers)
++--
++2.25.1
++
+diff --git a/package/sdl/sdl/0003-Add-joystick-blacklisting-support.patch b/package/sdl/sdl/0003-Add-joystick-blacklisting-support.patch
+new file mode 100644
+index 0000000000..f75d855eb4
+--- /dev/null
++++ b/package/sdl/sdl/0003-Add-joystick-blacklisting-support.patch
+@@ -0,0 +1,67 @@
++From 58da7a7ec17e646a66023f02a7ad8ac926c4bd87 Mon Sep 17 00:00:00 2001
++From: Black-Seraph <admin@black-seraph.com>
++Date: Thu, 11 May 2023 14:11:23 +0200
++Subject: [PATCH] Add joystick blacklisting support
++
++---
++ src/joystick/linux/SDL_sysjoystick.c | 31 +++++++++++++++++++++++++++-
++ 1 file changed, 30 insertions(+), 1 deletion(-)
++
++diff --git a/src/joystick/linux/SDL_sysjoystick.c b/src/joystick/linux/SDL_sysjoystick.c
++index a450e90..70e7378 100644
++--- a/src/joystick/linux/SDL_sysjoystick.c
+++++ b/src/joystick/linux/SDL_sysjoystick.c
++@@ -377,13 +377,41 @@ static void LogicalSuffix(int logicalno, char* namebuf, int len)
++ 	(((1UL << ((nr) % (sizeof(long) * 8))) & ((addr)[(nr) / (sizeof(long) * 8)])) != 0)
++ #define NBITS(x) ((((x)-1)/(sizeof(long) * 8))+1)
++
+++static int EV_IsJoystickBlacklisted(const char * name)
+++{
+++	int blacklisted = 0;
+++
+++	/* Allow the user to blacklist joysticks */
+++	if ( SDL_getenv("SDL_JOYSTICK_DEVICE_BLACKLIST") != NULL ) {
+++		char *envcopy, *envname, *delim;
+++		envcopy = SDL_strdup(SDL_getenv("SDL_JOYSTICK_DEVICE_BLACKLIST"));
+++		envname = envcopy;
+++		while ( envname != NULL ) {
+++			delim = SDL_strchr(envname, ':');
+++			if ( delim != NULL ) {
+++				*delim++ = '\0';
+++			}
+++			if (strcmp(name, envname) == 0) {
+++				blacklisted = 1;
+++				break;
+++			}
+++			envname = delim;
+++		}
+++		SDL_free(envcopy);
+++	}
+++
+++	return blacklisted;
+++}
+++
++ static int EV_IsJoystick(int fd)
++ {
+++	char name[256];
++ 	unsigned long evbit[NBITS(EV_MAX)] = { 0 };
++ 	unsigned long keybit[NBITS(KEY_MAX)] = { 0 };
++ 	unsigned long absbit[NBITS(ABS_MAX)] = { 0 };
++
++-	if ( (ioctl(fd, EVIOCGBIT(0, sizeof(evbit)), evbit) < 0) ||
+++	if ( (ioctl(fd, EVIOCGNAME(sizeof(name)), name) < 1) ||
+++	     (ioctl(fd, EVIOCGBIT(0, sizeof(evbit)), evbit) < 0) ||
++ 	     (ioctl(fd, EVIOCGBIT(EV_KEY, sizeof(keybit)), keybit) < 0) ||
++ 	     (ioctl(fd, EVIOCGBIT(EV_ABS, sizeof(absbit)), absbit) < 0) ) {
++ 		return(0);
++@@ -392,6 +420,7 @@ static int EV_IsJoystick(int fd)
++ 	     (test_bit(ABS_X, absbit) && test_bit(ABS_Y, absbit) ||
++ 		  test_bit(ABS_HAT0X, absbit) && test_bit(ABS_HAT0Y, absbit)) &&
++ 	     (test_bit(BTN_TRIGGER, keybit) || test_bit(BTN_A, keybit) || test_bit(BTN_1, keybit)))) return 0;
+++	if (EV_IsJoystickBlacklisted((const char *)name)) return 0;
++ 	return(1);
++ }
++
++--
++2.25.1
++
+diff --git a/package/sdl/sdl/Config.in b/package/sdl/sdl/Config.in
+new file mode 100644
+index 0000000000..80a2cb911d
+--- /dev/null
++++ b/package/sdl/sdl/Config.in
+@@ -0,0 +1,31 @@
++config BR2_PACKAGE_SDL
++	bool "SDL"
++	help
++	  Simple DirectMedia Layer - SDL is a library that allows
++	  programs portable low level access to a video framebuffer,
++	  audio output, mouse, and keyboard.
++
++	  http://www.libsdl.org/
++
++if BR2_PACKAGE_SDL
++
++config BR2_PACKAGE_SDL_FBCON
++	bool "SDL framebuffer console video driver"
++	default y
++
++config BR2_PACKAGE_SDL_DIRECTFB
++	bool "SDL DirectFB video driver"
++	depends on BR2_PACKAGE_DIRECTFB
++
++config BR2_PACKAGE_SDL_KMSDRM
++	bool "SDL KMSDRM video driver"
++	depends on BR2_TOOLCHAIN_HAS_THREADS  # libdrm
++	select BR2_PACKAGE_LIBDRM
++
++config BR2_PACKAGE_SDL_X11
++	bool "SDL X11 video driver"
++	depends on BR2_PACKAGE_XORG7
++	select BR2_PACKAGE_XLIB_LIBX11
++	select BR2_PACKAGE_XLIB_LIBXEXT
++
++endif
+diff --git a/package/sdl/sdl/sdl.hash b/package/sdl/sdl/sdl.hash
+new file mode 100644
+index 0000000000..4eb1b56b30
+--- /dev/null
++++ b/package/sdl/sdl/sdl.hash
+@@ -0,0 +1,3 @@
++# Locally computed
++sha256 a4b4886a4d2aae7adaa78ea7c92f4c16aabbd546c11945942eb833d53ec00699 sdl-dd7260f1d7f79a58aba95a03fd6532729181eadb-br1.tar.gz
++sha256 bb117c0fbd7f57f64170b690285d7df07c2371b578e3b3cd3aa2e1155ef461a0 COPYING
+diff --git a/package/sdl/sdl/sdl.mk b/package/sdl/sdl/sdl.mk
+new file mode 100644
+index 0000000000..c246e2c9ff
+--- /dev/null
++++ b/package/sdl/sdl/sdl.mk
+@@ -0,0 +1,105 @@
++################################################################################
++#
++# sdl
++#
++################################################################################
++
++SDL_VERSION = dd7260f1d7f79a58aba95a03fd6532729181eadb
++SDL_SITE = https://github.com/OpenDingux/SDL.git
++SDL_SITE_METHOD = git
++SDL_LICENSE = LGPL-2.1+
++SDL_LICENSE_FILES = COPYING
++SDL_CPE_ID_VENDOR = libsdl
++SDL_CPE_ID_PRODUCT = simple_directmedia_layer
++SDL_INSTALL_STAGING = YES
++
++# we're patching configure.in, but package cannot autoreconf with our version of
++# autotools, so we have to do it manually instead of setting SDL_AUTORECONF = YES
++define SDL_RUN_AUTOGEN
++	cd $(@D) && PATH=$(BR_PATH) ./autogen.sh
++endef
++
++SDL_PRE_CONFIGURE_HOOKS += SDL_RUN_AUTOGEN
++HOST_SDL_PRE_CONFIGURE_HOOKS += SDL_RUN_AUTOGEN
++
++SDL_DEPENDENCIES += host-automake host-autoconf host-libtool
++HOST_SDL_DEPENDENCIES += host-automake host-autoconf host-libtool
++
++SDL_CONF_OPTS += --enable-video-qtopia=no
++
++ifeq ($(BR2_PACKAGE_SDL_FBCON),y)
++SDL_CONF_OPTS += --enable-video-fbcon=yes
++else
++SDL_CONF_OPTS += --enable-video-fbcon=no
++endif
++
++ifeq ($(BR2_PACKAGE_SDL_DIRECTFB),y)
++SDL_DEPENDENCIES += directfb
++SDL_CONF_OPTS += --enable-video-directfb=yes
++SDL_CONF_ENV = ac_cv_path_DIRECTFBCONFIG=$(STAGING_DIR)/usr/bin/directfb-config
++else
++SDL_CONF_OPTS += --enable-video-directfb=no
++endif
++
++ifeq ($(BR2_PACKAGE_SDL_KMSDRM),y)
++SDL_DEPENDENCIES += libdrm
++SDL_CONF_OPTS += --enable-video-kmsdrm=yes
++else
++SDL_CONF_OPTS += --disable-video-kmsdrm=no
++endif
++
++ifeq ($(BR2_PACKAGE_SDL_X11),y)
++SDL_CONF_OPTS += --enable-video-x11=yes
++SDL_DEPENDENCIES += \
++	xlib_libX11 xlib_libXext \
++	$(if $(BR2_PACKAGE_XLIB_LIBXRENDER), xlib_libXrender) \
++	$(if $(BR2_PACKAGE_XLIB_LIBXRANDR), xlib_libXrandr)
++else
++SDL_CONF_OPTS += --enable-video-x11=no
++endif
++
++ifneq ($(BR2_USE_MMU),y)
++SDL_CONF_OPTS += --enable-dga=no
++endif
++
++# overwrite autodection (prevents confusion with host libpth version)
++ifeq ($(BR2_PACKAGE_LIBPTHSEM_COMPAT),y)
++SDL_CONF_OPTS += --enable-pth
++SDL_CONF_ENV += ac_cv_path_PTH_CONFIG=$(STAGING_DIR)/usr/bin/pth-config
++SDL_DEPENDENCIES += libpthsem
++else
++SDL_CONF_OPTS += --disable-pth
++endif
++
++ifeq ($(BR2_PACKAGE_TSLIB),y)
++SDL_DEPENDENCIES += tslib
++endif
++
++ifeq ($(BR2_PACKAGE_ALSA_LIB),y)
++SDL_DEPENDENCIES += alsa-lib
++endif
++
++ifeq ($(BR2_PACKAGE_MESA3D),y)
++SDL_DEPENDENCIES += mesa3d
++endif
++
++SDL_CONF_OPTS += \
++	--disable-rpath \
++	--enable-pulseaudio=no \
++	--disable-arts \
++	--disable-esd \
++	--disable-nasm \
++	--disable-video-ps3
++
++HOST_SDL_CONF_OPTS += \
++	--enable-pulseaudio=no \
++	--enable-video-x11=no \
++	--disable-arts \
++	--disable-esd \
++	--disable-nasm \
++	--disable-video-ps3
++
++SDL_CONFIG_SCRIPTS = sdl-config
++
++$(eval $(autotools-package))
++$(eval $(host-autotools-package))
