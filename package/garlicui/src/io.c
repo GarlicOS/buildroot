@@ -476,6 +476,12 @@ int io_get_content_items(const char * path, char *** items, int include_files, i
 	// Open the given directory
 	DIR * directory = opendir(path);
 
+	// We failed to open the directory
+	if (directory == NULL)
+	{
+		return 0;
+	}
+
 	// The collected items
 	char ** collected_items = NULL;
 
@@ -929,6 +935,13 @@ void io_shutdown()
 		// Close the SysRq trigger file
 		fclose(sysrq);
 	}
+#ifdef __MACOSX__
+	else
+	{
+		// Exit the application
+		exit(0);
+	}
+#endif
 }
 
 /**

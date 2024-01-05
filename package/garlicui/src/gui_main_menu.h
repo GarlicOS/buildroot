@@ -7,6 +7,10 @@
 #include "gui_context_menu.h"
 #include "gui_retroarch_menu.h"
 
+#ifndef VERSION
+#define VERSION "dev"
+#endif
+
 /**
  * @brief Activates the main menu.
  */
