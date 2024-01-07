@@ -1,0 +1,21 @@
+on: workflow_dispatch
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                arch: [aarch64, armhf, mipsel]
+        steps:
+            - uses: jlumbroso/free-disk-space@main
+              with:
+                large-packages: false
+            - uses: actions/checkout@v4
+            - name: build
+              run: |
+                docker build . -t garlicos-${{ matrix.arch }} --build-arg config=${{ matrix.arch }}
+                docker run --rm garlicos-${{ matrix.arch }} tar -cf - output/images/rootfs.f2fs | gzip -9 > ${{ matrix.arch }}-rootfs.tar.gz
+            - uses: actions/upload-artifact@v3
+              with:
+                path: ${{ matrix.arch }}-rootfs.tar.gz
+                name: ${{ matrix.arch }}-rootfs.tar.gz
