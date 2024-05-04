@@ -1,0 +1,109 @@
+From c0bcbd10f7f83aff681fd5a1b6f9f3b68270904e Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Sat, 4 May 2024 02:56:28 +0200
+Subject: [PATCH] Add 32bpp fbcon rotation support
+
+---
+ src/video/fbcon/SDL_fbvideo.c | 58 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 56 insertions(+), 2 deletions(-)
+
+diff --git a/src/video/fbcon/SDL_fbvideo.c b/src/video/fbcon/SDL_fbvideo.c
+index 2c45c365..dab67fba 100644
+--- a/src/video/fbcon/SDL_fbvideo.c
++++ b/src/video/fbcon/SDL_fbvideo.c
+@@ -170,6 +170,8 @@ static void FB_RestorePalette(_THIS);
+ /* Shadow buffer functions */
+ static FB_bitBlit FB_blit16;
+ static FB_bitBlit FB_blit16blocked;
++static FB_bitBlit FB_blit32;
++static FB_bitBlit FB_blit32blocked;
+ 
+ static int SDL_getpagesize(void)
+ {
+@@ -1142,6 +1144,10 @@ static SDL_Surface *FB_SetVideoMode(_THIS, SDL_Surface *current,
+ 			blitFunc = (rotate == FBCON_ROTATE_NONE ||
+ 					rotate == FBCON_ROTATE_UD) ?
+ 				FB_blit16 : FB_blit16blocked;
++		} else if (vinfo.bits_per_pixel == 32) {
++			blitFunc = (rotate == FBCON_ROTATE_NONE ||
++					rotate == FBCON_ROTATE_UD) ?
++				FB_blit32 : FB_blit32blocked;
+ 		} else {
+ #ifdef FBCON_DEBUG
+ 			fprintf(stderr, "Init vinfo:\n");
+@@ -1591,6 +1597,27 @@ static void FB_blit16(Uint8 *byte_src_pos, int src_right_delta, int src_down_del
+ 	}
+ }
+ 
++static void FB_blit32(Uint8 *byte_src_pos, int src_right_delta, int src_down_delta,
++		Uint8 *byte_dst_pos, int dst_linebytes, int width, int height)
++{
++	int w;
++	Uint32 *src_pos = (Uint32 *)byte_src_pos;
++	Uint32 *dst_pos = (Uint32 *)byte_dst_pos;
++
++	while (height) {
++		Uint32 *src = src_pos;
++		Uint32 *dst = dst_pos;
++		for (w = width; w != 0; w--) {
++			*dst = *src;
++			src += src_right_delta;
++			dst++;
++		}
++		dst_pos = (Uint32 *)((Uint8 *)dst_pos + dst_linebytes);
++		src_pos += src_down_delta;
++		height--;
++	}
++}
++
+ #define BLOCKSIZE_W 32
+ #define BLOCKSIZE_H 32
+ 
+@@ -1621,6 +1648,33 @@ static void FB_blit16blocked(Uint8 *byte_src_pos, int src_right_delta, int src_d
+ 	}
+ }
+ 
++static void FB_blit32blocked(Uint8 *byte_src_pos, int src_right_delta, int src_down_delta, 
++		Uint8 *byte_dst_pos, int dst_linebytes, int width, int height)
++{
++	int w;
++	Uint32 *src_pos = (Uint32 *)byte_src_pos;
++	Uint32 *dst_pos = (Uint32 *)byte_dst_pos;
++
++	while (height > 0) {
++		Uint32 *src = src_pos;
++		Uint32 *dst = dst_pos;
++		for (w = width; w > 0; w -= BLOCKSIZE_W) {
++			FB_blit32((Uint8 *)src,
++					src_right_delta,
++					src_down_delta,
++					(Uint8 *)dst,
++					dst_linebytes,
++					min(w, BLOCKSIZE_W),
++					min(height, BLOCKSIZE_H));
++			src += src_right_delta * BLOCKSIZE_W;
++			dst += BLOCKSIZE_W;
++		}
++		dst_pos = (Uint32 *)((Uint8 *)dst_pos + dst_linebytes * BLOCKSIZE_H);
++		src_pos += src_down_delta * BLOCKSIZE_H;
++		height -= BLOCKSIZE_H;
++	}
++}
++
+ static void FB_DirectUpdate(_THIS, int numrects, SDL_Rect *rects)
+ {
+ 	int width = cache_vinfo.xres;
+@@ -1633,8 +1687,8 @@ static void FB_DirectUpdate(_THIS, int numrects, SDL_Rect *rects)
+ 		return;
+ 	}
+ 
+-	if (cache_vinfo.bits_per_pixel != 16) {
+-		SDL_SetError("Shadow copy only implemented for 16 bpp");
++	if (cache_vinfo.bits_per_pixel != 16 && cache_vinfo.bits_per_pixel != 32) {
++		SDL_SetError("Shadow copy only implemented for 16 and 32 bpp");
+ 		return;
+ 	}
+ 
+-- 
+2.34.1
+
