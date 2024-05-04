@@ -411,14 +411,14 @@ struct gui_context * gui_create_context(int argc, char * argv[])
 			goto quit_ttf;
 		}
 
-		// Create a 32bpp double-buffered screen surface
+		// Create a 32bpp double-buffered screen hardware surface
 		context->surfaces.screen = SDL_SetVideoMode(info->current_w, info->current_h, 32, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN);
 
-		// If 32bpp isn't available...
+		// If that didn't work...
 		if (context->surfaces.screen == NULL)
 		{
-			// Try going with whatever SDL reports to us (even if we know this won't work on Spreadtrum devices)
-			context->surfaces.screen = SDL_SetVideoMode(info->current_w, info->current_h, info->vfmt->BitsPerPixel, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN);
+			// Try going with a 32bpp double-buffered screen software surface
+			context->surfaces.screen = SDL_SetVideoMode(info->current_w, info->current_h, 32, SDL_SWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN);
 		}
 
 		// We failed to create a double-buffered screen surface
