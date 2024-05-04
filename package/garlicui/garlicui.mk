@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-GARLICUI_VERSION = 2.0.1
+GARLICUI_VERSION = 2.0.2
 GARLICUI_SITE = package/garlicui/src
 GARLICUI_SITE_METHOD = local
 GARLICUI_CFLAGS = $(TARGET_CFLAGS) -I$(STAGING_DIR)/usr/include -I$(STAGING_DIR)/usr/include/librsvg-2.0 -I$(STAGING_DIR)/usr/include/glib-2.0 -I$(STAGING_DIR)/usr/lib/glib-2.0/include -I$(STAGING_DIR)/usr/include/cairo -I$(STAGING_DIR)/usr/include/gdk-pixbuf-2.0 -I$(STAGING_DIR)/usr/include/libxml2 -I$(STAGING_DIR)/usr/include/cjson
