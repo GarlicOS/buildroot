@@ -1,0 +1,8 @@
+<Configuration>
+  <Run>melonds</Run>
+  <Extensions>
+    <Extension>.nds</Extension>
+    <Extension>.ids</Extension>
+    <Extension>.dsi</Extension>
+  </Extensions>
+</Configuration>

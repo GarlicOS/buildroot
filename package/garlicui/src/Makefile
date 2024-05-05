@@ -12,7 +12,7 @@ $(TARGET): $(wildcard *.c)
 translations: $(MO_FILES)
 
 %.mo: %.po
-	msgfmt -o $@ $<
+	$(HOST_DIR)/bin/msgfmt -o $@ $<
 
 clean:
 	-rm -rf $(TARGET) $(MO_FILES) *.o
