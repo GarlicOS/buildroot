@@ -1,5 +1,115 @@
 #!/bin/sh
 
+# We haven't relocated the 32bit EGL software rasterizer yet
+if [ ! -f /usr/lib/swrast_libEGL.so ]
+then
+	# Relocate the 32bit EGL software rasterizer
+	mv /usr/lib/libEGL.so.1.0.0 /usr/lib/swrast_libEGL.so
+fi
+
+# We haven't relocated the 32bit GLESv1 software rasterizer yet
+if [ ! -f /usr/lib/swrast_libGLESv1_CM.so ]
+then
+	# Relocate the 32bit EGL software rasterizer
+	mv /usr/lib/libGLESv1_CM.so.1.1.0 /usr/lib/swrast_libGLESv1_CM.so
+fi
+
+# We haven't relocated the 32bit GLESv2 software rasterizer yet
+if [ ! -f /usr/lib/swrast_libGLESv2.so ]
+then
+	# Relocate the 32bit EGL software rasterizer
+	mv /usr/lib/libGLESv2.so.2.0.0 /usr/lib/swrast_libGLESv2.so
+fi
+
+# We haven't relocated the 64bit EGL software rasterizer yet
+if [ ! -f /usr/lib64/swrast_libEGL.so ]
+then
+	# Relocate the 64bit EGL software rasterizer
+	mv /usr/lib64/libEGL.so.1.0.0 /usr/lib64/swrast_libEGL.so
+fi
+
+# We haven't relocated the 64bit GLESv1 software rasterizer yet
+if [ ! -f /usr/lib64/swrast_libGLESv1_CM.so ]
+then
+	# Relocate the 64bit EGL software rasterizer
+	mv /usr/lib64/libGLESv1_CM.so.1.1.0 /usr/lib64/swrast_libGLESv1_CM.so
+fi
+
+# We haven't relocated the 64bit GLESv2 software rasterizer yet
+if [ ! -f /usr/lib64/swrast_libGLESv2.so ]
+then
+	# Relocate the 64bit EGL software rasterizer
+	mv /usr/lib64/libGLESv2.so.2.0.0 /usr/lib64/swrast_libGLESv2.so
+fi
+
+# Remove the rasterizer symlinks
+rm /usr/lib/libEGL.so.1.0.0
+rm /usr/lib/libGLESv1_CM.so.1.1.0
+rm /usr/lib/libGLESv2.so.2.0.0
+rm /usr/lib64/libEGL.so.1.0.0
+rm /usr/lib64/libGLESv1_CM.so.1.1.0
+rm /usr/lib64/libGLESv2.so.2.0.0
+
+# Check for device-specific 32bit EGL rasterizers
+if [ -f /usr/lib/${DEVICE_CODENAME}_libEGL.so ]
+then
+	# Use the device-specific rasterizer
+	ln -sf ${DEVICE_CODENAME}_libEGL.so /usr/lib/libEGL.so.1.0.0
+else
+	# Fall back to the software rasterizer
+	ln -sf swrast_libEGL.so /usr/lib/libEGL.so.1.0.0
+fi
+
+# Check for device-specific 32bit GLESv1 rasterizers
+if [ -f /usr/lib/${DEVICE_CODENAME}_libGLESv1_CM.so ]
+then
+	# Use the device-specific rasterizer
+	ln -sf ${DEVICE_CODENAME}_libGLESv1_CM.so /usr/lib/libGLESv1_CM.so.1.1.0
+else
+	# Fall back to the software rasterizer
+	ln -sf swrast_libGLESv1_CM.so /usr/lib/libGLESv1_CM.so.1.1.0
+fi
+
+# Check for device-specific 32bit GLESv2 rasterizers
+if [ -f /usr/lib/${DEVICE_CODENAME}_libGLESv2.so ]
+then
+	# Use the device-specific rasterizer
+	ln -sf ${DEVICE_CODENAME}_libGLESv2.so /usr/lib/libGLESv2.so.2.0.0
+else
+	# Fall back to the software rasterizer
+	ln -sf swrast_libGLESv2.so /usr/lib/libGLESv2.so.2.0.0
+fi
+
+# Check for device-specific 64bit EGL rasterizers
+if [ -f /usr/lib64/${DEVICE_CODENAME}_libEGL.so ]
+then
+	# Use the device-specific rasterizer
+	ln -sf ${DEVICE_CODENAME}_libEGL.so /usr/lib64/libEGL.so.1.0.0
+else
+	# Fall back to the software rasterizer
+	ln -sf swrast_libEGL.so /usr/lib64/libEGL.so.1.0.0
+fi
+
+# Check for device-specific 64bit GLESv1 rasterizers
+if [ -f /usr/lib64/${DEVICE_CODENAME}_libGLESv1_CM.so ]
+then
+	# Use the device-specific rasterizer
+	ln -sf ${DEVICE_CODENAME}_libGLESv1_CM.so /usr/lib64/libGLESv1_CM.so.1.1.0
+else
+	# Fall back to the software rasterizer
+	ln -sf swrast_libGLESv1_CM.so /usr/lib64/libGLESv1_CM.so.1.1.0
+fi
+
+# Check for device-specific 64bit GLESv2 rasterizers
+if [ -f /usr/lib64/${DEVICE_CODENAME}_libGLESv2.so ]
+then
+	# Use the device-specific rasterizer
+	ln -sf ${DEVICE_CODENAME}_libGLESv2.so /usr/lib64/libGLESv2.so.2.0.0
+else
+	# Fall back to the software rasterizer
+	ln -sf swrast_libGLESv2.so /usr/lib64/libGLESv2.so.2.0.0
+fi
+
 # Start the gamepad provider
 gamepad &
 
