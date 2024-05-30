@@ -1,0 +1,12 @@
+<Configuration>
+  <Run>mupen64plus_next</Run>
+  <Extensions>
+    <Extension>.zip</Extension>
+    <Extension>.n64</Extension>
+    <Extension>.v64</Extension>
+    <Extension>.z64</Extension>
+    <Extension>.ndd</Extension>
+    <Extension>.bin</Extension>
+    <Extension>.ul</Extension>
+  </Extensions>
+</Configuration>
