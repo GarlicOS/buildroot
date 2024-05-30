@@ -70,12 +70,6 @@ config BR2_PACKAGE_RETROARCH_QT5
 	select BR2_PACKAGE_QT5BASE_CONCURRENT
 	select BR2_PACKAGE_OPENSSL # Uses QSslError
 
-config BR2_PACKAGE_RETROARCH_SDL
-	bool "SDL support"
-	select BR2_PACKAGE_SDL
-	help
-	  SDL input/audio/video drivers
-
 config BR2_PACKAGE_RETROARCH_V4L2
 	bool "V4L2 support"
 	depends on BR2_TOOLCHAIN_HAS_THREADS

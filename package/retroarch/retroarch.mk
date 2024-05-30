@@ -27,8 +27,9 @@ RETROARCH_CONFIG_OPTS = \
 	--disable-opengl1 \
 	--enable-rpng
 
-# Disable SDL2 backend by default (it is in another binary)
-RETROARCH_CONFIG_OPTS += --disable-sdl2
+# Build with SDL backend by default
+RETROARCH_CONFIG_OPTS += --disable-sdl2 --enable-sdl
+RETROARCH_DEPENDENCIES += sdl
 
 ifeq ($(BR2_PACKAGE_ALSA_LIB),y)
 RETROARCH_DEPENDENCIES += alsa-lib
@@ -132,13 +133,6 @@ RETROARCH_CONFIG_OPTS += --enable-kms
 RETROARCH_DEPENDENCIES += mesa3d libdrm
 else
 RETROARCH_CONFIG_OPTS += --disable-kms
-endif
-
-ifeq ($(BR2_PACKAGE_RETROARCH_SDL),y)
-RETROARCH_CONFIG_OPTS += --enable-sdl
-RETROARCH_DEPENDENCIES += sdl
-else
-RETROARCH_CONFIG_OPTS += --disable-sdl
 endif
 
 ifeq ($(BR2_PACKAGE_RETROARCH_WAYLAND),y)
