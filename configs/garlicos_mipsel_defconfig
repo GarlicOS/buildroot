@@ -423,17 +423,11 @@ BR2_PACKAGE_RETROARCH=y
 # features
 #
 BR2_PACKAGE_RETROARCH_FFMPEG=y
-# BR2_PACKAGE_RETROARCH_KMS is not set
-
-#
-# KMS support needs an OpenGL EGL backend provided by mesa3d
-#
-BR2_PACKAGE_RETROARCH_SDL=y
+BR2_PACKAGE_RETROARCH_EGL=y
+BR2_PACKAGE_RETROARCH_GLES=y
+BR2_PACKAGE_RETROARCH_KMS=y
 # BR2_PACKAGE_RETROARCH_V4L2 is not set
-
-#
-# Wayland support needs an OpenGL EGL backend provided by mesa3d w/ headers >= 3.17
-#
+# BR2_PACKAGE_RETROARCH_WAYLAND is not set
 
 #
 # Menus
@@ -442,6 +436,25 @@ BR2_PACKAGE_RETROARCH_RGUI_MENU=y
 # BR2_PACKAGE_RETROARCH_MATERIAUI_MENU is not set
 # BR2_PACKAGE_RETROARCH_XMB_MENU is not set
 # BR2_PACKAGE_RETROARCH_OZONE_MENU is not set
+BR2_PACKAGE_RETROARCH_SDL2=y
+
+#
+# features
+#
+BR2_PACKAGE_RETROARCH_SDL2_FFMPEG=y
+BR2_PACKAGE_RETROARCH_SDL2_EGL=y
+BR2_PACKAGE_RETROARCH_SDL2_GLES=y
+BR2_PACKAGE_RETROARCH_SDL2_KMS=y
+# BR2_PACKAGE_RETROARCH_SDL2_V4L2 is not set
+# BR2_PACKAGE_RETROARCH_SDL2_WAYLAND is not set
+
+#
+# Menus
+#
+BR2_PACKAGE_RETROARCH_SDL2_RGUI_MENU=y
+# BR2_PACKAGE_RETROARCH_SDL2_MATERIAUI_MENU is not set
+# BR2_PACKAGE_RETROARCH_SDL2_XMB_MENU is not set
+# BR2_PACKAGE_RETROARCH_SDL2_OZONE_MENU is not set
 
 #
 # Cores
@@ -471,6 +484,7 @@ BR2_PACKAGE_HATARI=y
 BR2_PACKAGE_MAME2000=y
 BR2_PACKAGE_MAME2003_XTREME=y
 BR2_PACKAGE_MGBA=y
+# BR2_PACKAGE_MUPEN64PLUS_NX is not set
 BR2_PACKAGE_NEKOP2=y
 BR2_PACKAGE_NEOCD=y
 BR2_PACKAGE_NESTOPIA=y
@@ -493,7 +507,7 @@ BR2_PACKAGE_SCUMMVM=y
 BR2_PACKAGE_SNES9X=y
 BR2_PACKAGE_SNES9X2002=y
 BR2_PACKAGE_SNES9X2005=y
-BR2_PACKAGE_SNES9X2010=n
+# BR2_PACKAGE_SNES9X2010 is not set
 BR2_PACKAGE_STELLA2014=y
 BR2_PACKAGE_SUPAFAUST=y
 BR2_PACKAGE_SUPERGRAFX=y
@@ -556,14 +570,8 @@ BR2_PACKAGE_KODI_ARCH_SUPPORTS=y
 #
 # kodi needs python3 w/ .py modules, a uClibc or glibc toolchain w/ C++, threads, wchar, dynamic library, gcc >= 4.9
 #
-
-#
-# kodi needs udev support for gbm
-#
-
-#
-# kodi needs an OpenGL EGL backend with OpenGL or GLES support
-#
+BR2_PACKAGE_KODI_PLATFORM_SUPPORTS=y
+BR2_PACKAGE_KODI_PLATFORM_SUPPORTS_GBM=y
 # BR2_PACKAGE_LAME is not set
 # BR2_PACKAGE_MADPLAY is not set
 # BR2_PACKAGE_MIMIC is not set
@@ -578,6 +586,7 @@ BR2_PACKAGE_KODI_ARCH_SUPPORTS=y
 # BR2_PACKAGE_MPD is not set
 # BR2_PACKAGE_MPD_MPC is not set
 # BR2_PACKAGE_MPG123 is not set
+BR2_PACKAGE_MPV_SUPPORTS_VAAPI=y
 # BR2_PACKAGE_MPV is not set
 # BR2_PACKAGE_MULTICAT is not set
 # BR2_PACKAGE_MUSEPACK is not set
@@ -650,6 +659,7 @@ BR2_PACKAGE_PULSEAUDIO_HAS_ATOMIC=y
 # BR2_PACKAGE_DSTAT is not set
 # BR2_PACKAGE_DT is not set
 # BR2_PACKAGE_DUMA is not set
+BR2_PACKAGE_EGLTEST=y
 # BR2_PACKAGE_FIO is not set
 BR2_PACKAGE_GDB_ARCH_SUPPORTS=y
 BR2_PACKAGE_GDB=y
@@ -877,31 +887,22 @@ BR2_PACKAGE_OSWALD=y
 #
 # Graphic applications
 #
-
-#
-# cage needs udev, EGL w/ Wayland backend and OpenGL ES support
-#
+# BR2_PACKAGE_CAGE is not set
 
 #
 # cog needs wpewebkit and a toolchain w/ threads
 #
 # BR2_PACKAGE_FSWEBCAM is not set
 # BR2_PACKAGE_GHOSTSCRIPT is not set
-
-#
-# glmark2 needs an OpenGL or an openGL ES and EGL backend
-#
-
-#
-# glslsandbox-player needs openGL ES and EGL driver
-#
+BR2_PACKAGE_GLMARK2_FLAVOR_ANY=y
+BR2_PACKAGE_GLMARK2_FLAVOR_DRM_GLESV2=y
+# BR2_PACKAGE_GLMARK2 is not set
+# BR2_PACKAGE_GLSLSANDBOX_PLAYER is not set
 # BR2_PACKAGE_GNUPLOT is not set
 # BR2_PACKAGE_JHEAD is not set
-
-#
-# kmscube needs EGL, GBM and OpenGL ES, and a toolchain w/ thread support
-#
+# BR2_PACKAGE_KMSCUBE is not set
 # BR2_PACKAGE_LIBVA_UTILS is not set
+# BR2_PACKAGE_MESA3D_DEMOS is not set
 BR2_PACKAGE_MIDORI_ARCH_SUPPORTS=y
 
 #
@@ -935,11 +936,51 @@ BR2_PACKAGE_NETSURF_ARCH_SUPPORTS=y
 # BR2_PACKAGE_GRAPHICSMAGICK is not set
 # BR2_PACKAGE_IMAGEMAGICK is not set
 # BR2_PACKAGE_LIBGLVND is not set
+BR2_PACKAGE_PROVIDES_LIBEGL="mesa3d"
+BR2_PACKAGE_PROVIDES_LIBGLES="mesa3d"
 
 #
 # linux-fusion needs a Linux kernel to be built
 #
-# BR2_PACKAGE_MESA3D is not set
+BR2_PACKAGE_MESA3D=y
+BR2_PACKAGE_MESA3D_GALLIUM_DRIVER=y
+BR2_PACKAGE_MESA3D_DRIVER=y
+
+#
+# Gallium drivers
+#
+# BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_ETNAVIV is not set
+# BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_LIMA is not set
+# BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_NOUVEAU is not set
+# BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_PANFROST is not set
+BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_SWRAST=y
+# BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_TEGRA is not set
+# BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_VIRGL is not set
+
+#
+# Gallium VDPAU state tracker needs X.org and gallium drivers r300, r600, radeonsi or nouveau
+#
+
+#
+# Vulkan drivers
+#
+
+#
+# Off-screen Rendering
+#
+# BR2_PACKAGE_MESA3D_OSMESA_GALLIUM is not set
+
+#
+# OpenGL API Support
+#
+BR2_PACKAGE_MESA3D_GBM=y
+
+#
+# OpenGL GLX support needs X11
+#
+BR2_PACKAGE_MESA3D_OPENGL_EGL=y
+BR2_PACKAGE_MESA3D_OPENGL_ES=y
+BR2_PACKAGE_PROVIDES_LIBGBM="mesa3d"
 # BR2_PACKAGE_OCRAD is not set
 
 #
@@ -976,9 +1017,11 @@ BR2_PACKAGE_SDL_TTF=y
 #
 # Other GUIs
 #
+BR2_PACKAGE_QT5_GL_AVAILABLE=y
 BR2_PACKAGE_QT5_JSCORE_AVAILABLE=y
 # BR2_PACKAGE_QT5 is not set
 BR2_PACKAGE_QT6_ARCH_SUPPORTS=y
+BR2_PACKAGE_QT6_GL_SUPPORTS=y
 # BR2_PACKAGE_QT6 is not set
 
 #
@@ -987,10 +1030,6 @@ BR2_PACKAGE_QT6_ARCH_SUPPORTS=y
 # BR2_PACKAGE_WESTON is not set
 # BR2_PACKAGE_XORG7 is not set
 # BR2_PACKAGE_APITRACE is not set
-
-#
-# vte needs an OpenGL or an OpenGL-EGL/wayland backend
-#
 # BR2_PACKAGE_XKEYBOARD_CONFIG is not set
 
 #
@@ -1499,10 +1538,7 @@ BR2_PACKAGE_LIBDRM_HAS_ATOMIC=y
 # BR2_PACKAGE_LIBDRM_NOUVEAU is not set
 # BR2_PACKAGE_LIBDRM_ETNAVIV is not set
 # BR2_PACKAGE_LIBDRM_INSTALL_TESTS is not set
-
-#
-# libepoxy needs an OpenGL and/or OpenGL EGL backend
-#
+# BR2_PACKAGE_LIBEPOXY is not set
 # BR2_PACKAGE_LIBEXIF is not set
 
 #
@@ -1521,17 +1557,10 @@ BR2_PACKAGE_LIBDRM_HAS_ATOMIC=y
 #
 
 #
-# libglfw depends on X.org or Wayland and an OpenGL or GLES backend
-#
-
-#
 # libglu needs an OpenGL backend
 #
 # BR2_PACKAGE_LIBGTA is not set
-
-#
-# libgtk3 needs an OpenGL or an OpenGL-EGL/wayland backend
-#
+# BR2_PACKAGE_LIBGTK3 is not set
 # BR2_PACKAGE_LIBJXL is not set
 # BR2_PACKAGE_LIBMEDIAART is not set
 # BR2_PACKAGE_LIBMNG is not set
@@ -1544,13 +1573,16 @@ BR2_PACKAGE_LIBRSVG=y
 # BR2_PACKAGE_LIBSVGTINY is not set
 # BR2_PACKAGE_LIBVA is not set
 # BR2_PACKAGE_LIBVIPS is not set
-
-#
-# libwpe needs a toolchain w/ C++, dynamic library and an OpenEGL-capable backend
-#
+# BR2_PACKAGE_LIBWPE is not set
 # BR2_PACKAGE_MENU_CACHE is not set
 # BR2_PACKAGE_OPENCV3 is not set
 # BR2_PACKAGE_OPENCV4 is not set
+BR2_PACKAGE_HAS_LIBEGL=y
+BR2_PACKAGE_HAS_LIBEGL_WAYLAND=y
+BR2_PACKAGE_HAS_LIBGBM=y
+BR2_PACKAGE_LIBGBM_HAS_FEATURE_FORMAT_MODIFIER_PLANE_COUNT=y
+BR2_PACKAGE_LIBGBM_HAS_FEATURE_DMA_BUF=y
+BR2_PACKAGE_HAS_LIBGLES=y
 # BR2_PACKAGE_OPENJPEG is not set
 BR2_PACKAGE_PANGO=y
 # BR2_PACKAGE_PANGOMM is not set
@@ -1559,6 +1591,8 @@ BR2_PACKAGE_PIXMAN=y
 # BR2_PACKAGE_POPPLER is not set
 # BR2_PACKAGE_STB is not set
 # BR2_PACKAGE_TIFF is not set
+BR2_PACKAGE_WAFFLE_SUPPORTS_GBM=y
+# BR2_PACKAGE_WAFFLE is not set
 # BR2_PACKAGE_WAYLAND is not set
 BR2_PACKAGE_WEBKITGTK_ARCH_SUPPORTS=y
 
@@ -1566,20 +1600,11 @@ BR2_PACKAGE_WEBKITGTK_ARCH_SUPPORTS=y
 # webkitgtk needs libgtk3 and a toolchain w/ C++, wchar, threads, dynamic library, gcc >= 8, host gcc >= 4.9
 #
 # BR2_PACKAGE_WEBP is not set
-
-#
-# wlroots needs udev, EGL w/ Wayland backend and OpenGL ES support
-#
+# BR2_PACKAGE_WLROOTS is not set
 # BR2_PACKAGE_WOFF2 is not set
-
-#
-# wpebackend-fdo needs a toolchain w/ C++, wchar, threads, dynamic library and an OpenEGL-capable Wayland backend
-#
+# BR2_PACKAGE_WPEBACKEND_FDO is not set
 BR2_PACKAGE_WPEWEBKIT_ARCH_SUPPORTS=y
-
-#
-# wpewebkit needs an OpenGL ES w/ EGL-capable Wayland backend
-#
+# BR2_PACKAGE_WPEWEBKIT is not set
 # BR2_PACKAGE_ZBAR is not set
 # BR2_PACKAGE_ZXING_CPP is not set
 
