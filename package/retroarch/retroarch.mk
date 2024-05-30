@@ -100,7 +100,7 @@ RETROARCH_CONFIG_OPTS += --disable-egl
 endif
 
 ifeq ($(BR2_PACKAGE_RETROARCH_GLES),y)
-RETROARCH_CONFIG_OPTS += --enable-opengles
+RETROARCH_CONFIG_OPTS += --enable-opengles --enable-mali_fbdev --enable-opendingux_fbdev
 RETROARCH_DEPENDENCIES += mesa3d
 else
 RETROARCH_CONFIG_OPTS += --disable-opengles
