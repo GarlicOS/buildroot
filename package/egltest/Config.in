@@ -1,0 +1,4 @@
+menuconfig BR2_PACKAGE_EGLTEST
+	bool "EGL Test Application"
+	help
+	  Provides an easy to use testing interface for hardware acceleration
