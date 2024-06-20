@@ -24,7 +24,14 @@
 #define SUNXI_DISP_LCD_SET_BRIGHTNESS 0x102
 #define SUNXI_DISP_LCD_GET_BRIGHTNESS 0x103
 
+// The current volume
 static int current_volume = 0;
+
+// The audio provider control pipe
+static int control_fd = -1;
+
+// The audio provider response pipe
+static int response_fd = -1;
 
 static int get_min_brightness()
 {
@@ -347,32 +354,6 @@ static int change_volume(int direction)
 	// The result
 	int result = 0;
 
-	// The audio provider control pipe
-	static int control_fd = -1;
-
-	// The audio provider response pipe
-	static int response_fd = -1;
-
-	// We haven't created the audio provider control pipe yet
-	while (control_fd < 0)
-	{
-		// Create the named pipe
-		mkfifo(AUDIO_CONTROL_PIPE, 0666);
-
-		// Open the named pipe for writing
-		control_fd = open(AUDIO_CONTROL_PIPE, O_WRONLY | O_NONBLOCK);
-	}
-
-	// We haven't created the audio provider response pipe yet
-	while (response_fd < 0)
-	{
-		// Create the named pipe
-		mkfifo(AUDIO_RESPONSE_PIPE, 0666);
-
-		// Open the named pipe for reading
-		response_fd = open(AUDIO_RESPONSE_PIPE, O_RDONLY | O_NONBLOCK);
-	}
-
 	// Write the message to the control pipe
 	int write_result = write(control_fd, &direction, sizeof(direction));
 
@@ -641,6 +622,26 @@ int main(int argc, char * argv[])
 	// Create the virtual device
 	write(merged_gamepad, &merged_gamepad_configuration, sizeof(merged_gamepad_configuration));
 	ioctl(merged_gamepad, UI_DEV_CREATE);
+
+	// We haven't created the audio provider control pipe yet
+	while (control_fd < 0)
+	{
+		// Create the named pipe
+		mkfifo(AUDIO_CONTROL_PIPE, 0666);
+
+		// Open the named pipe for writing
+		control_fd = open(AUDIO_CONTROL_PIPE, O_WRONLY | O_NONBLOCK);
+	}
+
+	// We haven't created the audio provider response pipe yet
+	while (response_fd < 0)
+	{
+		// Create the named pipe
+		mkfifo(AUDIO_RESPONSE_PIPE, 0666);
+
+		// Open the named pipe for reading
+		response_fd = open(AUDIO_RESPONSE_PIPE, O_RDONLY | O_NONBLOCK);
+	}
 
 	// Restore the brightness
 	set_brightness(get_persistent_brightness());
