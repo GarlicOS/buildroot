@@ -1,0 +1,6 @@
+menuconfig BR2_PACKAGE_PARALLEL_N64
+	bool "parallel-n64"
+	depends on BR2_PACKAGE_RETROARCH
+	depends on BR2_PACKAGE_MESA3D
+	help
+	  libretro implementation of parallel-n64
