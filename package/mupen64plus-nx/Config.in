@@ -1,5 +1,6 @@
 menuconfig BR2_PACKAGE_MUPEN64PLUS_NX
 	bool "mupen64plus-nx"
 	depends on BR2_PACKAGE_RETROARCH
+	depends on BR2_PACKAGE_MESA3D
 	help
 	  libretro implementation of mupen64plus-nx
