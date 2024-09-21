@@ -1,0 +1,7 @@
+menuconfig BR2_PACKAGE_RETROARCH_GLSL_SHADERS
+	bool "retroarch-glsl-shaders"
+	depends on BR2_PACKAGE_RETROARCH
+	help
+	  Includes the RetroArch GLSL shaders.
+
+	  https://github.com/libretro/glsl-shaders

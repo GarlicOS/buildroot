@@ -608,6 +608,11 @@ BR2_PACKAGE_WSWAN=y
 BR2_PACKAGE_X1=y
 
 #
+# Extras
+#
+BR2_PACKAGE_RETROARCH_GLSL_SHADERS=y
+
+#
 # Audio and video applications
 #
 BR2_PACKAGE_AUDIO=y

@@ -89,6 +89,9 @@ menu "Emulators"
 		source "package/wswan/Config.in"
 		source "package/x1/Config.in"
 	endmenu
+	menu "Extras"
+		source "package/retroarch-glsl-shaders/Config.in"
+	endmenu
 endmenu
 
 menu "Audio and video applications"
