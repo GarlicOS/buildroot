@@ -2171,7 +2171,7 @@ index fee4174777..04b4f05472 100644
 -   return count;
 +	if (tinyalsa != NULL && tinyalsa->pcm != NULL)
 +	{
-+		RARCH_LOG("[TINYALSA]: Applying freewheel first-frame delay workaround");
++		RARCH_LOG("[TINYALSA]: Applying freewheel first-frame delay workaround\n");
 +		uint32_t silence_frame = 0;
 +		snd_pcm_sframes_t silence_frame_size = pcm_frames_to_bytes(tinyalsa->pcm, 1);
 +		for (int i = 0; i < 2; i++)
