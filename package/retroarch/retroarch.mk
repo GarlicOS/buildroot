@@ -25,6 +25,7 @@ RETROARCH_CONFIG_OPTS = \
 	--disable-d3d12 \
 	--disable-metal \
 	--disable-opengl1 \
+	--disable-freetype \
 	--enable-rpng
 
 # Build with SDL backend by default
