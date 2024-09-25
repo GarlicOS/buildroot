@@ -1,0 +1,41 @@
+From bc71f3f7dc0a4c0a3480a8508b839b0778ac851b Mon Sep 17 00:00:00 2001
+From: Black-Seraph <admin@black-seraph.com>
+Date: Wed, 25 Sep 2024 19:03:14 +0200
+Subject: [PATCH] Removed unneeded components
+
+---
+ Makefile | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 7a6b968d..a1d9c6b3 100644
+--- a/Makefile
++++ b/Makefile
+@@ -9,7 +9,23 @@ install:
+ 	cp -ar * $(DESTDIR)$(INSTALLDIR)
+ 	rm -rf $(DESTDIR)$(INSTALLDIR)/Makefile \
+ 		$(DESTDIR)$(INSTALLDIR)/configure \
+-		$(DESTDIR)$(INSTALLDIR)/src
++		$(DESTDIR)$(INSTALLDIR)/src \
++		$(DESTDIR)$(INSTALLDIR)/Automatic \
++		$(DESTDIR)$(INSTALLDIR)/FlatUX \
++		$(DESTDIR)$(INSTALLDIR)/Systematic \
++		$(DESTDIR)$(INSTALLDIR)/branding \
++		$(DESTDIR)$(INSTALLDIR)/cfg \
++		$(DESTDIR)$(INSTALLDIR)/ctr \
++		$(DESTDIR)$(INSTALLDIR)/devtools \
++		$(DESTDIR)$(INSTALLDIR)/fonts \
++		$(DESTDIR)$(INSTALLDIR)/glui \
++		$(DESTDIR)$(INSTALLDIR)/menu_widgets \
++		$(DESTDIR)$(INSTALLDIR)/nxrgui \
++		$(DESTDIR)$(INSTALLDIR)/pkg \
++		$(DESTDIR)$(INSTALLDIR)/scripts \
++		$(DESTDIR)$(INSTALLDIR)/sounds \
++		$(DESTDIR)$(INSTALLDIR)/switch \
++		$(DESTDIR)$(INSTALLDIR)/wallpapers
+ 
+ test-install: all
+ 	DESTDIR=/tmp/build $(MAKE) install
+-- 
+2.34.1
+

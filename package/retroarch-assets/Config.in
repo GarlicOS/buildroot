@@ -1,0 +1,7 @@
+menuconfig BR2_PACKAGE_RETROARCH_ASSETS
+	bool "retroarch-assets"
+	depends on BR2_PACKAGE_RETROARCH
+	help
+	  Includes the RetroArch assets.
+
+	  https://github.com/libretro/retroarch-assets

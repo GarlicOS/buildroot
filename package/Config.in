@@ -90,6 +90,7 @@ menu "Emulators"
 		source "package/x1/Config.in"
 	endmenu
 	menu "Extras"
+		source "package/retroarch-assets/Config.in"
 		source "package/retroarch-glsl-shaders/Config.in"
 	endmenu
 endmenu
