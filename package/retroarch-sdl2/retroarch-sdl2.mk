@@ -159,7 +159,7 @@ else
 RETROARCH_SDL2_CONFIG_OPTS += --disable-rgui
 endif
 
-ifeq ($(BR2_PACKAGE_RETROARCH_SDL2_MATERIAUI_MENU),y)
+ifeq ($(BR2_PACKAGE_RETROARCH_SDL2_MATERIALUI_MENU),y)
 RETROARCH_SDL2_CONFIG_OPTS += --enable-materialui
 else
 RETROARCH_SDL2_CONFIG_OPTS += --disable-materialui
