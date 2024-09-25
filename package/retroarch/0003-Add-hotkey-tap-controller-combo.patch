@@ -1,4 +1,4 @@
-From 7f63d775d3cdd4f1b6dee672957a18e305343afd Mon Sep 17 00:00:00 2001
+From 69484374bd38463b65135d71794563ba9a67f8a6 Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Thu, 8 Jun 2023 15:54:19 +0200
 Subject: [PATCH 03/10] Add hotkey tap controller combo
@@ -13,10 +13,10 @@ Subject: [PATCH 03/10] Add hotkey tap controller combo
  6 files changed, 68 insertions(+)
 
 diff --git a/input/input_defines.h b/input/input_defines.h
-index 75e6768215..b428b68cda 100644
+index 5ba2f88fe8..cf80788faa 100644
 --- a/input/input_defines.h
 +++ b/input/input_defines.h
-@@ -168,6 +168,7 @@ enum input_combo_type
+@@ -216,6 +216,7 @@ enum input_combo_type
     INPUT_COMBO_L_R,
     INPUT_COMBO_HOLD_START,
     INPUT_COMBO_HOLD_SELECT,
@@ -25,22 +25,22 @@ index 75e6768215..b428b68cda 100644
     INPUT_COMBO_L2_R2,
     INPUT_COMBO_LAST
 diff --git a/input/input_driver.c b/input/input_driver.c
-index 4d768626c2..46194cc37e 100644
+index a4e09fb604..94e8db7031 100644
 --- a/input/input_driver.c
 +++ b/input/input_driver.c
-@@ -562,6 +562,8 @@ bool input_driver_button_combo(
+@@ -647,6 +647,8 @@ bool input_driver_button_combo(
        retro_time_t current_time,
-       input_bits_t* p_input)
+       input_bits_t *p_input)
  {
 +   static bool last_enable_hotkey_button_state = false;
 +   static unsigned enable_hotkey_button_repeat = 0;
     switch (mode)
     {
        case INPUT_COMBO_DOWN_Y_L_R:
-@@ -700,6 +702,53 @@ bool input_driver_button_combo(
-             }
-          }
-          break;
+@@ -699,6 +701,53 @@ bool input_driver_button_combo(
+       case INPUT_COMBO_HOLD_SELECT:
+          return input_driver_button_combo_hold(
+                INPUT_COMBO_HOLD_SELECT, RETRO_DEVICE_ID_JOYPAD_SELECT, current_time, p_input);
 +      case INPUT_COMBO_TAP_HOTKEY:
 +         {
 +            bool current_enable_hotkey_button_state = BIT256_GET_PTR(p_input, RARCH_ENABLE_HOTKEY);
@@ -92,10 +92,10 @@ index 4d768626c2..46194cc37e 100644
        case INPUT_COMBO_NONE:
           break;
 diff --git a/intl/msg_hash_us.h b/intl/msg_hash_us.h
-index bcb0844ef7..3a73e84a42 100644
+index edd6144ff0..f923f119a4 100644
 --- a/intl/msg_hash_us.h
 +++ b/intl/msg_hash_us.h
-@@ -9937,6 +9937,10 @@ MSG_HASH(
+@@ -10929,6 +10929,10 @@ MSG_HASH(
     MENU_ENUM_LABEL_VALUE_HOLD_SELECT,
     "Hold Select (2 seconds)"
     )
@@ -107,10 +107,10 @@ index bcb0844ef7..3a73e84a42 100644
     MENU_ENUM_LABEL_VALUE_DOWN_SELECT,
     "Down + Select"
 diff --git a/menu/menu_setting.c b/menu/menu_setting.c
-index 402630e56d..1f03cf8e2a 100644
+index 19929bcced..8e4a9660ae 100644
 --- a/menu/menu_setting.c
 +++ b/menu/menu_setting.c
-@@ -6560,6 +6560,9 @@ static void setting_get_string_representation_gamepad_combo(
+@@ -7066,6 +7066,9 @@ static void setting_get_string_representation_gamepad_combo(
        case INPUT_COMBO_HOLD_SELECT:
           strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_HOLD_SELECT), len);
           break;
@@ -121,10 +121,10 @@ index 402630e56d..1f03cf8e2a 100644
           strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_DOWN_SELECT), len);
           break;
 diff --git a/msg_hash.h b/msg_hash.h
-index 2aeb7d6120..6ee3ad81ed 100644
+index 822bfa72b4..41fef3f6fd 100644
 --- a/msg_hash.h
 +++ b/msg_hash.h
-@@ -3857,6 +3857,7 @@ enum msg_hash_enums
+@@ -4134,6 +4134,7 @@ enum msg_hash_enums
     MENU_ENUM_LABEL_VALUE_L_R,
     MENU_ENUM_LABEL_VALUE_HOLD_START,
     MENU_ENUM_LABEL_VALUE_HOLD_SELECT,
@@ -133,10 +133,10 @@ index 2aeb7d6120..6ee3ad81ed 100644
     MENU_ENUM_LABEL_VALUE_L2_R2,
  
 diff --git a/retroarch.c b/retroarch.c
-index 44ec096c11..006c93244e 100644
+index 691d0ffd3a..6b843d128a 100644
 --- a/retroarch.c
 +++ b/retroarch.c
-@@ -2108,6 +2108,8 @@ bool command_event(enum event_command cmd, void *data)
+@@ -3062,6 +3062,8 @@ bool command_event(enum event_command cmd, void *data)
     settings_t *settings            = config_get_ptr();
     recording_state_t *recording_st = recording_state_get_ptr();
  
@@ -145,7 +145,7 @@ index 44ec096c11..006c93244e 100644
     switch (cmd)
     {
        case CMD_EVENT_SAVE_FILES:
-@@ -4248,6 +4250,14 @@ bool command_event(enum event_command cmd, void *data)
+@@ -5456,6 +5458,14 @@ bool command_event(enum event_command cmd, void *data)
        /* Deprecated */
        case CMD_EVENT_SEND_DEBUG_INFO:
           break;

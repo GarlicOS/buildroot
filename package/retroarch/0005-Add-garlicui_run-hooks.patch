@@ -1,4 +1,4 @@
-From d45a60253e1a44cd3c9a135b83faf5b7af85b72b Mon Sep 17 00:00:00 2001
+From 878ccd57e3b30b075e11a3fe54a26391be46644d Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Mon, 3 Jul 2023 18:50:42 +0200
 Subject: [PATCH 05/10] Add garlicui_run hooks
@@ -8,10 +8,10 @@ Subject: [PATCH 05/10] Add garlicui_run hooks
  1 file changed, 78 insertions(+), 2 deletions(-)
 
 diff --git a/retroarch.c b/retroarch.c
-index 006c93244e..d6f10fc700 100644
+index 6b843d128a..f4c7a6a1e9 100644
 --- a/retroarch.c
 +++ b/retroarch.c
-@@ -2085,6 +2085,81 @@ bool is_accessibility_enabled(bool accessibility_enable, bool accessibility_enab
+@@ -3039,6 +3039,81 @@ bool is_accessibility_enabled(bool accessibility_enable, bool accessibility_enab
  }
  #endif
  
@@ -93,7 +93,7 @@ index 006c93244e..d6f10fc700 100644
  /**
   * command_event:
   * @cmd                  : Event command index.
-@@ -2768,6 +2843,7 @@ bool command_event(enum event_command cmd, void *data)
+@@ -3713,6 +3788,7 @@ bool command_event(enum event_command cmd, void *data)
        case CMD_EVENT_QUIT:
           if (!retroarch_main_quit())
              return false;
@@ -101,18 +101,18 @@ index 006c93244e..d6f10fc700 100644
           break;
        case CMD_EVENT_CHEEVOS_HARDCORE_MODE_TOGGLE:
  #ifdef HAVE_CHEEVOS
-@@ -3281,7 +3357,7 @@ bool command_event(enum event_command cmd, void *data)
+@@ -4351,7 +4427,7 @@ bool command_event(enum event_command cmd, void *data)
  #ifdef HAVE_LAKKA
-          system("(sleep 1 && shutdown -P now) & disown");
+          system("nohup /usr/bin/lakka-shutdown.sh 2>&1 >/dev/null & exit");
  #else
 -         command_event(CMD_EVENT_QUIT, NULL);
 +         command_event(CMD_EVENT_QUIT, "shutdown");
           system("shutdown -P now");
  #endif /* HAVE_LAKKA */
  #endif
-@@ -3296,7 +3372,7 @@ bool command_event(enum event_command cmd, void *data)
+@@ -4366,7 +4442,7 @@ bool command_event(enum event_command cmd, void *data)
  #ifdef HAVE_LAKKA
-          system("(sleep 1 && shutdown -r now) & disown");
+          system("nohup /usr/bin/lakka-reboot.sh 2>&1 >/dev/null & exit");
  #else
 -         command_event(CMD_EVENT_QUIT, NULL);
 +         command_event(CMD_EVENT_QUIT, "reboot");

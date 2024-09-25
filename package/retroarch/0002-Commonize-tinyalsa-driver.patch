@@ -1,4 +1,4 @@
-From b9ec3a9a5c59fff17c0f1a3d49efba1d6d61285e Mon Sep 17 00:00:00 2001
+From a540805def44b1849590f11a8b3869feb23b0ab8 Mon Sep 17 00:00:00 2001
 From: Black-Seraph <admin@black-seraph.com>
 Date: Wed, 3 May 2023 15:53:05 +0200
 Subject: [PATCH 02/10] Commonize tinyalsa driver
@@ -8,7 +8,7 @@ Subject: [PATCH 02/10] Commonize tinyalsa driver
  1 file changed, 195 insertions(+), 2304 deletions(-)
 
 diff --git a/audio/drivers/tinyalsa.c b/audio/drivers/tinyalsa.c
-index fee4174777..04b4f05472 100644
+index fee4174777..d32c1d8792 100644
 --- a/audio/drivers/tinyalsa.c
 +++ b/audio/drivers/tinyalsa.c
 @@ -1,31 +1,3 @@
