@@ -12,6 +12,17 @@
 typedef char * (*textformatter)(const char *);
 
 /**
+ * @brief The directory in which all boot related files are stored.
+ *
+ * This includes the boot script, rootfs, global configuration file, etc.
+ */
+#ifdef __MACOSX__
+#define FOLDER_CONFIGURATION_BOOT_FOLDER ""
+#else
+#define FOLDER_CONFIGURATION_BOOT_FOLDER "/media/boot/"
+#endif
+
+/**
  * @brief The folder that contains the game library template.
  */
 #define LIBRARY_FOLDER_TEMPLATE_PATH "/usr/share/library"
@@ -29,14 +40,7 @@ typedef char * (*textformatter)(const char *);
 /**
  * @brief The folder that contains the icon overrides.
  */
-#define ICON_FOLDER_PATH "/media/boot/icons"
-
-/**
- * @brief The directory in which all boot related files are stored.
- *
- * This includes the boot script, rootfs, global configuration file, etc.
- */
-#define FOLDER_CONFIGURATION_BOOT_FOLDER "/media/boot"
+#define ICON_FOLDER_PATH FOLDER_CONFIGURATION_BOOT_FOLDER "icons"
 
 /**
  * @brief The folder icon file name.
