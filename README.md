@@ -5,7 +5,7 @@ This repository houses the [GarlicOS rootfs](https://github.com/GarlicOS/buildro
 To create a bootable MicroSD card:
 1. Format it with an **exfat** filesystem
 2. Create a **boot** folder on it
-3. Copy [this](https://github.com/GarlicOS/init_template/raw/main/init) OS **init** script into the boot folder
+3. Copy [this](https://github.com/GarlicOS/init_template/raw/main/init) OS **init** script into the boot folder -- NB if you're using Windows, do _not_ copy and paste the contents of this file into Notepad (or similar). Windows uses different EOL encoding and the resulting file will not work. Download the file and copy it to your SD card.
 4. Extract [this](https://github.com/GarlicOS/buildroot/releases/latest) **rootfs** file into the **boot** folder with [7zip](https://www.7-zip.org/download.html)
 
 # Populating your GarlicOS MicroSD card
